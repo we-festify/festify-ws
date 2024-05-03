@@ -19,10 +19,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    imageUrl: {
-      type: String,
-      default: "",
-    },
 
     account: {
       type: mongoose.Schema.Types.ObjectId,

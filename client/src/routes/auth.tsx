@@ -1,13 +1,24 @@
-import { LoginForm } from "@/components/auth/LoginForm";
-import { RegisterForm } from "@/components/auth/RegisterForm";
+import {
+  LoginForm,
+  RegisterForm,
+  ForgotPasswordForm,
+  ResetPasswordForm,
+  VerifyEmailForm,
+} from "@/components/auth";
+import Layout from "@/pages/auth/layout";
 import { Route, Routes } from "react-router-dom";
 
 const AuthRoutes = () => {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginForm />} />
-      <Route path="/register" element={<RegisterForm />} />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
+        <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/reset-password" element={<ResetPasswordForm />} />
+        <Route path="/verify-email" element={<VerifyEmailForm />} />
+      </Routes>
+    </Layout>
   );
 };
 

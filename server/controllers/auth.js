@@ -55,17 +55,51 @@ class AuthController {
       await user.save();
       await account.save();
 
-      const payload = { userId: user._id };
+      res.status(201).json({
+        message:
+          "User registered successfully. Please verify your email to login",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 
+  static async resendVerificationEmail(req, res, next) {
+    try {
+      const { email } = req.body;
+
+      if (!email || !validator.isEmail(email)) {
+        throw new BadRequestError(
+          "The email you provided is invalid or empty. Please provide a valid email"
+        );
+      }
+
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        throw new BadRequestError(
+          "The email you provided is not registered with us. Please register first"
+        );
+      }
+
+      if (user.isEmailVerified) {
+        throw new BadRequestError(
+          "Email you provided is already verified. Please login",
+          "USER_EMAIL_ALREADY_VERIFIED"
+        );
+      }
+
+      const payload = { userId: user._id };
       const emailVerificationToken = generateEmailVerificationToken(payload);
+
       await Mailer.sendEmailVerificationEmail({
         email,
         verificationToken: emailVerificationToken,
       });
 
-      res.status(201).json({
+      res.status(200).json({
         message:
-          "User registered successfully. Please verify your email to login",
+          "Verification email sent successfully. Please check your inbox",
       });
     } catch (err) {
       next(err);
@@ -79,15 +113,25 @@ class AuthController {
 
       const user = await User.findById(payload.userId);
       if (!user) {
-        throw new Error("User not found");
+        throw new Error(
+          "The token you provided is invalid or expired. Please request a new verification email."
+        );
+      }
+
+      if (user.isEmailVerified) {
+        return res.status(200).json({
+          message:
+            "Your email has already been verified. You can now login to your account.",
+        });
       }
 
       user.isEmailVerified = true;
       await user.save();
 
-      res
-        .status(200)
-        .json({ message: "Email verified successfully. You can now login" });
+      res.status(200).json({
+        message:
+          "Your email has been successfully verified. You can now login to your account.",
+      });
     } catch (err) {
       next(err);
     }
@@ -117,7 +161,10 @@ class AuthController {
       if (!isPasswordValid) throw new BadRequestError("Invalid password");
 
       if (!user.isEmailVerified) {
-        throw new BadRequestError("Please verify your email to login");
+        throw new BadRequestError(
+          "Please verify your email to login",
+          "USER_EMAIL_NOT_VERIFIED"
+        );
       }
 
       const payload = { userId: user._id };
@@ -207,6 +254,9 @@ class AuthController {
 
   static async me(req, res, next) {
     try {
+      const userId = req.user.userId;
+      if (!userId) throw new BadRequestError("Invalid user");
+
       const user = await User.findById(req.user.userId);
       if (!user) throw new BadRequestError("User not found");
 
