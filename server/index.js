@@ -4,7 +4,12 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS.split(","), // ["http://localhost:3000", "http://localhost:3001"],
+    credentials: true,
+  })
+);
 
 // Middlewares
 app.use(express.json());

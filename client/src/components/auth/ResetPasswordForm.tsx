@@ -11,49 +11,43 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function LoginForm() {
+export function ResetPasswordForm() {
   return (
     <Card className="mx-auto max-w-sm min-w-60">
       <CardHeader>
-        <CardTitle className="text-xl">Login</CardTitle>
+        <CardTitle className="text-xl">Reset Password</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your new password and confirm password
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">New Password</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="leafpetal@example.com"
-              autoComplete="email"
+              id="new-password"
+              type="password"
+              autoComplete="new-password"
               required
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="email">Confirm Password</Label>
             <Input
-              id="password"
+              id="confirm-password"
               type="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
+              required
             />
-            <Link
-              to="/auth/forgot-password"
-              className="ml-auto inline-block text-sm underline"
-            >
-              Forgot your password?
-            </Link>
           </div>
           <Button type="submit" className="w-full">
-            Login
+            Reset Password
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          Don't have an account?{" "}
-          <Link to="/auth/register" className="underline">
-            Sign Up
+          Already have an account?{" "}
+          <Link to="/auth/login" className="underline">
+            Login
           </Link>
         </div>
       </CardContent>

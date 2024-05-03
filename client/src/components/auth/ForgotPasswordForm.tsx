@@ -11,13 +11,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function LoginForm() {
+export function ForgotPasswordForm() {
   return (
     <Card className="mx-auto max-w-sm min-w-60">
       <CardHeader>
-        <CardTitle className="text-xl">Login</CardTitle>
+        <CardTitle className="text-xl">Forgot Password</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your email below to reset your password
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -32,22 +32,8 @@ export function LoginForm() {
               required
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-            />
-            <Link
-              to="/auth/forgot-password"
-              className="ml-auto inline-block text-sm underline"
-            >
-              Forgot your password?
-            </Link>
-          </div>
           <Button type="submit" className="w-full">
-            Login
+            Reset Password
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">

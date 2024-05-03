@@ -4,13 +4,17 @@ import App from "./App.tsx";
 import "./index.css";
 import { ThemeProvider } from "./providers/ThemeProvider.tsx";
 import { BrowserRouter } from "react-router-dom";
+import { Provider as ReduxProvider } from "react-redux";
+import store from "./store/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="system" storageKey="festify-ws-ui-theme">
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeProvider>
+    <ReduxProvider store={store}>
+      <ThemeProvider defaultTheme="system" storageKey="festify-ws-ui-theme">
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
+    </ReduxProvider>
   </React.StrictMode>
 );
