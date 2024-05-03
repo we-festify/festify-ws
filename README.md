@@ -1,10 +1,10 @@
 # Festify Web Services
 
-This repository contains the code for the Festify Web Services. The Festify Web Services are a set of services that developers can use for their own projects. The services are also used by the Festify app.
+This repository contains the code for the Festify Web Services. The **Festify Web Services** is a set of services developers can use for their projects. The Festify app also uses the services.
 
 ## Services
 
-- [BES - Basic Email Service](docs/bes)
-- [TS - Telegram Service](docs/ts)
+- BES - Basic Email Service
+- TS - Telegram Service
 
-Please check back later for more services
+Please check back later for more services.
