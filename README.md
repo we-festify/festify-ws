@@ -4,7 +4,7 @@ This repository contains the code for the Festify Web Services. The Festify Web 
 
 ## Services
 
-- [BES - Basic Email Service](./docs/bes)
-- [TS - Telegram Service](./docs/ts)
+- [BES - Basic Email Service](docs/bes)
+- [TS - Telegram Service](docs/ts)
 
 Please check back later for more services
