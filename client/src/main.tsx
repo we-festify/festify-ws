@@ -6,6 +6,7 @@ import { ThemeProvider } from "./providers/ThemeProvider.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import store from "./store/index.tsx";
+import { Toaster } from "@/components/ui/sonner";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ThemeProvider defaultTheme="system" storageKey="festify-ws-ui-theme">
         <BrowserRouter>
           <App />
+          <Toaster />
         </BrowserRouter>
       </ThemeProvider>
     </ReduxProvider>

@@ -23,6 +23,9 @@ const {
 // packages
 const validator = require("validator");
 
+// test
+const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+
 class AuthController {
   static async register(req, res, next) {
     try {
@@ -171,7 +174,15 @@ class AuthController {
       const accessToken = generateAccessToken(payload);
       const refreshToken = generateRefreshToken(payload);
 
-      res.status(200).json({ accessToken, refreshToken });
+      res
+        .status(200)
+        .cookie("festify-ws-refresh-token", refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+          secure: true,
+          maxAge: parseInt(process.env.JWT_REFRESH_EXPIRES_IN) * 1000,
+        })
+        .json({ accessToken, user, message: "Login successful" });
     } catch (err) {
       next(err);
     }
@@ -179,12 +190,23 @@ class AuthController {
 
   static async refreshToken(req, res, next) {
     try {
-      const { refreshToken } = req.body;
+      const refreshToken = req.cookies?.["festify-ws-refresh-token"];
       const payload = verifyRefreshToken(refreshToken);
 
-      const accessToken = generateAccessToken(payload);
+      if (!payload) {
+        throw new BadRequestError("Invalid refresh token");
+      }
 
-      res.status(200).json({ accessToken });
+      const user = await User.findById(payload.userId);
+
+      if (!user) {
+        throw new BadRequestError("Invalid user");
+      }
+
+      const newPayload = { userId: user._id };
+      const accessToken = generateAccessToken(newPayload);
+
+      res.status(200).json({ accessToken, user });
     } catch (err) {
       next(err);
     }
@@ -268,7 +290,10 @@ class AuthController {
 
   static async logout(req, res, next) {
     try {
-      res.status(200).json({ message: "Logout successful" });
+      res
+        .status(200)
+        .clearCookie("festify-ws-refresh-token")
+        .json({ message: "Logout successful" });
     } catch (err) {
       next(err);
     }
