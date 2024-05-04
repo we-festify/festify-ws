@@ -1,6 +1,6 @@
 import { selectIsLoggedIn } from "@/store/slices/auth";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 type AuthLayoutProps = {
   children: JSX.Element;
@@ -8,8 +8,10 @@ type AuthLayoutProps = {
 
 const Layout = ({ children }: AuthLayoutProps) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
-  if (isLoggedIn) return <Navigate to="/" />;
+  if (isLoggedIn) return <Navigate to={from} />;
 
   return (
     <div className="flex items-center justify-center h-screen">{children}</div>
