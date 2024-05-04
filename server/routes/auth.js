@@ -8,7 +8,7 @@ router.post("/register", AuthController.register);
 router.post("/send-verification-email", AuthController.resendVerificationEmail);
 router.post("/verify-email", AuthController.verifyEmail);
 router.post("/login", AuthController.login);
-router.post("/refresh-token", AuthController.refreshToken);
+router.get("/refresh", AuthController.refreshToken);
 router.post("/forgot-password", AuthController.forgotPassword);
 router.post("/reset-password", AuthController.resetPassword);
 router.get("/me", requireAuth, AuthController.me);

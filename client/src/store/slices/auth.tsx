@@ -10,14 +10,12 @@ export interface User {
 
 export interface AuthState {
   user: User | null;
-  accessToken: string | null;
   isLoggedIn: boolean;
   isVerified: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  accessToken: localStorage.getItem("festify-access-token"),
   isLoggedIn: false,
   isVerified: false,
 };
@@ -28,20 +26,17 @@ const authSlice = createSlice({
   reducers: {
     setCredentials(state, action) {
       const { accessToken, user } = action.payload;
-      localStorage.setItem("festify-access-token", accessToken);
-      state.user = user;
-      state.accessToken = accessToken;
+
+      localStorage.setItem("festify-ws-access-token", accessToken);
       state.isLoggedIn = true;
-      state.isVerified = user.isVerified;
+      state.isVerified = user.isEmailVerified;
+      state.user = user;
     },
     clearCredentials(state) {
       state.user = null;
-      state.accessToken = null;
       state.isLoggedIn = false;
       state.isVerified = false;
-    },
-    setUser(state, action) {
-      state.user = action.payload;
+      localStorage.removeItem("festify-ws-access-token");
     },
   },
 });
@@ -50,11 +45,10 @@ interface State {
   auth: AuthState;
 }
 
-export const selectAccessToken = (state: State) => state.auth.accessToken;
 export const selectUser = (state: State) => state.auth.user;
 export const selectIsLoggedIn = (state: State) => state.auth.isLoggedIn;
 export const selectIsVerified = (state: State) => state.auth.isVerified;
 
-export const { setCredentials, clearCredentials, setUser } = authSlice.actions;
+export const { setCredentials, clearCredentials } = authSlice.actions;
 
 export default authSlice.reducer;

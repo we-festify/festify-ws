@@ -1,9 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const cookies = require("cookie-parser");
 
 const app = express();
 
+// Cookies
+app.use(cookies());
+
+// Cors
 app.use(
   cors({
     origin: process.env.ALLOWED_ORIGINS.split(","), // ["http://localhost:3000", "http://localhost:3001"],

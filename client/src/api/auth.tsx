@@ -6,18 +6,14 @@ const authApi = api.injectEndpoints({
       query: (credentials) => ({
         url: "/auth/register",
         method: "POST",
-        body: {
-          user: credentials,
-        },
+        body: credentials,
       }),
     }),
     login: builder.mutation({
       query: (credentials) => ({
         url: "/auth/login",
         method: "POST",
-        body: {
-          user: credentials,
-        },
+        body: credentials,
       }),
     }),
     logout: builder.mutation({
@@ -69,12 +65,6 @@ const authApi = api.injectEndpoints({
         },
       }),
     }),
-    getMyDetails: builder.query({
-      query: () => ({
-        url: "/auth/me",
-        method: "GET",
-      }),
-    }),
   }),
 });
 
@@ -87,7 +77,6 @@ export const {
   useResetPasswordMutation,
   useVerifyEmailMutation,
   useSendVerificationEmailMutation,
-  useGetMyDetailsQuery,
 } = authApi;
 
 export default authApi;

@@ -29,10 +29,13 @@ const TimedButton: React.FC<TimedButtonProps> = ({ time, disabled }) => {
 
 export function VerifyEmailForm() {
   const { time, setTime } = useTimer(0); // 0 seconds for the first time
+
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
+
   const location = useLocation();
   const email = location.state?.email;
+
   const [
     verifyEmail,
     { data: verifyData, error: verifyError, isLoading: isVerifying },
@@ -44,7 +47,7 @@ export function VerifyEmailForm() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSendVerificationEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage("");
     setError("");
@@ -93,7 +96,7 @@ export function VerifyEmailForm() {
       </CardHeader>
       {!verifyData && !isVerifying && (
         <CardContent>
-          <form onSubmit={handleSubmit} className="grid gap-4">
+          <form onSubmit={handleSendVerificationEmail} className="grid gap-4">
             <TimedButton time={time} type="submit" />
           </form>
         </CardContent>
@@ -101,7 +104,7 @@ export function VerifyEmailForm() {
       {verifyData && (
         <CardContent>
           <Link
-            to="/login"
+            to="/a/login"
             className={cn(buttonVariants({ variant: "default" }), "w-full")}
           >
             Login

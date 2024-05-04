@@ -11,7 +11,34 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { useLoginMutation } from "@/api/auth";
+
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/store/slices/auth";
+
 export function LoginForm() {
+  const [login, { isLoading }] = useLoginMutation();
+  const dispatch = useDispatch();
+
+  const handleLoginFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    console.log(email, password);
+
+    try {
+      const payload = await login({ email, password }).unwrap();
+      toast.success(payload.message);
+      dispatch(setCredentials(payload));
+    } catch (error: any) {
+      if (error && "data" in error) toast.error((error.data as any).message);
+    }
+  };
+
   return (
     <Card className="mx-auto max-w-sm min-w-60">
       <CardHeader>
@@ -21,11 +48,12 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4">
+        <form className="grid gap-4" onSubmit={handleLoginFormSubmit}>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="leafpetal@example.com"
               autoComplete="email"
@@ -36,8 +64,10 @@ export function LoginForm() {
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              name="password"
               type="password"
               autoComplete="current-password"
+              required
             />
             <Link
               to="/auth/forgot-password"
@@ -46,13 +76,13 @@ export function LoginForm() {
               Forgot your password?
             </Link>
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
           Don't have an account?{" "}
-          <Link to="/auth/register" className="underline">
+          <Link to="/a/register" className="underline">
             Sign Up
           </Link>
         </div>

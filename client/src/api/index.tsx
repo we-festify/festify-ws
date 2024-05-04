@@ -4,21 +4,13 @@ import {
   FetchArgs,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
-import {
-  AuthState,
-  clearCredentials,
-  setCredentials,
-} from "@/store/slices/auth";
-
-interface State {
-  auth: AuthState;
-}
+import { clearCredentials, setCredentials } from "@/store/slices/auth";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL as string,
   credentials: "include",
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as State).auth.accessToken;
+  prepareHeaders: (headers) => {
+    const token = localStorage.getItem("festify-ws-access-token");
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }
