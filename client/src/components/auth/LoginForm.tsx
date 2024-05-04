@@ -70,7 +70,7 @@ export function LoginForm() {
               required
             />
             <Link
-              to="/auth/forgot-password"
+              to="/a/forgot-password"
               className="ml-auto inline-block text-sm underline"
             >
               Forgot your password?

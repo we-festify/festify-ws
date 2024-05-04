@@ -230,7 +230,7 @@ class AuthController {
       const resetPasswordToken = generateResetPasswordToken(
         payload,
         account.password
-      );
+      ) + ":" + user._id;
 
       await Mailer.sendForgotPasswordEmail({
         to: email,
@@ -254,14 +254,15 @@ class AuthController {
         throw new BadRequestError("Password must be at least 8 characters");
       }
 
-      const payload = verifyResetPasswordToken(token);
-      if (!payload) throw new BadRequestError("Invalid token");
+      if (!token) throw new BadRequestError("The reset password link is invalid. Please try to send forgot password email again.");
 
-      const user = await User.findById(payload.userId);
-      if (!user) throw new BadRequestError("User not found");
+      const [resetPasswordToken, userId] = token.split(":");
 
-      const account = await Account.findOne({ user: user._id });
-      if (!account) throw new BadRequestError("User Account not found");
+      const account = await Account.findOne({ user: userId });
+      if (!account) throw new BadRequestError("User account not found");
+
+      const payload = verifyResetPasswordToken(resetPasswordToken, account.password);
+      if (!payload) throw new BadRequestError("The link has been expired or already used.");
 
       account.password = await hashPassword(password);
       await account.save();
