@@ -28,8 +28,8 @@ app.get("/", async (req, res) => {
 require("./config/db");
 
 // Routes
-const routes = require("./routes");
-app.use("/api", routes);
+const routes = require("./routes-v1");
+app.use("/api/v1", routes);
 
 // errors
 const { handleErrors } = require("./utils/errors");

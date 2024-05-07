@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ReduxProvider store={store}>
-      <ThemeProvider defaultTheme="system" storageKey="festify-ws-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="festify-ws-ui-theme">
         <BrowserRouter>
           <App />
           <Toaster />

@@ -23,9 +23,6 @@ const {
 // packages
 const validator = require("validator");
 
-// test
-const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-
 class AuthController {
   static async register(req, res, next) {
     try {

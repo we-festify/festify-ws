@@ -23,18 +23,19 @@ const userSchema = new mongoose.Schema(
     account: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Account",
+      required: true,
     },
-    projects: [
+
+    services: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Project",
+        ref: "Service",
       },
     ],
-
-    // limits - default basic plan
-    maxProjects: {
-      type: Number,
-      default: 5,
+    plan: {
+      type: String,
+      enum: ["free", "payg"],
+      default: "free",
     },
   },
   {
