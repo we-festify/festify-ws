@@ -41,7 +41,11 @@ const api = createApi({
   endpoints: () => ({
     // ...endpoints
   }),
-  tagTypes: [],
+  tagTypes: [
+    // ...tagTypes
+    "Service",
+    "Instance",
+  ],
 });
 
 export default api;

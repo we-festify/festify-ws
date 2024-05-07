@@ -5,12 +5,12 @@ import {
   ResetPasswordForm,
   VerifyEmailForm,
 } from "@/components/auth";
-import Layout from "@/pages/auth/layout";
+import AuthLayout from "@/pages/auth/layout";
 import { Route, Routes } from "react-router-dom";
 
 const AuthRoutes = () => {
   return (
-    <Layout>
+    <AuthLayout>
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
@@ -18,7 +18,7 @@ const AuthRoutes = () => {
         <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="/verify-email" element={<VerifyEmailForm />} />
       </Routes>
-    </Layout>
+    </AuthLayout>
   );
 };
 

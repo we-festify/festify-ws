@@ -6,10 +6,26 @@ type AuthLayoutProps = {
   children: JSX.Element;
 };
 
-const Layout = ({ children }: AuthLayoutProps) => {
+const getFilteredFromRoute = (from: string) => {
+  const excludedRoutes = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+    "/verify-email",
+  ];
+
+  if (excludedRoutes.includes(from)) {
+    return "/";
+  }
+
+  return from;
+};
+
+const AuthLayout = ({ children }: AuthLayoutProps) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const location = useLocation();
-  const from = location.state?.from || "/";
+  const from = getFilteredFromRoute(location.state?.from as string);
 
   if (isLoggedIn) return <Navigate to={from} />;
 
@@ -18,4 +34,4 @@ const Layout = ({ children }: AuthLayoutProps) => {
   );
 };
 
-export default Layout;
+export default AuthLayout;
