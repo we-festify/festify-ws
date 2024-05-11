@@ -1,14 +1,10 @@
 import { useGetInstancesQuery } from "@/api/instances";
 import EmptyInbox from "@/assets/images/EmptyInbox.svg";
 import { NewInstance } from "./dialogs/NewInstance";
+import InstancesTable from "./Instances/InstancesTable";
 
 interface ServiceInstancesProps {
   type: string;
-}
-
-interface Instance {
-  _id: string;
-  status: string;
 }
 
 const ServiceInstances = ({ type }: ServiceInstancesProps) => {
@@ -25,27 +21,11 @@ const ServiceInstances = ({ type }: ServiceInstancesProps) => {
           <NewInstance type={type} />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {instances.map((instance: Instance) => (
-            <div
-              key={instance._id}
-              className="bg-background p-4 rounded-md shadow-md"
-            >
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold">Instance</h2>
-                <span
-                  className={`px-2 py-1 rounded-md text-xs font-semibold ${
-                    instance.status === "active"
-                      ? "bg-green-500 text-white"
-                      : "bg-red-500 text-white"
-                  }`}
-                >
-                  {instance.status}
-                </span>
-              </div>
-              <p className="text-sm text-gray-500">{instance._id}</p>
-            </div>
-          ))}
+        <div className="flex flex-col gap-4">
+          <InstancesTable type={type} instances={instances} />
+          <div className="flex flex-row-reverse">
+            <NewInstance type={type} />
+          </div>
         </div>
       )}
     </div>

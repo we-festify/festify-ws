@@ -12,12 +12,25 @@ const instanceSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    creds: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Creds",
+      required: true,
+    },
 
     // Instance details
+    name: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",
+      required: true,
+    },
+    apiKey: {
+      type: String,
       required: true,
     },
 

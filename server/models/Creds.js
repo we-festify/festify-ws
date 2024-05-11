@@ -34,16 +34,15 @@ const tsCredsSchema = new mongoose.Schema({
   },
 });
 
-db.model("BesCreds", besCredsSchema).discriminator("bes", baseCredsSchema);
-db.model("TsCreds", tsCredsSchema).discriminator("ts", baseCredsSchema);
-
 /**
  * @param {mongoose.Connection} db
  * @returns
  */
 module.exports = (db) => {
   if (!db.models.Creds) {
-    return db.model("Creds", baseCredsSchema);
+    const Creds = db.model("Creds", baseCredsSchema);
+    Creds.discriminator("bes", besCredsSchema);
+    Creds.discriminator("ts", tsCredsSchema);
   }
   return db.models.Creds;
 };

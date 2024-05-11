@@ -1,26 +1,10 @@
-import { toast } from "sonner";
+import CopyIcon from "./CopyIcon";
 
 const CodeBlock = ({ code }: { code: string }) => {
-  const handleCopy = () => {
-    navigator.clipboard
-      .writeText(code)
-      .then(() => {
-        toast.success("Copied to clipboard");
-      })
-      .catch(() => {
-        toast.error("Failed to copy to clipboard");
-      });
-  };
-
   return (
-    <div
-      className="flex justify-between items-center bg-muted/60 p-4 rounded-md hover:bg-muted cursor-pointer group"
-      onClick={handleCopy}
-    >
+    <div className="relative flex justify-between items-center bg-muted/60 p-4 rounded-md hover:bg-muted cursor-pointer group">
       <code className="text-sm">{code}</code>
-      <span className="text-xs text-muted-foreground hidden group-hover:inline">
-        Copy
-      </span>
+      <CopyIcon value={code} className="absolute top-1/2 right-0 transform -translate-y-1/2 text-muted-foreground invisible group-hover:visible" />
     </div>
   );
 };

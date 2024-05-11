@@ -23,6 +23,8 @@ const componentsMap: ComponentsMap = {
 };
 
 export function NewInstance({ type, buttonText }: NewInstanceProps) {
+  const Content = componentsMap[type];
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -36,7 +38,7 @@ export function NewInstance({ type, buttonText }: NewInstanceProps) {
             service.
           </DialogDescription>
         </DialogHeader>
-        {componentsMap[type] ? componentsMap[type]() : null}
+        <Content />
       </DialogContent>
     </Dialog>
   );
