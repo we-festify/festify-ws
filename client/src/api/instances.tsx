@@ -9,9 +9,17 @@ const instancesApi = api.injectEndpoints({
       }),
       providesTags: ["Instance"],
     }),
+    createInstance: builder.mutation({
+      query: (data) => ({
+        url: `/instances/${data.type}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Instance"],
+    }),
   }),
 });
 
-export const { useGetInstancesQuery } = instancesApi;
+export const { useGetInstancesQuery, useCreateInstanceMutation } = instancesApi;
 
 export default instancesApi;

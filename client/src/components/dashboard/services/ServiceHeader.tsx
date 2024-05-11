@@ -49,7 +49,7 @@ const ServiceHeader = ({ type }: ServiceHeaderProps) => {
           {isLoading ? "Enabling..." : "Enable"}
         </Button>
       ) : (
-        <p className="text-green-700 font-semibold">Enabled</p>
+        <p className="text-green-500 font-semibold">Enabled</p>
       )}
     </div>
   );

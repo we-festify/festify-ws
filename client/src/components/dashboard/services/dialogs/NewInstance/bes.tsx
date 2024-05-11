@@ -1,19 +1,51 @@
+import { useCreateInstanceMutation } from "@/api/instances";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useState } from "react";
+import useShowHide from "@/hooks/useShowHide";
+import { toast } from "sonner";
 
 const NewBESInstanceDialogContent = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [createInstance, { isLoading }] = useCreateInstanceMutation();
+  const { isVisible: isPasswordVisible, ToggleEye } = useShowHide();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const instanceName = formData.get("instance-name") as string;
+    const email = formData.get("sender-email") as string;
+    const password = formData.get("sender-password") as string;
+
+    try {
+      const payload = await createInstance({
+        type: "bes",
+        email,
+        password,
+        name: instanceName,
+      }).unwrap();
+      toast.success(payload.message);
+    } catch (error: any) {
+      toast.error(error.data.message);
+    }
+  };
 
   return (
-    <form className="grid gap-6" onSubmit={() => {}}>
+    <form className="grid gap-6" onSubmit={handleSubmit}>
       <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="instance-name">Instance Name</Label>
         <Input
-          id="email"
-          name="email"
+          id="instance-name"
+          name="instance-name"
+          type="text"
+          placeholder="Project 1"
+          required
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="sender-email">Sender Email</Label>
+        <Input
+          id="sender-email"
+          name="sender-email"
           type="email"
           placeholder="leafpetal@example.com"
           autoComplete="off"
@@ -21,33 +53,21 @@ const NewBESInstanceDialogContent = () => {
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="user-password">Password</Label>
+        <Label htmlFor="sender-password">Sender Password</Label>
         <div className="relative">
           <Input
-            id="user-password"
-            name="user-password"
-            type={showPassword ? "text" : "password"}
+            id="sender-password"
+            name="sender-password"
+            type={isPasswordVisible ? "text" : "password"}
             autoComplete="off"
+            required
           />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-            onClick={() => setShowPassword((prev) => !prev)}
-          >
-            {showPassword ? (
-              <EyeIcon className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
-            )}
-            <span className="sr-only">
-              {showPassword ? "Hide password" : "Show password"}
-            </span>
-          </Button>
+          <ToggleEye name="password" className="absolute top-0 right-0" />
         </div>
       </div>
-      <Button type="submit">Create</Button>
+      <Button type="submit" disabled={isLoading}>
+        {isLoading ? "Creating..." : "Create"}
+      </Button>
     </form>
   );
 };
