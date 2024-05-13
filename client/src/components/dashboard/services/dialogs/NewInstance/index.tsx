@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +10,7 @@ import NewBESInstanceDialogContent from "./bes";
 
 interface NewInstanceProps {
   type: string;
-  buttonText?: string;
+  trigger: JSX.Element;
 }
 
 interface ComponentsMap {
@@ -22,14 +21,12 @@ const componentsMap: ComponentsMap = {
   bes: NewBESInstanceDialogContent,
 };
 
-export function NewInstance({ type, buttonText }: NewInstanceProps) {
+export function NewInstance({ type, trigger }: NewInstanceProps) {
   const Content = componentsMap[type];
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button>{buttonText || "Create new instance"}</Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>New Instance</DialogTitle>

@@ -15,6 +15,10 @@ interface InstancesTableProps {
 
 const InstancesTable = ({ type, instances }: InstancesTableProps) => {
   const cols = columns(type);
+  instances = instances.map((instance) => ({
+    ...instance,
+    type,
+  }));
 
   return <DataTable columns={cols} data={instances} />;
 };
