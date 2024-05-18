@@ -8,13 +8,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { toast } from "sonner";
 import { useDeleteInstance } from "../../dialogs/DeleteInstance/useDeleteInstance";
 import { DialogTrigger } from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
 
 const ActionsCell = ({ row }: { row: any }) => {
   const { Dialog, DialogContent } = useDeleteInstance(row.original.type);
-  const apiKey = row.original.apiKey;
+  const instance = row.original;
+  const navigate = useNavigate();
+
+  const handleNavigateToInstance = () => {
+    navigate(`instances/${instance._id}`);
+  };
 
   return (
     <Dialog>
@@ -28,19 +33,14 @@ const ActionsCell = ({ row }: { row: any }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() =>
-              navigator.clipboard
-                .writeText(apiKey)
-                .then(() => toast.success("Copied to clipboard"))
-                .catch(() => toast.error("Failed to copy to clipboard"))
-            }
             className="cursor-pointer"
+            onClick={handleNavigateToInstance}
           >
-            Copy API Key
+            Details
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DialogTrigger asChild>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100">
               Delete
             </DropdownMenuItem>
           </DialogTrigger>

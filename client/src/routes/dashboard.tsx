@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import BESService from "@/pages/dashboard/services/bes";
 import TSService from "@/pages/dashboard/services/ts";
 import Account from "@/components/dashboard/account";
+import Instances from "@/pages/dashboard/services/instances";
 
 const DashboardRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const DashboardRoutes = () => {
           <Route path="" element={<Services />} />
           <Route path="bes" element={<BESService />} />
           <Route path="ts" element={<TSService />} />
+          <Route path=":type/instances/:instanceId/*" element={<Instances />} />
         </Route>
         <Route path="account" element={<Account />} />
       </Routes>

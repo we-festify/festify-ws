@@ -2,6 +2,7 @@
 import { formatTimeFromNow } from "@/utils/time";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionsCell from "./cells/Actions";
+import APIKeyCell from "./cells/APIKey";
 
 
 interface Instance {
@@ -30,9 +31,7 @@ const commonColumns: ColumnDef<Instance>[] = [
   {
     accessorKey: "apiKey",
     header: "API Key",
-    cell: () => {
-      return <span className="text-muted-foreground">*******************</span>;
-    },
+    cell: APIKeyCell,
   },
   {
     accessorKey: "createdAt",
