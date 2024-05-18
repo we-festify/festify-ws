@@ -1,4 +1,4 @@
-import { Clipboard } from "lucide-react";
+import { Copy } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -29,10 +29,7 @@ const CopyIcon = (props: CopyIconProps) => {
       className={props.className}
       onClick={handleCopy}
     >
-      <Clipboard
-        className={cn("h-4 w-4", props.iconClassName)}
-        aria-hidden="true"
-      />
+      <Copy className={cn("h-4 w-4", props.iconClassName)} aria-hidden="true" />
       <span className="sr-only">Copy</span>
     </Button>
   );

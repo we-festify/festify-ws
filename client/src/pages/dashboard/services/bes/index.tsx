@@ -14,11 +14,10 @@ const BESService = () => {
       <ServiceHeader type="bes" />
       {service.enabled ? (
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-max grid-cols-4">
+          <TabsList className="grid w-max grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="instances">Instances</TabsTrigger>
             <TabsTrigger value="docs">Docs</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="mt-8">
             <ServiceOverview />
@@ -28,9 +27,6 @@ const BESService = () => {
           </TabsContent>
           <TabsContent value="docs" className="mt-8">
             <ServiceDocs type="bes" />
-          </TabsContent>
-          <TabsContent value="settings" className="mt-8">
-            Settings
           </TabsContent>
         </Tabs>
       ) : (

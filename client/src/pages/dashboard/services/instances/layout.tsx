@@ -1,11 +1,11 @@
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-interface ServiceLayoutProps {
+interface InstanceLayoutProps {
   children: React.ReactNode;
 }
 
-const ServiceLayout = ({ children }: ServiceLayoutProps) => {
+const InstanceLayout = ({ children }: InstanceLayoutProps) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -28,4 +28,4 @@ const ServiceLayout = ({ children }: ServiceLayoutProps) => {
   );
 };
 
-export default ServiceLayout;
+export default InstanceLayout;
