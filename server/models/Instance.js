@@ -43,8 +43,10 @@ const instanceSchema = new mongoose.Schema(
     lastApiCallTime: {
       type: Date,
     },
+    // for billing
     lastApiCallReset: {
       type: Date,
+      default: Date.now,
     },
   },
   {

@@ -21,7 +21,7 @@ const useShowHide = () => {
         type="button"
         variant="ghost"
         size="sm"
-        className={props.className}
+        className={cn("hover:bg-transparent", props.className)}
         onClick={toggle}
       >
         {show ? (
