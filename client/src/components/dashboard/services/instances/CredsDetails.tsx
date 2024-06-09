@@ -11,11 +11,7 @@ const CredsDetails = ({
 }) => {
   return (
     <div className="flex flex-col gap-2">
-      <KeyValueList
-        title="Credentials"
-        data={creds}
-        keys={getKeysByType(type)}
-      />
+      <KeyValueList title="Creds" data={creds} keys={getKeysByType(type)} />
       <div className="flex flex-row-reverse mt-2">
         <UpdateCreds
           type={type}

@@ -1,9 +1,7 @@
-
 import { formatTimeFromNow } from "@/utils/time";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionsCell from "./cells/Actions";
 import APIKeyCell from "./cells/APIKey";
-
 
 interface Instance {
   _id: string;
@@ -24,7 +22,9 @@ const commonColumns: ColumnDef<Instance>[] = [
       return row.getValue("status") === "active" ? (
         <span className="text-blue-600">Active</span>
       ) : (
-        <span className="text-orange-400">{row.getValue("status")}</span>
+        <span className="text-orange-400 capitalize">
+          {row.getValue("status")}
+        </span>
       );
     },
   },

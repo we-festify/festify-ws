@@ -1,5 +1,7 @@
 export const formatTimeFromNow = (time: string): string => {
   try {
+    if (!time) return "";
+
     const date = new Date(time);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
@@ -20,7 +22,7 @@ export const formatTimeFromNow = (time: string): string => {
     } else if (seconds > 0) {
       return `${seconds} seconds ago`;
     }
-    return "";
+    return "just now";
   } catch (error) {
     return "";
   }

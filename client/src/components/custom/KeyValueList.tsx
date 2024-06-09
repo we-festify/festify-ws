@@ -8,7 +8,7 @@ type KeyValueType =
 
 interface KeyValueListProps {
   title?: string;
-  data: Record<string, string>;
+  data: Record<string, any>;
   keys?: KeyValueType[];
 }
 
@@ -36,7 +36,7 @@ const KeyValue = ({
 }: {
   label: string;
   value: string;
-  formatter?: (value: string) => string | JSX.Element;
+  formatter?: (value: any) => string | JSX.Element;
 }) => {
   return (
     <tr className="even:bg-muted">
