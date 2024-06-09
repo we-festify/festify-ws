@@ -28,8 +28,6 @@ export function LoginForm() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    console.log(email, password);
-
     try {
       const payload = await login({ email, password }).unwrap();
       toast.success(payload.message);

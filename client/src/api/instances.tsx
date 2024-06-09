@@ -9,6 +9,19 @@ const instancesApi = api.injectEndpoints({
       }),
       providesTags: ["Instance"],
     }),
+    getInstance: builder.query({
+      query: ({
+        serviceType,
+        instanceId,
+      }: {
+        serviceType: string;
+        instanceId: string;
+      }) => ({
+        url: `/instances/${serviceType}/${instanceId}`,
+        method: "GET",
+      }),
+      providesTags: ["Instance"],
+    }),
     createInstance: builder.mutation({
       query: (data) => ({
         url: `/instances/${data.type}`,
@@ -17,9 +30,22 @@ const instancesApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Instance"],
     }),
+    updateCreds: builder.mutation({
+      query: ({ serviceType, instanceId, creds }) => ({
+        url: `/instances/${serviceType}/${instanceId}/creds`,
+        method: "PUT",
+        body: creds,
+      }),
+      invalidatesTags: ["Instance"],
+    }),
   }),
 });
 
-export const { useGetInstancesQuery, useCreateInstanceMutation } = instancesApi;
+export const {
+  useGetInstancesQuery,
+  useGetInstanceQuery,
+  useCreateInstanceMutation,
+  useUpdateCredsMutation,
+} = instancesApi;
 
 export default instancesApi;

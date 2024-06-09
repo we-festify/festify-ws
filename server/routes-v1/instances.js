@@ -5,6 +5,8 @@ const InstancesController = require("../controllers/instances");
 const { requireAuth } = require("../middlewares/auth");
 
 router.get("/:serviceType", requireAuth, InstancesController.getInstances);
+router.get("/:serviceType/:instanceId", requireAuth, InstancesController.getInstance);
 router.post("/:serviceType", requireAuth, InstancesController.createInstance);
+router.put("/:serviceType/:instanceId/creds", requireAuth, InstancesController.updateCreds);
 
 module.exports = router;
