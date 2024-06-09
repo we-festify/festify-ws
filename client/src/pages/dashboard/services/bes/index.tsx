@@ -13,7 +13,7 @@ const BESService = () => {
     <ServiceLayout>
       <ServiceHeader type="bes" />
       {service.enabled ? (
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs defaultValue="overview" className="w-full pb-4">
           <TabsList className="grid w-max grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="instances">Instances</TabsTrigger>

@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 require("dotenv").config();
 const cookies = require("cookie-parser");
 
@@ -7,14 +6,6 @@ const app = express();
 
 // Cookies
 app.use(cookies());
-
-// Cors
-app.use(
-  cors({
-    origin: process.env.ALLOWED_ORIGINS.split(","), // ["http://localhost:3000", "http://localhost:3001"],
-    credentials: true,
-  })
-);
 
 // Middlewares
 app.use(express.json());
@@ -30,6 +21,10 @@ require("./config/db");
 // Routes
 const routes = require("./routes-v1");
 app.use("/api/v1", routes);
+
+// Services routes
+const servicesRoutes = require("./routes-services");
+app.use("/api/d", servicesRoutes);
 
 // errors
 const { handleErrors } = require("./utils/errors");

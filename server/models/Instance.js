@@ -33,6 +33,10 @@ const instanceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    allowedOrigins: {
+      type: [String],
+      default: [],
+    },
 
     // API limits
     apiCalls: {

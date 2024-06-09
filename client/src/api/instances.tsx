@@ -30,6 +30,14 @@ const instancesApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Instance"],
     }),
+    updateInstance: builder.mutation({
+      query: ({ serviceType, instanceId, data }) => ({
+        url: `/instances/${serviceType}/${instanceId}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Instance"],
+    }),
     updateCreds: builder.mutation({
       query: ({ serviceType, instanceId, creds }) => ({
         url: `/instances/${serviceType}/${instanceId}/creds`,
@@ -45,6 +53,7 @@ export const {
   useGetInstancesQuery,
   useGetInstanceQuery,
   useCreateInstanceMutation,
+  useUpdateInstanceMutation,
   useUpdateCredsMutation,
 } = instancesApi;
 

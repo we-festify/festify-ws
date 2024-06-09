@@ -5,6 +5,8 @@ import { formatTimeFromNow } from "@/utils/time";
 import { useParams } from "react-router-dom";
 import CredsDetails from "./CredsDetails";
 import UsageDetails from "./UsageDetails";
+import { UpdateInstance } from "../dialogs/updateInstance";
+import { Button } from "@/components/ui/button";
 
 const InstanceDetails = () => {
   const params = useParams();
@@ -18,6 +20,14 @@ const InstanceDetails = () => {
   return (
     <div className="flex flex-col gap-2 pb-4">
       <KeyValueList title="Basic" data={instance} keys={detailKeys} />
+      <div className="flex flex-row-reverse mt-2">
+        <UpdateInstance
+          type={serviceType as string}
+          trigger={<Button>Update Instance</Button>}
+          instanceId={instance?._id}
+          defaultValue={instance}
+        />
+      </div>
       <UsageDetails
         serviceType={serviceType as string}
         instanceId={instanceId as string}
@@ -28,7 +38,7 @@ const InstanceDetails = () => {
 };
 
 const detailKeys = [
-  { key: "_id", label: "Id" },
+  { key: "_id", label: "Instance Id" },
   {
     key: "apiKey",
     label: "API Key",
@@ -72,8 +82,16 @@ const detailKeys = [
       return value === "active" ? (
         <span className="text-blue-600">Active</span>
       ) : (
-        <span className="text-orange-400">{value}</span>
+        <span className="text-orange-400 capitalize">{value}</span>
       );
+    },
+  },
+  {
+    key: "allowedOrigins",
+    label: "Allowed Origins",
+    formatter: (value: string[]) => {
+      if (!value) return "None";
+      return value?.join(", ") || "None";
     },
   },
 ];

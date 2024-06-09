@@ -141,6 +141,54 @@ class InstancesController {
     }
   }
 
+  static async updateInstance(req, res, next) {
+    try {
+      const { serviceType, instanceId } = req.params;
+      if (!serviceType || !instanceId) {
+        throw new BadRequestError("Service type and instance ID are required");
+      }
+
+      const { userId } = req.user;
+      const service = await Service.findOne({
+        user: userId,
+        type: serviceType,
+      });
+      if (!service) {
+        const serviceName = services.find(
+          (s) => s.type === serviceType
+        ).fullName;
+        return res.status(404).json({ message: `${serviceName} not enabled` });
+      }
+
+      const instance = await Instance.findOne({
+        user: userId,
+        service: service._id,
+        _id: instanceId,
+      });
+      if (!instance) {
+        return res.status(404).json({ message: "Instance not found" });
+      }
+
+      // to only update the fields that are allowed
+      const { name, status, allowedOrigins } = req.body;
+      if (name) {
+        instance.name = name;
+      }
+      if (status) {
+        instance.status = status;
+      }
+      if (allowedOrigins) {
+        instance.allowedOrigins = allowedOrigins;
+      }
+
+      await instance.save();
+
+      res.status(200).json({ message: "Instance updated successfully" });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async updateCreds(req, res, next) {
     try {
       const { serviceType, instanceId } = req.params;
