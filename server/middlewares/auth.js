@@ -48,6 +48,7 @@ const requireAuthByAPIKey = async (req, res, next) => {
     // check if origin is allowed
     const origin = req.headers.origin;
     if (
+      instance.allowedOrigins.includes("*") === false &&
       instance.allowedOrigins.length > 0 &&
       !instance.allowedOrigins.includes(origin)
     ) {

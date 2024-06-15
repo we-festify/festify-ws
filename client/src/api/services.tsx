@@ -4,28 +4,28 @@ const servicesApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getMyServices: builder.query({
       query: () => ({
-        url: "/services/mine",
+        url: "/v1/services/mine",
         method: "GET",
       }),
       providesTags: ["Service"],
     }),
     getAllServicesMeta: builder.query({
       query: () => ({
-        url: "/services/all",
+        url: "/v1/services/all",
         method: "GET",
       }),
       providesTags: ["Service"],
     }),
     getServiceMetaByType: builder.query({
       query: (type: string) => ({
-        url: `/services/${type}`,
+        url: `/v1/services/${type}`,
         method: "GET",
       }),
       providesTags: ["Service"],
     }),
     enableService: builder.mutation({
       query: (type: string) => ({
-        url: `/services/${type}/enable`,
+        url: `/v1/services/${type}/enable`,
         method: "POST",
       }),
       invalidatesTags: ["Service"],
