@@ -4,33 +4,33 @@ const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (credentials) => ({
-        url: "/auth/register",
+        url: "/v1/auth/register",
         method: "POST",
         body: credentials,
       }),
     }),
     login: builder.mutation({
       query: (credentials) => ({
-        url: "/auth/login",
+        url: "/v1/auth/login",
         method: "POST",
         body: credentials,
       }),
     }),
     logout: builder.mutation({
       query: () => ({
-        url: "/auth/logout",
+        url: "/v1/auth/logout",
         method: "GET",
       }),
     }),
     refresh: builder.mutation({
       query: () => ({
-        url: "/auth/refresh",
+        url: "/v1/auth/refresh",
         method: "GET",
       }),
     }),
     forgotPassword: builder.mutation({
       query: (email) => ({
-        url: "/auth/forgot-password",
+        url: "/v1/auth/forgot-password",
         method: "POST",
         body: {
           email,
@@ -39,7 +39,7 @@ const authApi = api.injectEndpoints({
     }),
     resetPassword: builder.mutation({
       query: ({ token, password }) => ({
-        url: "/auth/reset-password",
+        url: "/v1/auth/reset-password",
         method: "POST",
         body: {
           token,
@@ -49,7 +49,7 @@ const authApi = api.injectEndpoints({
     }),
     verifyEmail: builder.mutation({
       query: (token) => ({
-        url: "/auth/verify-email",
+        url: "/v1/auth/verify-email",
         method: "POST",
         body: {
           token,
@@ -58,7 +58,7 @@ const authApi = api.injectEndpoints({
     }),
     sendVerificationEmail: builder.mutation({
       query: (email) => ({
-        url: "/auth/send-verification-email",
+        url: "/v1/auth/send-verification-email",
         method: "POST",
         body: {
           email,

@@ -1,12 +1,10 @@
 import InstanceLayout from "./layout";
-import InstanceHeader from "@/components/dashboard/services/instances/InstanceHeader";
-import InstanceDetails from "@/components/dashboard/services/instances/InstanceDetails";
+import InstanceIndex from "@/components/dashboard/services/instances";
 
 const Instances = () => {
   return (
     <InstanceLayout>
-      <InstanceHeader />
-      <InstanceDetails />
+      <InstanceIndex />
     </InstanceLayout>
   );
 };

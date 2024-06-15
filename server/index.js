@@ -23,7 +23,7 @@ const routes = require("./routes-v1");
 app.use("/api/v1", routes);
 
 // Services routes
-const servicesRoutes = require("./routes-services");
+const servicesRoutes = require("./d-services");
 app.use("/api/d", servicesRoutes);
 
 // errors
