@@ -9,7 +9,7 @@ const allServicesWithoutDocs = allServicesWithDocs.map((s) => {
   const { methods, ...rest } = s;
   return rest;
 });
-const { BadRequestError } = require("../utils/errors");
+const { BadRequestError, NotFoundError } = require("../utils/errors");
 
 class ServicesController {
   static async getMyServices(req, res, next) {
@@ -37,7 +37,7 @@ class ServicesController {
       }
       const service = allServicesWithDocs.find((s) => s.type === serviceType);
       if (!service) {
-        return res.status(404).json({ message: "Service not found" });
+        throw new NotFoundError("Service not found");
       }
 
       const { userId } = req.user;

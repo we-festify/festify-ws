@@ -2,6 +2,8 @@
  * @typedef {Object} BESCreds
  * @property {string} email
  * @property {string} password
+ * @property {string} smtpHost
+ * @property {number} smtpPort
  *
  * @typedef {Object} TSCreds
  * @property {string} botToken
@@ -20,6 +22,8 @@ const { encrypt } = require("./encrypt");
 const besCredsValidator = (v) => {
   if (!v.email) return "Email is required for BES credentials";
   if (!v.password) return "Password is required for BES credentials";
+  if (!v.smtpHost) return "SMTP host is required for BES credentials";
+  if (!v.smtpPort) return "SMTP port is required for BES credentials";
   return true;
 };
 

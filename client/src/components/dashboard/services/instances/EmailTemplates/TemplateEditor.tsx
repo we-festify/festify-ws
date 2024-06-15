@@ -82,7 +82,7 @@ const EmailTemplateEditor = ({
         {parts.map((part, index) => {
           if (index % 2 === 0) return <span key={index}>{part}</span>;
           return (
-            <span key={index} className="font-semibold">
+            <span key={index} className="font-semibold text-blue-500">
               {part}
             </span>
           );

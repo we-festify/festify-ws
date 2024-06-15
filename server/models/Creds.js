@@ -25,6 +25,16 @@ const besCredsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  smtpHost: {
+    type: String,
+    required: true,
+    default: "smtp.ethereal.email",
+  },
+  smtpPort: {
+    type: Number,
+    required: true,
+    default: 587,
+  },
 });
 
 const tsCredsSchema = new mongoose.Schema({
