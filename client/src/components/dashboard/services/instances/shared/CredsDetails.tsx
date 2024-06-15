@@ -16,7 +16,7 @@ const CredsDetails = ({
         <UpdateCreds
           type={type}
           trigger={<Button>Update Creds</Button>}
-          instanceId={creds?._id}
+          instanceId={creds?.instance}
           defaultValue={creds}
         />
       </div>

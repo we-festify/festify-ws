@@ -11,7 +11,9 @@
  * @typedef {BESCreds | TSCreds} Creds
  */
 
-const { encrypt } = require("./encrypt");
+const {
+  encrypt: besPasswordEncrypt,
+} = require("../d-services/bes/utils/encrypt");
 
 /**
  * Validate BES credentials
@@ -29,7 +31,7 @@ const besCredsValidator = (v) => {
 
 const secureBesCreds = (v) => {
   const { password, ...rest } = v;
-  const encryptedPassword = encrypt(password);
+  const encryptedPassword = besPasswordEncrypt(password);
   return { password: encryptedPassword, ...rest };
 };
 
@@ -45,7 +47,7 @@ const tsCredsValidator = (v) => {
 
 const secureTsCreds = (v) => {
   const { botToken, ...rest } = v;
-  const encryptedBotToken = encrypt(botToken);
+  const encryptedBotToken = besPasswordEncrypt(botToken);
   return { botToken: encryptedBotToken, ...rest };
 };
 
