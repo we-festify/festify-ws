@@ -5,7 +5,7 @@ import { formatTimeFromNow } from "@/utils/time";
 import { useParams } from "react-router-dom";
 import CredsDetails from "./CredsDetails";
 import UsageDetails from "./UsageDetails";
-import { UpdateInstance } from "../dialogs/updateInstance";
+import { UpdateInstance } from "../../dialogs/updateInstance";
 import { Button } from "@/components/ui/button";
 
 const InstanceDetails = () => {

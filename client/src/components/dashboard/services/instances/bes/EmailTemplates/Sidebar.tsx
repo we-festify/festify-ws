@@ -32,8 +32,9 @@ const EmailTemplatesSidebar = ({
         )}
         onClick={() => onSelectTemplate(null)}
       >
-        New Template
+        Create New
       </div>
+      <div className="border-b-2 border-muted"></div>
       {templates.map((item) => (
         <div
           key={item._id}
