@@ -174,45 +174,63 @@ const EmailTemplateEditor = ({
           )}
         </div>
       </div>
-      <div className="border border-muted p-4 pb-10 rounded-md flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <p className="text-sm text-muted-foreground">Template Id</p>
-            <p className="flex-1">{template?._id}</p>
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-sm text-muted-foreground">From</p>
-            <p className="flex-1">{instance?.creds?.email}</p>
-          </div>
+      <EmailPreview
+        instance={instance}
+        template={template}
+        highlightVariables={highlightVariables}
+      />
+    </div>
+  );
+};
+
+const EmailPreview = ({
+  instance,
+  template,
+  highlightVariables,
+}: {
+  template: EmailTemplate | null;
+  instance: any;
+  highlightVariables: (text: string) => JSX.Element;
+}) => {
+  return (
+    <div className="border border-muted p-4 pb-10 rounded-md flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1">
+          <p className="text-sm text-muted-foreground">Template Id</p>
+          <p className="flex-1">{template?._id}</p>
         </div>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground">Subject</p>
-          <p className="flex-1 bg-muted/70 rounded-sm p-3">
-            {template?.subject
-              ? highlightVariables(template?.subject)
-              : "No subject provided"}
-          </p>
+        <div className="flex flex-col gap-1">
+          <p className="text-sm text-muted-foreground">From</p>
+          <p className="flex-1">{instance?.creds?.email}</p>
         </div>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground">Message</p>
-          <p className="flex-1 whitespace-pre-wrap bg-muted/70 rounded-sm p-3">
-            {template?.body
-              ? highlightVariables(template?.body)
-              : "No message provided"}
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground">Variables</p>
-          <div className="flex-1 flex flex-wrap gap-2">
-            {template?.variables.map((variable, index) => (
-              <p
-                key={`${template?._id}-${variable}-${index}`}
-                className="bg-muted rounded-lg py-1 px-2 text-sm"
-              >
-                {variable}
-              </p>
-            ))}
-          </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-muted-foreground">Subject</p>
+        <p className="flex-1 bg-muted/70 rounded-sm p-3">
+          {template?.subject
+            ? highlightVariables(template?.subject)
+            : "No subject provided"}
+        </p>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-muted-foreground">Message</p>
+        <p className="flex-1 whitespace-pre-wrap bg-muted/70 rounded-sm p-3">
+          {template?.body
+            ? highlightVariables(template?.body)
+            : "No message provided"}
+        </p>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-muted-foreground">Variables</p>
+        <div className="flex-1 flex flex-wrap gap-2">
+          {template?.variables.map((variable, index) => (
+            <p
+              key={`${template?._id}-${variable}-${index}`}
+              className="bg-muted rounded-lg py-1 px-2 text-sm"
+            >
+              {variable}
+            </p>
+          ))}
         </div>
       </div>
     </div>
