@@ -20,5 +20,6 @@ router.use(requireAuthByAPIKey);
 router.use(trackApiRequest);
 
 router.post("/send-one", EmailController.externalSendToOne);
+router.post("/send-many", EmailController.externalSendToMany);
 
 module.exports = router;
