@@ -14,9 +14,6 @@ class EmailController {
   static createTransporter(creds) {
     const decryptedPassword = decrypt(creds.password);
 
-    console.log("email", creds.email);
-    console.log("decryptedPassword", decryptedPassword);
-
     return nodemailer.createTransport({
       host: creds.smtpHost,
       port: creds.smtpPort,
@@ -82,11 +79,12 @@ class EmailController {
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          res.status(500).json({ message: "Error sending email" });
-          console.error("Error sending email", error);
+          res.status(500).json({
+            message: "Error sending email",
+            error: error,
+          });
         } else {
           res.status(200).json({ message: "Email sent" });
-          console.log(JSON.stringify(info, null, 2));
         }
       });
     } catch (error) {

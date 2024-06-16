@@ -33,6 +33,7 @@ const bes = {
           type: "string",
           description: "Template ID for the email.",
           required: true,
+          ref: "_id",
         },
         {
           name: "data",
@@ -40,6 +41,7 @@ const bes = {
           description:
             "Data (with variables) to be used in the email template.",
           required: true,
+          ref: "variables",
         },
       ],
       responses: [

@@ -10,7 +10,11 @@ const { requireAuthByAPIKey } = require("../../middlewares/auth");
 const { trackApiRequest } = require("../../middlewares/analytics");
 
 // dynamic cors origin
-router.use(cors());
+router.use(
+  cors({
+    origin: "*", // allow all origins - will be checked in requireAuthByAPIKey
+  })
+);
 
 router.use(requireAuthByAPIKey);
 router.use(trackApiRequest);
