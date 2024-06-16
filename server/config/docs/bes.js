@@ -5,12 +5,13 @@ const bes = {
   summary: "A basic email service that allows you to send emails.",
   description:
     "A basic email service that allows you to send emails. It is a simple service that can be used to send emails to a single recipient or multiple recipients. It is easy to use and can be integrated with any application that requires email functionality.",
-  baseUrl: "http://localhost:5000/api/d/services/bes",
+  baseUrl: "http://localhost:5000/api/d/bes",
   methods: [
     {
-      name: "sendEmail",
-      description: "Send an email to a recipient.",
-      path: "/send",
+      name: "Send One",
+      description:
+        "Send an email to a recipient using a template with variables.",
+      path: "/send-one",
       method: "POST",
       headers: [
         {
@@ -28,16 +29,19 @@ const bes = {
           required: true,
         },
         {
-          name: "subject",
+          name: "templateId",
           type: "string",
-          description: "Subject of the email.",
+          description: "Template ID for the email.",
           required: true,
+          ref: "_id",
         },
         {
-          name: "body",
-          type: "string",
-          description: "Body of the email.",
+          name: "data",
+          type: "object",
+          description:
+            "Data (with variables) to be used in the email template.",
           required: true,
+          ref: "variables",
         },
       ],
       responses: [
@@ -51,7 +55,11 @@ const bes = {
         },
         {
           status: 401,
-          description: "Unauthorized. Invalid API key.",
+          description: "Unauthorized. Invalid API key or origin not allowed.",
+        },
+        {
+          status: 404,
+          description: "Not found. Invalid template ID.",
         },
         {
           status: 500,

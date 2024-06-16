@@ -18,9 +18,10 @@ const UpdateBESCredsDialogContent = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const instanceName = formData.get("instance-name") as string;
     const email = formData.get("sender-email") as string;
     const password = formData.get("sender-password") as string;
+    const smtpHost = formData.get("smtp-host") as string;
+    const smtpPort = formData.get("smtp-port") as string;
 
     try {
       const payload = await updateCreds({
@@ -29,7 +30,8 @@ const UpdateBESCredsDialogContent = ({
         creds: {
           email,
           password,
-          name: instanceName,
+          smtpHost,
+          smtpPort,
         },
       }).unwrap();
       toast.success(payload.message);
@@ -40,17 +42,6 @@ const UpdateBESCredsDialogContent = ({
 
   return (
     <form className="grid gap-6" onSubmit={handleSubmit}>
-      <div className="grid gap-2">
-        <Label htmlFor="instance-name">Instance Name</Label>
-        <Input
-          id="instance-name"
-          name="instance-name"
-          type="text"
-          placeholder="Project 1"
-          required
-          defaultValue={defaultValue?.name}
-        />
-      </div>
       <div className="grid gap-2">
         <Label htmlFor="sender-email">Sender Email</Label>
         <Input
@@ -75,6 +66,28 @@ const UpdateBESCredsDialogContent = ({
           />
           <ToggleEye name="password" className="absolute top-0 right-0" />
         </div>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="smtp-host">SMTP Host</Label>
+        <Input
+          id="smtp-host"
+          name="smtp-host"
+          type="text"
+          placeholder="smtp.example.com"
+          required
+          defaultValue={defaultValue?.smtpHost}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="smtp-port">SMTP Port</Label>
+        <Input
+          id="smtp-port"
+          name="smtp-port"
+          type="number"
+          placeholder="587"
+          required
+          defaultValue={defaultValue?.smtpPort}
+        />
       </div>
       <Button type="submit" disabled={isLoading}>
         {isLoading ? "Updating..." : "Update"}

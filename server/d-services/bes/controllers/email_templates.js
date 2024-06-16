@@ -28,14 +28,15 @@ class EmailTemplatesController {
     }
   }
 
-  static extractVariables(body) {
+  static extractVariables(subject, body) {
     const regex = /{{(.*?)}}/g;
-    const matches = body.match(regex);
+    const matches = (subject + " " + body).match(regex);
     if (!matches) {
       return [];
     }
 
-    return matches.map((match) => match.replace(/{{|}}/g, ""));
+    const variableNames = matches.map((match) => match.replace(/{{|}}/g, ""));
+    return [...new Set(variableNames)];
   }
 
   static async getTemplatesByInstanceId(req, res, next) {
@@ -82,7 +83,10 @@ class EmailTemplatesController {
 
       EmailTemplatesController.validateTemplate({ name, subject, body });
 
-      const variables = EmailTemplatesController.extractVariables(body);
+      const variables = EmailTemplatesController.extractVariables(
+        subject,
+        body
+      );
       const template = new EmailTemplate({
         instance: instanceId,
         name,
@@ -125,7 +129,10 @@ class EmailTemplatesController {
       template.name = name;
       template.subject = subject;
       template.body = body;
-      template.variables = EmailTemplatesController.extractVariables(body);
+      template.variables = EmailTemplatesController.extractVariables(
+        subject,
+        body
+      );
       await template.save();
 
       res.status(200).json({ template });

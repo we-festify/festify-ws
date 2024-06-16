@@ -1,24 +1,20 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import InstanceDetails from "./InstanceDetails";
-import EmailTemplates from "./EmailTemplates";
+import { useParams } from "react-router-dom";
+import BESInstanceIndex from "./bes";
+
+type InstanceIndexMappingType = Record<string, React.FC>;
+
+const InstanceIndexMapping: InstanceIndexMappingType = {
+  bes: BESInstanceIndex,
+};
 
 const InstanceIndex = () => {
-  return (
-    <Tabs defaultValue="details" className="w-full">
-      <div className="w-full sticky top-14 bg-white z-10 pb-2 mb-2">
-        <TabsList className="grid w-max grid-cols-2">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-        </TabsList>
-      </div>
-      <TabsContent value="details">
-        <InstanceDetails />
-      </TabsContent>
-      <TabsContent value="templates">
-        <EmailTemplates />
-      </TabsContent>
-    </Tabs>
-  );
+  const params = useParams<{ type: string }>();
+  const { type = "" } = params;
+  const Component = InstanceIndexMapping[type];
+
+  if (!Component) return null;
+
+  return <Component />;
 };
 
 export default InstanceIndex;

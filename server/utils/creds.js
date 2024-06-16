@@ -2,6 +2,8 @@
  * @typedef {Object} BESCreds
  * @property {string} email
  * @property {string} password
+ * @property {string} smtpHost
+ * @property {number} smtpPort
  *
  * @typedef {Object} TSCreds
  * @property {string} botToken
@@ -9,7 +11,9 @@
  * @typedef {BESCreds | TSCreds} Creds
  */
 
-const { encrypt } = require("./encrypt");
+const {
+  encrypt: besPasswordEncrypt,
+} = require("../d-services/bes/utils/encrypt");
 
 /**
  * Validate BES credentials
@@ -20,12 +24,14 @@ const { encrypt } = require("./encrypt");
 const besCredsValidator = (v) => {
   if (!v.email) return "Email is required for BES credentials";
   if (!v.password) return "Password is required for BES credentials";
+  if (!v.smtpHost) return "SMTP host is required for BES credentials";
+  if (!v.smtpPort) return "SMTP port is required for BES credentials";
   return true;
 };
 
 const secureBesCreds = (v) => {
   const { password, ...rest } = v;
-  const encryptedPassword = encrypt(password);
+  const encryptedPassword = besPasswordEncrypt(password);
   return { password: encryptedPassword, ...rest };
 };
 
@@ -41,7 +47,7 @@ const tsCredsValidator = (v) => {
 
 const secureTsCreds = (v) => {
   const { botToken, ...rest } = v;
-  const encryptedBotToken = encrypt(botToken);
+  const encryptedBotToken = besPasswordEncrypt(botToken);
   return { botToken: encryptedBotToken, ...rest };
 };
 

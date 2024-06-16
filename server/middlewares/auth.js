@@ -47,10 +47,12 @@ const requireAuthByAPIKey = async (req, res, next) => {
 
     // check if origin is allowed
     const origin = req.headers.origin;
+    const internalAllowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
     if (
       instance.allowedOrigins.includes("*") === false &&
       instance.allowedOrigins.length > 0 &&
-      !instance.allowedOrigins.includes(origin)
+      !instance.allowedOrigins.includes(origin) &&
+      !internalAllowedOrigins.includes(origin)
     ) {
       throw new UnauthorizedError("Unauthorized");
     }

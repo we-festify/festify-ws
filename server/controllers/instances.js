@@ -1,5 +1,5 @@
 const { applicationDB } = require("../config/db");
-const { BadRequestError } = require("../utils/errors");
+const { BadRequestError, NotFoundError } = require("../utils/errors");
 
 // models
 const Instance = require("../models/Instance")(applicationDB);
@@ -28,7 +28,7 @@ class InstancesController {
         const serviceName = services.find(
           (s) => s.type === serviceType
         ).fullName;
-        return res.status(404).json({ message: `${serviceName} not enabled` });
+        throw new NotFoundError(`${serviceName} not enabled`);
       }
 
       const instances = await Instance.find({
@@ -58,7 +58,7 @@ class InstancesController {
         const serviceName = services.find(
           (s) => s.type === serviceType
         ).fullName;
-        return res.status(404).json({ message: `${serviceName} not enabled` });
+        throw new NotFoundError(`${serviceName} not enabled`);
       }
 
       const instance = await Instance.findOne({
@@ -67,7 +67,7 @@ class InstancesController {
         _id: instanceId,
       }).populate("service creds");
       if (!instance) {
-        return res.status(404).json({ message: "Instance not found" });
+        throw new NotFoundError("Instance not found");
       }
 
       res.status(200).json({ instance });
@@ -157,7 +157,7 @@ class InstancesController {
         const serviceName = services.find(
           (s) => s.type === serviceType
         ).fullName;
-        return res.status(404).json({ message: `${serviceName} not enabled` });
+        throw new NotFoundError(`${serviceName} not enabled`);
       }
 
       const instance = await Instance.findOne({
@@ -166,7 +166,7 @@ class InstancesController {
         _id: instanceId,
       });
       if (!instance) {
-        return res.status(404).json({ message: "Instance not found" });
+        throw new NotFoundError("Instance not found");
       }
 
       // to only update the fields that are allowed
@@ -205,7 +205,7 @@ class InstancesController {
         const serviceName = services.find(
           (s) => s.type === serviceType
         ).fullName;
-        return res.status(404).json({ message: `${serviceName} not enabled` });
+        throw new NotFoundError(`${serviceName} not enabled`);
       }
 
       const instance = await Instance.findOne({
@@ -214,12 +214,14 @@ class InstancesController {
         _id: instanceId,
       }).populate("creds");
       if (!instance) {
-        return res.status(404).json({ message: "Instance not found" });
+        throw new NotFoundError("Instance not found");
       }
 
       const credsObject = {
-        type: serviceType,
+        smtpHost: "smtp.ethereal.email",
+        smtpPort: 587,
         ...req.body,
+        type: serviceType,
       };
       const isValidCreds = validateCreds(credsObject);
       if (isValidCreds !== true) {

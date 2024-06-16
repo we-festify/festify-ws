@@ -1,5 +1,5 @@
 import KeyValueList from "@/components/custom/KeyValueList";
-import { UpdateCreds } from "../dialogs/UpdateCreds";
+import { UpdateCreds } from "../../dialogs/UpdateCreds";
 import { Button } from "@/components/ui/button";
 
 const CredsDetails = ({
@@ -16,7 +16,7 @@ const CredsDetails = ({
         <UpdateCreds
           type={type}
           trigger={<Button>Update Creds</Button>}
-          instanceId={creds?._id}
+          instanceId={creds?.instance}
           defaultValue={creds}
         />
       </div>
@@ -51,6 +51,14 @@ const getKeysForBES = () => {
           </span>
         );
       },
+    },
+    {
+      key: "smtpHost",
+      label: "SMTP Host",
+    },
+    {
+      key: "smtpPort",
+      label: "SMTP Port",
     },
   ];
 };

@@ -5,7 +5,11 @@ const cors = require("cors");
 const { requireAuthByAPIKey } = require("../../middlewares/auth");
 
 // dynamic cors origin
-router.use(cors());
+router.use(
+  cors({
+    origin: "*", // allow all origins - will be checked in requireAuthByAPIKey
+  })
+);
 
 router.use(requireAuthByAPIKey);
 
