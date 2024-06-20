@@ -1,10 +1,12 @@
 const nodemailer = require("nodemailer");
+const validator = require("validator");
 
 // utils
 const { decrypt } = require("../utils/encrypt");
 
 // db
 const { applicationDB } = require("../../../config/db");
+const { BadRequestError, NotFoundError } = require("../../../utils/errors");
 
 // models
 const EmailTemplate = require("../models/EmailTemplate")(applicationDB);
@@ -40,7 +42,10 @@ class EmailController {
     try {
       const { to, templateId, data = {} } = req.body;
       if (!to || !templateId) {
-        res.status(400).json({ message: "To and template ID are required" });
+        throw new BadRequestError("To and template ID are required");
+      }
+      if (!validator.isEmail(to)) {
+        throw new BadRequestError("Invalid email address");
       }
 
       const { _id: instanceId } = req.instance;
@@ -56,7 +61,7 @@ class EmailController {
         instance: instanceId,
       });
       if (!template) {
-        res.status(404).json({ message: "Invalid template" });
+        throw new NotFoundError("Invalid template");
       }
 
       const transporter = EmailController.createTransporter(creds);
@@ -79,12 +84,73 @@ class EmailController {
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          res.status(500).json({
-            message: "Error sending email",
-            error: error,
-          });
+          throw new Error("Error sending email");
         } else {
-          res.status(200).json({ message: "Email sent" });
+          res.status(200).json({ message: "Email sent successfully" });
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // external API function
+  static async externalSendToMany(req, res, next) {
+    try {
+      let { to } = req.body;
+      const { templateId, data = {} } = req.body;
+      if (!to || !templateId) {
+        throw new BadRequestError("To and template ID are required");
+      }
+      if (!Array.isArray(to)) {
+        throw new BadRequestError("To should be an array");
+      }
+      to = to.filter((email) => validator.isEmail(email));
+      if (to.length === 0) {
+        throw new BadRequestError(
+          "Invalid email(s) or no valid email(s) found"
+        );
+      }
+
+      const { _id: instanceId } = req.instance;
+
+      // instance will always be there
+      // already checked in requireAuthByAPIKey middleware
+      const instance = await Instance.findById(instanceId).populate("creds");
+
+      const { creds } = instance;
+
+      const template = await EmailTemplate.findOne({
+        _id: templateId,
+        instance: instanceId,
+      });
+      if (!template) {
+        throw new NotFoundError("Invalid template");
+      }
+
+      const transporter = EmailController.createTransporter(creds);
+      const filledBody = EmailController.fillVariables(
+        template.body,
+        data,
+        template.variables
+      );
+      const filledSubject = EmailController.fillVariables(
+        template.subject,
+        data,
+        template.variables
+      );
+      const mailOptions = {
+        from: creds.email,
+        to,
+        subject: filledSubject,
+        text: filledBody,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          throw new Error("Error sending email");
+        } else {
+          res.status(200).json({ message: "Email sent successfully" });
         }
       });
     } catch (error) {
