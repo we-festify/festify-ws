@@ -4,6 +4,7 @@ const express = require('express');
 const cookies = require('cookie-parser');
 
 const app = express();
+app.disable('x-powered-by');
 
 // Cookies
 app.use(cookies());
