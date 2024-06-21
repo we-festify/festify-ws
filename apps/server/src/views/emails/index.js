@@ -1,17 +1,17 @@
 const handlebars = require('handlebars');
 const fs = require('fs');
-const path = require('path');
+const { getPathToAsset } = require('@server/utils/assets');
 
 const testEmailTemplateSrc = fs.readFileSync(
-  path.resolve(__dirname, './src/assets/emails/test.hbs'),
+  getPathToAsset('emails/test.hbs'),
   'utf8'
 );
 const forgotPasswordEmailTemplateSrc = fs.readFileSync(
-  path.resolve(__dirname, './src/assets/emails/forgot-password.hbs'),
+  getPathToAsset('emails/forgot-password.hbs'),
   'utf8'
 );
 const emailVerificationTemplateSrc = fs.readFileSync(
-  path.resolve(__dirname, './src/assets/emails/verify-email.hbs'),
+  getPathToAsset('emails/verify-email.hbs'),
   'utf8'
 );
 const testEmailTemplate = handlebars.compile(testEmailTemplateSrc);
