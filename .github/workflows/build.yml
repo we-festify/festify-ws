@@ -23,7 +23,7 @@ jobs:
       - run: npm ci
 
       # Run lint check
-      - run: npx nx affected -t lint
+      - run: npx nx lint
 
   test:
     name: Unit Tests
@@ -41,7 +41,7 @@ jobs:
       - run: npm ci
 
       # Run lint check
-      - run: npx nx affected -t test
+      - run: npx nx test
 
   build:
     name: Build
@@ -59,4 +59,4 @@ jobs:
       - run: npm ci
 
       # Run lint check
-      - run: npx nx affected -t build
+      - run: npx nx build
