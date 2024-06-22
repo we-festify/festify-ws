@@ -1,4 +1,4 @@
-import { formatTimeFromNow } from '@client/utils/time';
+import { formatTimeFromNow } from '../../../../utils/time';
 import { ColumnDef } from '@tanstack/react-table';
 import ActionsCell from './cells/Actions';
 import APIKeyCell from './cells/APIKey';

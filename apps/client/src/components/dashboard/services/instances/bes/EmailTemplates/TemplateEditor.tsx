@@ -2,11 +2,11 @@ import {
   useCreateEmailTemplateMutation,
   useDeleteEmailTemplateMutation,
   useUpdateEmailTemplateMutation,
-} from '@client/api/d/bes/emailTemplates';
-import { useGetInstanceQuery } from '@client/api/instances';
-import { Button } from '@client/components/ui/button';
-import { Input } from '@client/components/ui/input';
-import { Textarea } from '@client/components/ui/textarea';
+} from '../../../../../../api/d/bes/emailTemplates';
+import { useGetInstanceQuery } from '../../../../../../api/instances';
+import { Button } from '../../../../../ui/button';
+import { Input } from '../../../../../ui/input';
+import { Textarea } from '../../../../../ui/textarea';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';

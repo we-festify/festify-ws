@@ -1,6 +1,6 @@
 export const formatTimeFromNow = (time: string): string => {
   try {
-    if (!time) return "";
+    if (!time) return '';
 
     const date = new Date(time);
     const now = new Date();
@@ -10,10 +10,10 @@ export const formatTimeFromNow = (time: string): string => {
     const hours = Math.floor(minutes / 60);
 
     if (hours > 24) {
-      return Intl.DateTimeFormat("en-IN", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
+      return Intl.DateTimeFormat('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
       }).format(date);
     } else if (hours > 0) {
       return `${hours} hours ago`;
@@ -22,23 +22,23 @@ export const formatTimeFromNow = (time: string): string => {
     } else if (seconds > 0) {
       return `${seconds} seconds ago`;
     }
-    return "just now";
+    return 'just now';
   } catch (error) {
-    return "";
+    return '';
   }
 };
 
 export const formatDateTime = (time: string): string => {
   try {
     const date = new Date(time);
-    return Intl.DateTimeFormat("en-IN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+    return Intl.DateTimeFormat('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     }).format(date);
   } catch (error) {
-    return "";
+    return '';
   }
 };

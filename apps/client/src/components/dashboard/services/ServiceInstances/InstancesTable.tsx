@@ -1,5 +1,5 @@
 import columns from './columns';
-import DataTable from '@client/components/custom/DataTable';
+import DataTable from '../../../custom/DataTable';
 
 interface Instance {
   _id: string;

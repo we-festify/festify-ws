@@ -1,19 +1,20 @@
 import { Link, useNavigate } from 'react-router-dom';
 
-import { Button } from '@client/components/ui/button';
+import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@client/components/ui/card';
-import { Input } from '@client/components/ui/input';
-import { Label } from '@client/components/ui/label';
+} from '../ui/card';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
-import { useRegisterMutation } from '@client/api/auth';
+import { useRegisterMutation } from '../../api/auth';
 
 import { toast } from 'sonner';
+import { getErrorMessage } from '../../utils/error';
 
 export function RegisterForm() {
   const [register] = useRegisterMutation();
@@ -35,8 +36,9 @@ export function RegisterForm() {
       navigate('/a/verify-email', {
         state: { email },
       });
-    } catch (error: any) {
-      if (error && 'data' in error) toast.error((error.data as any).message);
+    } catch (error: unknown) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

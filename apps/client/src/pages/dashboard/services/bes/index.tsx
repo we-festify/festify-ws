@@ -1,16 +1,16 @@
-import ServiceHeader from '@client/components/dashboard/services/ServiceHeader';
+import ServiceHeader from '../../../../components/dashboard/services/ServiceHeader';
 import ServiceLayout from '../layout';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@client/components/ui/tabs';
-import ServiceDocs from '@client/components/dashboard/services/ServiceDocs';
-import ServiceOverview from '@client/components/dashboard/services/ServiceOverview';
-import { useGetServiceMetaByTypeQuery } from '@client/api/services';
-import ServiceInstances from '@client/components/dashboard/services/ServiceInstances';
-import ServiceAPISandboxIndex from '@client/components/dashboard/services/sandbox';
+} from '../../../../components/ui/tabs';
+import ServiceDocs from '../../../../components/dashboard/services/ServiceDocs';
+import ServiceOverview from '../../../../components/dashboard/services/ServiceOverview';
+import { useGetServiceMetaByTypeQuery } from '../../../../api/services';
+import ServiceInstances from '../../../../components/dashboard/services/ServiceInstances';
+import ServiceAPISandboxIndex from '../../../../components/dashboard/services/sandbox';
 
 const BESService = () => {
   const { data: { service = {} } = {} } = useGetServiceMetaByTypeQuery('bes');

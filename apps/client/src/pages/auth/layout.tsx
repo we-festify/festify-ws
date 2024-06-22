@@ -1,4 +1,4 @@
-import { selectIsLoggedIn } from '@client/store/slices/auth';
+import { selectIsLoggedIn } from '../../store/slices/auth';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
 

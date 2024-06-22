@@ -1,19 +1,20 @@
 import {
   useSendVerificationEmailMutation,
   useVerifyEmailMutation,
-} from '@client/api/auth';
-import { buttonVariants, Button } from '@client/components/ui/button';
+} from '../../api/auth';
+import { buttonVariants, Button } from '../ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@client/components/ui/card';
-import useTimer from '@client/hooks/useTimer';
-import { cn } from '@client/lib/utils';
+} from '../ui/card';
+import useTimer from '../../hooks/useTimer';
+import { cn } from '../../lib/utils';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { getErrorMessage } from '../../utils/error';
 
 type TimedButtonProps = {
   time: number;
@@ -64,11 +65,13 @@ export function VerifyEmailForm() {
   }, [token, verifyEmail]);
 
   useEffect(() => {
-    if (sendError && 'data' in sendError) {
-      setError((sendError.data as any).message);
+    if (sendError instanceof Error) {
+      const message = getErrorMessage(sendError);
+      setError(message);
     }
-    if (verifyError && 'data' in verifyError) {
-      setError((verifyError.data as any).message);
+    if (verifyError instanceof Error) {
+      const message = getErrorMessage(verifyError);
+      setError(message);
     }
     if (sendData) {
       setMessage(sendData.message);

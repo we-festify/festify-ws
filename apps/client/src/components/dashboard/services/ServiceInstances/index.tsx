@@ -1,8 +1,8 @@
-import { useGetInstancesQuery } from '@client/api/instances';
-import EmptyInbox from '@client/assets/images/EmptyInbox.svg';
+import { useGetInstancesQuery } from '../../../../api/instances';
+import EmptyInbox from '../../../../assets/images/EmptyInbox.svg';
 import { NewInstance } from '../dialogs/NewInstance';
 import InstancesTable from './InstancesTable';
-import { Button } from '@client/components/ui/button';
+import { Button } from '../../../ui/button';
 
 interface ServiceInstancesProps {
   type: string;

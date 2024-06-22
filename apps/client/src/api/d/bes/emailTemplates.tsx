@@ -1,4 +1,4 @@
-import api from '@client/api';
+import api from '../..';
 
 const emailTemplatesApi = api.injectEndpoints({
   endpoints: (builder) => ({

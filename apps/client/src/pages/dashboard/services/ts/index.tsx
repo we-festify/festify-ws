@@ -1,13 +1,13 @@
-import ServiceHeader from '@client/components/dashboard/services/ServiceHeader';
+import ServiceHeader from '../../../../components/dashboard/services/ServiceHeader';
 import ServiceLayout from '../layout';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@client/components/ui/tabs';
-import ServiceDocs from '@client/components/dashboard/services/ServiceDocs';
-import { useGetServiceMetaByTypeQuery } from '@client/api/services';
+} from '../../../../components/ui/tabs';
+import ServiceDocs from '../../../../components/dashboard/services/ServiceDocs';
+import { useGetServiceMetaByTypeQuery } from '../../../../api/services';
 
 const TSService = () => {
   const { data: { service = {} } = {} } = useGetServiceMetaByTypeQuery('ts');

@@ -1,9 +1,4 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@client/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../ui/tabs';
 import InstanceDetails from '../shared/InstanceDetails';
 import EmailTemplates from './EmailTemplates';
 

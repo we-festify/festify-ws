@@ -1,13 +1,13 @@
-import { useGetServiceMetaByTypeQuery } from '@client/api/services';
-import APIBadge from '@client/components/custom/APIBadge';
-import APIMethodDetails from '@client/components/custom/APIMethodDetails';
-import CodeBlock from '@client/components/custom/CodeBlock';
+import { useGetServiceMetaByTypeQuery } from '../../../api/services';
+import APIBadge from '../../custom/APIBadge';
+import APIMethodDetails from '../../custom/APIMethodDetails';
+import CodeBlock from '../../custom/CodeBlock';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@client/components/ui/accordion';
+} from '../../ui/accordion';
 
 interface ServiceOverviewProps {
   type: string;

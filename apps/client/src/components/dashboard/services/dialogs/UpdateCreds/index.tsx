@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@client/components/ui/dialog';
+} from '../../../../ui/dialog';
 import UpdateBESCredsDialogContent from './bes';
 
 interface UpdateCredsProps {

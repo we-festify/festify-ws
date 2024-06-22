@@ -1,5 +1,5 @@
-import { Separator } from '@client/components/ui/separator';
-import ServicesGrid from '@client/components/dashboard/services/ServicesGrid';
+import { Separator } from '../../../components/ui/separator';
+import ServicesGrid from '../../../components/dashboard/services/ServicesGrid';
 
 const Services = () => {
   return (

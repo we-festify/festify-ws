@@ -1,4 +1,4 @@
-import { ThemeToggle } from '@client/components/custom/ThemeToggle';
+import { ThemeToggle } from '../../custom/ThemeToggle';
 
 const Account = () => {
   return (

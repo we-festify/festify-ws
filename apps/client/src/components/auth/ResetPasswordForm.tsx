@@ -1,17 +1,18 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { Button } from '@client/components/ui/button';
+import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@client/components/ui/card';
-import { Input } from '@client/components/ui/input';
-import { Label } from '@client/components/ui/label';
-import { useResetPasswordMutation } from '@client/api/auth';
+} from '../ui/card';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { useResetPasswordMutation } from '../../api/auth';
 import { toast } from 'sonner';
+import { getErrorMessage } from '../../utils/error';
 
 export function ResetPasswordForm() {
   const navigate = useNavigate();
@@ -41,8 +42,9 @@ export function ResetPasswordForm() {
       }).unwrap();
       toast.success(payload.message);
       navigate('/a/login');
-    } catch (error: any) {
-      if (error && 'data' in error) toast.error((error.data as any).message);
+    } catch (error: unknown) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

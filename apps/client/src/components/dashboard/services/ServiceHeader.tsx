@@ -1,8 +1,9 @@
+import { getErrorMessage } from '../../../utils/error';
 import {
   useEnableServiceMutation,
   useGetServiceMetaByTypeQuery,
-} from '@client/api/services';
-import { Button } from '@client/components/ui/button';
+} from '../../../api/services';
+import { Button } from '../../ui/button';
 import { toast } from 'sonner';
 // import { BotMessageSquare, Flame, MailCheck } from "lucide-react";
 // import React from "react";
@@ -29,8 +30,9 @@ const ServiceHeader = ({ type }: ServiceHeaderProps) => {
     try {
       const payload = await enableService(type).unwrap();
       toast.success(payload.message);
-    } catch (error: any) {
-      toast.error(error.data.message);
+    } catch (error: unknown) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

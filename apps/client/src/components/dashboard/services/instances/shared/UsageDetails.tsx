@@ -1,6 +1,6 @@
-import { useGetInstanceQuery } from '@client/api/instances';
-import KeyValueList from '@client/components/custom/KeyValueList';
-import { formatDateTime, formatTimeFromNow } from '@client/utils/time';
+import { useGetInstanceQuery } from '../../../../../api/instances';
+import KeyValueList from '../../../../custom/KeyValueList';
+import { formatDateTime, formatTimeFromNow } from '../../../../../utils/time';
 
 interface UsageDetailsProps {
   serviceType: string;

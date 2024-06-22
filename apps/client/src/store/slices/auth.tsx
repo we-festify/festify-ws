@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface User {
   id: string;
@@ -21,13 +21,13 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setCredentials(state, action) {
       const { accessToken, user } = action.payload;
 
-      localStorage.setItem("festify-ws-access-token", accessToken);
+      localStorage.setItem('festify-ws-access-token', accessToken);
       state.isLoggedIn = true;
       state.isVerified = user.isEmailVerified;
       state.user = user;
@@ -36,7 +36,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isLoggedIn = false;
       state.isVerified = false;
-      localStorage.removeItem("festify-ws-access-token");
+      localStorage.removeItem('festify-ws-access-token');
     },
   },
 });

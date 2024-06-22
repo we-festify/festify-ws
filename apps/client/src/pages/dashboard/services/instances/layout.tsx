@@ -1,4 +1,4 @@
-import { Button } from '@client/components/ui/button';
+import { Button } from '../../../../components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

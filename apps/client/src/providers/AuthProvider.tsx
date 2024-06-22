@@ -1,5 +1,5 @@
-import { useRefreshMutation } from '@client/api/auth';
-import { clearCredentials, setCredentials } from '@client/store/slices/auth';
+import { useRefreshMutation } from '../api/auth';
+import { clearCredentials, setCredentials } from '../store/slices/auth';
 import { createContext, useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 

@@ -17,27 +17,25 @@ interface KeyValueListProps {
 const extractValueFromObject = (
   object: Record<string, string>,
   keyPath: string
-) => {
-  const keys = keyPath.split(".");
+): string => {
+  const keys = keyPath.split('.');
   let value = object as any;
   for (const key of keys) {
     value = value?.[key];
     if (!value) {
-      return "";
+      return '';
     }
   }
   return value;
 };
 
-const KeyValue = ({
-  label,
-  value,
-  formatter,
-}: {
+interface KeyValueProps {
   label: string;
   value: string;
   formatter?: (value: any) => string | JSX.Element;
-}) => {
+}
+
+const KeyValue = ({ label, value, formatter }: KeyValueProps) => {
   return (
     <tr className="even:bg-muted">
       <td className="text-sm text-muted-foreground p-2 border-0 rounded-tl rounded-bl">
@@ -58,7 +56,7 @@ const KeyValueList = ({ title, data, keys }: KeyValueListProps) => {
         <tbody className="w-full">
           {keys
             ? keys.map((key) => {
-                if (typeof key === "string") {
+                if (typeof key === 'string') {
                   return <KeyValue key={key} label={key} value={data[key]} />;
                 } else {
                   return (

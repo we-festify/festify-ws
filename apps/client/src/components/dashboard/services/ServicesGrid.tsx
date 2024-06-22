@@ -1,5 +1,5 @@
-import ServiceCard from '@client/components/dashboard/services/ServiceCard';
-import { useGetAllServicesMetaQuery } from '@client/api/services';
+import ServiceCard from '../../dashboard/services/ServiceCard';
+import { useGetAllServicesMetaQuery } from '../../../api/services';
 
 interface Service {
   type: string;

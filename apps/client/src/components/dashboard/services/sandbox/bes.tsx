@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { useGetEmailTemplatesQuery } from '@client/api/d/bes/emailTemplates';
-import { useGetInstancesQuery } from '@client/api/instances';
-import { useGetServiceMetaByTypeQuery } from '@client/api/services';
-import { Button } from '@client/components/ui/button';
+import { useGetEmailTemplatesQuery } from '../../../../api/d/bes/emailTemplates';
+import { useGetInstancesQuery } from '../../../../api/instances';
+import { useGetServiceMetaByTypeQuery } from '../../../../api/services';
+import { Button } from '../../../ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@client/components/ui/select';
-import { Textarea } from '@client/components/ui/textarea';
+} from '../../../ui/select';
+import { Textarea } from '../../../ui/textarea';
 
 interface Instance {
   _id: string;
@@ -35,6 +35,7 @@ interface EmailTemplate {
   _id: string;
   name: string;
   variables: string[];
+
   [key: string]: any; // This is a hack to allow any key in the object
 }
 
@@ -98,8 +99,10 @@ const BESSandbox = () => {
         .finally(() => {
           setIsRequesting(false);
         });
-    } catch (error: any) {
-      setResponse(error.message);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : 'An error occurred';
+      setResponse(message);
       setIsRequesting(false);
     }
   };
@@ -107,7 +110,7 @@ const BESSandbox = () => {
   const createEmptyBodyObject = (
     method: Method | null,
     template: EmailTemplate | null
-  ) => {
+  ): Record<string, any> => {
     const body: any = {};
 
     if (method) {

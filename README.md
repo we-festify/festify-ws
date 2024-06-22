@@ -32,3 +32,7 @@ nx serve server
 ```bash
 nx serve client
 ```
+
+## Contributing
+
+If you would like to contribute to the project, please check the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.

@@ -1,5 +1,5 @@
-import { buttonVariants } from '@client/components/ui/button';
-import { cn } from '@client/lib/utils';
+import { buttonVariants } from '../../../../../ui/button';
+import { cn } from '../../../../../../lib/utils';
 
 interface EmailTemplate {
   _id: string;

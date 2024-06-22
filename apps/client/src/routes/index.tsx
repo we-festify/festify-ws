@@ -1,7 +1,7 @@
-import { Route, Routes } from "react-router-dom";
-import AuthRoutes from "./auth";
-import RequireLoggedIn from "./custom/RequireLoggedIn";
-import DashboardRoutes from "./dashboard";
+import { Route, Routes } from 'react-router-dom';
+import AuthRoutes from './auth';
+import RequireLoggedIn from './custom/RequireLoggedIn';
+import DashboardRoutes from './dashboard';
 
 const AppRoutes = () => {
   return (

@@ -1,6 +1,6 @@
 import { Copy } from 'lucide-react';
 import { Button } from '../ui/button';
-import { cn } from '@client/lib/utils';
+import { cn } from '../../lib/utils';
 import { toast } from 'sonner';
 
 interface CopyIconProps {

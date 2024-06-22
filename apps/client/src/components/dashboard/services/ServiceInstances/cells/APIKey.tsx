@@ -1,4 +1,4 @@
-import CopyIcon from '@client/components/custom/CopyIcon';
+import CopyIcon from '../../../../custom/CopyIcon';
 
 const APIKeyCell = ({ row }: { row: any }) => {
   const apiKey = row.original.apiKey;
