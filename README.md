@@ -1,6 +1,6 @@
 # Festify Web Services
 
-This repository contains the code for the Festify Web Services. The **Festify Web Services** is a set of services developers can use for their projects. The Festify app also uses the services.
+This repository contains the code for the Festify Web Services. The **Festify Web Services** is a set of services developers can use for their projects. The Festify app also uses the services provided in this repository.
 
 ## Services
 
@@ -24,13 +24,13 @@ git clone https://github.com/we-festify/festify-ws.git
 2. Run the server by running the following command in the terminal:
 
 ```bash
-nx serve server
+npx nx serve server
 ```
 
 3. Run the client by running the following command in the terminal:
 
 ```bash
-nx serve client
+npx nx serve client
 ```
 
 ## Contributing
