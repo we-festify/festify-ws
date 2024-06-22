@@ -1,0 +1,46 @@
+name: Bug Report
+about: Issue related to any bug you caught on the festify-ws platform.
+
+labels: bug
+title: "[Bug]: "
+
+body:
+- type: markdown
+  attributes:
+    value: "## Welcome!"
+    
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this bug!
+      
+- type: input
+  id: prevalence
+  attributes:
+    label: Bug prevalence
+    description: "How often do you or others encounter this bug?"
+    placeholder: "Whenever I visit the user account page (1-2 times a week)"
+  validations:
+    required: true
+
+- type: textarea
+  id: reproduction_steps
+  attributes:
+    label: Reproduction steps
+    description: "How do you trigger this bug? Please walk us through it step by step."
+    value: |
+      1.
+      2.
+      3.
+      ...
+  validations:
+    required: true
+
+- type: textarea
+  id: additional
+  attributes:
+    label: Additional notes
+    description: "Anything you would like to add to the info?"
+    value: ...
+  validations:
+    required: true
