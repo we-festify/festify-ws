@@ -51,6 +51,19 @@
           "buildTarget": "server:build:production"
         }
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["apps/server/**/*.js", "apps/server/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/server/jest.config.js",
+        "passWithNoTests": true
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import EmailTemplatesSidebar from './Sidebar';
-import { useGetEmailTemplatesQuery } from '@client/api/d/bes/emailTemplates';
+import { useGetEmailTemplatesQuery } from '../../../../../../api/d/bes/emailTemplates';
 import { useState } from 'react';
 import EmailTemplateEditor from './TemplateEditor';
 

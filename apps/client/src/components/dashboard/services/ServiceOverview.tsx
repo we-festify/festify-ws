@@ -1,4 +1,4 @@
-import NoSearchResult from '@client/assets/images/NoSearchResult.svg';
+import NoSearchResult from '../../../assets/images/NoSearchResult.svg';
 
 const ServiceOverview = () => {
   return (

@@ -4,7 +4,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@client/components/ui/dialog';
+} from '../../../../ui/dialog';
 import DeleteBESInstanceDialogContent from './bes';
 import { useState } from 'react';
 

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-const useTimer = (initialTime: number = 60) => {
+const useTimer = (initialTime = 60) => {
   const [time, setTime] = useState<number>(initialTime);
 
   useEffect(() => {

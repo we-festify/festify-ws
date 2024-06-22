@@ -1,5 +1,5 @@
-import Logo from '@client/components/custom/Logo';
-import { SidebarNav } from '@client/components/dashboard/SidebarNav';
+import Logo from '../../components/custom/Logo';
+import { SidebarNav } from '../../components/dashboard/SidebarNav';
 
 const sidebarNavItems = [
   {

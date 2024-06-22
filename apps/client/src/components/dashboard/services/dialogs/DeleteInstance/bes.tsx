@@ -1,4 +1,4 @@
-import { Button } from '@client/components/ui/button';
+import { Button } from '../../../../ui/button';
 import { toast } from 'sonner';
 
 const DeleteBESInstanceDialogContent = ({ close }: { close: () => void }) => {

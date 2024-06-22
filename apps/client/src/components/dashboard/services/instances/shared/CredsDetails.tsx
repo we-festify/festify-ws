@@ -1,6 +1,6 @@
-import KeyValueList from '@client/components/custom/KeyValueList';
+import KeyValueList from '../../../../custom/KeyValueList';
 import { UpdateCreds } from '../../dialogs/UpdateCreds';
-import { Button } from '@client/components/ui/button';
+import { Button } from '../../../../ui/button';
 
 const CredsDetails = ({
   type,

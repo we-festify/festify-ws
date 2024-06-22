@@ -1,4 +1,4 @@
-import { Button } from '@client/components/ui/button';
+import { Button } from '../../../../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,10 +6,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@client/components/ui/dropdown-menu';
+} from '../../../../ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { useDeleteInstance } from '../../dialogs/DeleteInstance/useDeleteInstance';
-import { DialogTrigger } from '@client/components/ui/dialog';
+import { DialogTrigger } from '../../../../ui/dialog';
 import { useNavigate } from 'react-router-dom';
 
 const ActionsCell = ({ row }: { row: any }) => {

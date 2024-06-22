@@ -1,4 +1,4 @@
-import BESSandbox from "./bes";
+import BESSandbox from './bes';
 
 type SandboxMappingType = {
   [key: string]: React.ComponentType;

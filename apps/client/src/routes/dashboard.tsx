@@ -1,11 +1,11 @@
-import Home from '@client/components/dashboard/home';
-import Services from '@client/pages/dashboard/services';
-import DashboardLayout from '@client/pages/dashboard/layout';
+import Home from '../components/dashboard/home';
+import Services from '../pages/dashboard/services';
+import DashboardLayout from '../pages/dashboard/layout';
 import { Route, Routes } from 'react-router-dom';
-import BESService from '@client/pages/dashboard/services/bes';
-import TSService from '@client/pages/dashboard/services/ts';
-import Account from '@client/components/dashboard/account';
-import Instances from '@client/pages/dashboard/services/instances';
+import BESService from '../pages/dashboard/services/bes';
+import TSService from '../pages/dashboard/services/ts';
+import Account from '../components/dashboard/account';
+import Instances from '../pages/dashboard/services/instances';
 
 const DashboardRoutes = () => {
   return (

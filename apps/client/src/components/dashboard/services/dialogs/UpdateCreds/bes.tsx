@@ -1,9 +1,10 @@
-import { useUpdateCredsMutation } from '@client/api/instances';
-import { Button } from '@client/components/ui/button';
-import { Input } from '@client/components/ui/input';
-import { Label } from '@client/components/ui/label';
-import useShowHide from '@client/hooks/useShowHide';
+import { useUpdateCredsMutation } from '../../../../../api/instances';
+import { Button } from '../../../../ui/button';
+import { Input } from '../../../../ui/input';
+import { Label } from '../../../../ui/label';
+import useShowHide from '../../../../../hooks/useShowHide';
 import { toast } from 'sonner';
+import { getErrorMessage } from '../../../../../utils/error';
 
 const UpdateBESCredsDialogContent = ({
   instanceId,
@@ -35,8 +36,9 @@ const UpdateBESCredsDialogContent = ({
         },
       }).unwrap();
       toast.success(payload.message);
-    } catch (error: any) {
-      toast.error(error.data.message);
+    } catch (error: unknown) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

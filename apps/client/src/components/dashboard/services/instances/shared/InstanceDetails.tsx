@@ -1,12 +1,12 @@
-import { useGetInstanceQuery } from '@client/api/instances';
-import CopyIcon from '@client/components/custom/CopyIcon';
-import KeyValueList from '@client/components/custom/KeyValueList';
-import { formatTimeFromNow } from '@client/utils/time';
+import { useGetInstanceQuery } from '../../../../../api/instances';
+import CopyIcon from '../../../../custom/CopyIcon';
+import KeyValueList from '../../../../custom/KeyValueList';
+import { formatTimeFromNow } from '../../../../../utils/time';
 import { useParams } from 'react-router-dom';
 import CredsDetails from './CredsDetails';
 import UsageDetails from './UsageDetails';
 import { UpdateInstance } from '../../dialogs/updateInstance';
-import { Button } from '@client/components/ui/button';
+import { Button } from '../../../../ui/button';
 
 const InstanceDetails = () => {
   const params = useParams();

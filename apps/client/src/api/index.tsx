@@ -4,7 +4,7 @@ import {
   FetchArgs,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
-import { clearCredentials, setCredentials } from '@client/store/slices/auth';
+import { clearCredentials, setCredentials } from '../store/slices/auth';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL as string,

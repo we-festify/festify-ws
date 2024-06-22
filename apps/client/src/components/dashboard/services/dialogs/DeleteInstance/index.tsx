@@ -1,5 +1,5 @@
 import { useDeleteInstance } from './useDeleteInstance';
-import { DialogTrigger } from '@client/components/ui/dialog';
+import { DialogTrigger } from '../../../../ui/dialog';
 
 interface DeleteInstanceProps {
   type: string;

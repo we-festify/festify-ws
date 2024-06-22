@@ -4,8 +4,8 @@ import {
   ForgotPasswordForm,
   ResetPasswordForm,
   VerifyEmailForm,
-} from '@client/components/auth';
-import AuthLayout from '@client/pages/auth/layout';
+} from '../components/auth/index';
+import AuthLayout from '../pages/auth/layout';
 import { Route, Routes } from 'react-router-dom';
 
 const AuthRoutes = () => {

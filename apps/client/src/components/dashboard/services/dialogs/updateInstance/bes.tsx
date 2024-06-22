@@ -1,9 +1,9 @@
-import { useUpdateInstanceMutation } from '@client/api/instances';
-import { Button } from '@client/components/ui/button';
-import { Input } from '@client/components/ui/input';
-import { Label } from '@client/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@client/components/ui/radio-group';
-import { Textarea } from '@client/components/ui/textarea';
+import { useUpdateInstanceMutation } from '../../../../../api/instances';
+import { Button } from '../../../../ui/button';
+import { Input } from '../../../../ui/input';
+import { Label } from '../../../../ui/label';
+import { RadioGroup, RadioGroupItem } from '../../../../ui/radio-group';
+import { Textarea } from '../../../../ui/textarea';
 import { toast } from 'sonner';
 
 const UpdateBESInstanceDialogContent = ({

@@ -1,21 +1,22 @@
 import { Link } from 'react-router-dom';
 
-import { Button } from '@client/components/ui/button';
+import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@client/components/ui/card';
-import { Input } from '@client/components/ui/input';
-import { Label } from '@client/components/ui/label';
+} from '../ui/card';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
-import { useLoginMutation } from '@client/api/auth';
+import { useLoginMutation } from '../../api/auth';
 
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
-import { setCredentials } from '@client/store/slices/auth';
+import { setCredentials } from '../../store/slices/auth';
+import { getErrorMessage } from '../../utils/error';
 
 export function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();
@@ -32,8 +33,9 @@ export function LoginForm() {
       const payload = await login({ email, password }).unwrap();
       toast.success(payload.message);
       dispatch(setCredentials(payload));
-    } catch (error: any) {
-      if (error && 'data' in error) toast.error((error.data as any).message);
+    } catch (error: unknown) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

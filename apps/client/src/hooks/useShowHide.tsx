@@ -1,5 +1,5 @@
-import { Button, ButtonProps } from '@client/components/ui/button';
-import { cn } from '@client/lib/utils';
+import { Button, ButtonProps } from '../components/ui/button';
+import { cn } from '../lib/utils';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useState } from 'react';
 

@@ -1,5 +1,5 @@
-import { cn } from '@client/lib/utils';
-import { buttonVariants } from '@client/components/ui/button';
+import { cn } from '../../lib/utils';
+import { buttonVariants } from '../ui/button';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from '../custom/Logo';
 
