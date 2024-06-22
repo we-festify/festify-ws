@@ -15,7 +15,11 @@ To run the services, you need to have Node.js installed on your machine. You can
 
 After installing Node.js, you can run the services by following the steps below:
 
-1. Clone the repository to your local machine.
+1. Clone the repository to your local machine using
+
+```bash
+git clone https://github.com/we-festify/festify-ws.git
+```
 
 2. Run the server by running the following command in the terminal:
 
