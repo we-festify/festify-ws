@@ -1,7 +1,7 @@
 name: Sonar Cloud - Branch Analysis
 
-# Controls when the action will run. Triggers the workflow on push
-# events but only for the main and release-* branch
+# Controls when the action will run. Triggers the workflow on pull request
+# events but only for the main branch
 on:
   pull_request:
     branches: 
@@ -21,5 +21,5 @@ jobs:
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
