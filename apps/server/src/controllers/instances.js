@@ -1,22 +1,22 @@
-const { applicationDB } = require("../config/db");
-const { BadRequestError, NotFoundError } = require("../utils/errors");
+const { applicationDB } = require('../config/db');
+const { BadRequestError, NotFoundError } = require('../utils/errors');
 
 // models
-const Instance = require("../models/Instance")(applicationDB);
-const Service = require("../models/Service")(applicationDB);
-const Creds = require("../models/Creds")(applicationDB);
+const Instance = require('../models/Instance')(applicationDB);
+const Service = require('../models/Service')(applicationDB);
+const Creds = require('../models/Creds')(applicationDB);
 
 // data
-const services = require("../config/services");
-const { validateCreds, secureCreds } = require("../utils/creds");
-const { createApiKey } = require("../utils/apikey");
+const services = require('../config/services');
+const { validateCreds, secureCreds } = require('../utils/creds');
+const { createApiKey } = require('../utils/apikey');
 
 class InstancesController {
   static async getInstances(req, res, next) {
     try {
       const { serviceType } = req.params;
       if (!serviceType) {
-        throw new BadRequestError("Service type is required");
+        throw new BadRequestError('Service type is required');
       }
 
       const { userId } = req.user;
@@ -46,7 +46,7 @@ class InstancesController {
     try {
       const { serviceType, instanceId } = req.params;
       if (!serviceType || !instanceId) {
-        throw new BadRequestError("Service type and instance ID are required");
+        throw new BadRequestError('Service type and instance ID are required');
       }
 
       const { userId } = req.user;
@@ -65,9 +65,9 @@ class InstancesController {
         user: userId,
         service: service._id,
         _id: instanceId,
-      }).populate("service creds");
+      }).populate('service creds');
       if (!instance) {
-        throw new NotFoundError("Instance not found");
+        throw new NotFoundError('Instance not found');
       }
 
       res.status(200).json({ instance });
@@ -80,7 +80,7 @@ class InstancesController {
     try {
       const { serviceType } = req.params;
       if (!serviceType) {
-        throw new BadRequestError("Service type is required");
+        throw new BadRequestError('Service type is required');
       }
 
       const { userId } = req.user;
@@ -95,17 +95,22 @@ class InstancesController {
         return res.status(404).json({ message: `${serviceName} not enabled` });
       }
 
-      const { name } = req.body;
+      let { name } = req.body;
+
       if (!name) {
-        throw new BadRequestError("Instance name is required");
+        throw new BadRequestError('Instance name is required');
       }
+
+      // converting to strings for safe query
+      name = name?.toString();
+
       const existingInstance = await Instance.findOne({
         user: userId,
         service: service._id,
         name,
       });
       if (existingInstance) {
-        throw new BadRequestError("Instance with this name already exists");
+        throw new BadRequestError('Instance with this name already exists');
       }
 
       const credsObject = {
@@ -115,7 +120,7 @@ class InstancesController {
       const isValidCreds = validateCreds(credsObject);
       if (isValidCreds !== true) {
         throw new BadRequestError(
-          isValidCreds || "Invalid credentials for service type"
+          isValidCreds || 'Invalid credentials for service type'
         );
       }
       const secureCredsObject = secureCreds(credsObject);
@@ -135,7 +140,7 @@ class InstancesController {
       await creds.save();
       await instance.save();
 
-      res.status(201).json({ message: "Instance created successfully" });
+      res.status(201).json({ message: 'Instance created successfully' });
     } catch (err) {
       next(err);
     }
@@ -145,7 +150,7 @@ class InstancesController {
     try {
       const { serviceType, instanceId } = req.params;
       if (!serviceType || !instanceId) {
-        throw new BadRequestError("Service type and instance ID are required");
+        throw new BadRequestError('Service type and instance ID are required');
       }
 
       const { userId } = req.user;
@@ -166,11 +171,17 @@ class InstancesController {
         _id: instanceId,
       });
       if (!instance) {
-        throw new NotFoundError("Instance not found");
+        throw new NotFoundError('Instance not found');
       }
 
       // to only update the fields that are allowed
-      const { name, status, allowedOrigins } = req.body;
+      let { name, status, allowedOrigins } = req.body;
+
+      // converting to strings for safe query
+      name = name?.toString();
+      status = status?.toString();
+      allowedOrigins = allowedOrigins?.map((origin) => origin.toString());
+
       if (name) {
         instance.name = name;
       }
@@ -183,7 +194,7 @@ class InstancesController {
 
       await instance.save();
 
-      res.status(200).json({ message: "Instance updated successfully" });
+      res.status(200).json({ message: 'Instance updated successfully' });
     } catch (err) {
       next(err);
     }
@@ -193,7 +204,7 @@ class InstancesController {
     try {
       const { serviceType, instanceId } = req.params;
       if (!serviceType || !instanceId) {
-        throw new BadRequestError("Service type and instance ID are required");
+        throw new BadRequestError('Service type and instance ID are required');
       }
 
       const { userId } = req.user;
@@ -212,28 +223,30 @@ class InstancesController {
         user: userId,
         service: service._id,
         _id: instanceId,
-      }).populate("creds");
+      }).populate('creds');
       if (!instance) {
-        throw new NotFoundError("Instance not found");
+        throw new NotFoundError('Instance not found');
       }
 
+      const data = req.body;
+
       const credsObject = {
-        smtpHost: "smtp.ethereal.email",
+        smtpHost: 'smtp.ethereal.email',
         smtpPort: 587,
-        ...req.body,
+        ...data,
         type: serviceType,
       };
       const isValidCreds = validateCreds(credsObject);
       if (isValidCreds !== true) {
         throw new BadRequestError(
-          isValidCreds || "Invalid credentials for service type"
+          isValidCreds || 'Invalid credentials for service type'
         );
       }
       const secureCredsObject = secureCreds(credsObject);
       Object.assign(instance.creds, secureCredsObject);
       await instance.creds.save();
 
-      res.status(200).json({ message: "Credentials updated successfully" });
+      res.status(200).json({ message: 'Credentials updated successfully' });
     } catch (err) {
       next(err);
     }
