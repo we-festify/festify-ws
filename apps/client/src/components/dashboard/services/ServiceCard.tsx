@@ -1,5 +1,10 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../../../packages/shared/ui/card';
 import { BotMessageSquare, Flame, MailCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -25,7 +30,7 @@ const icons: Icons = {
 export default function Component({ service }: ServiceCardProps) {
   return (
     <Link to={`${service.type}`}>
-      <Card className="hover:shadow-md cursor-pointer">
+      <Card className="hover:shadow-md dark:hover:bg-muted/50 cursor-pointer">
         <CardHeader className="flex flex-col space-y-0 pb-2 gap-6">
           {icons[service.type]
             ? React.createElement(icons[service.type])

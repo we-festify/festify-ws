@@ -1,4 +1,4 @@
-import { ThemeToggle } from '../../custom/ThemeToggle';
+import { ThemeToggle } from '../../../packages/shared/components/custom/ThemeToggle';
 
 const Account = () => {
   return (

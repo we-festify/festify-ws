@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
 
-import { Button } from '../ui/button';
+import { Button } from '../../packages/shared/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+} from '../../packages/shared/ui/card';
+import { Input } from '../../packages/shared/ui/input';
+import { Label } from '../../packages/shared/ui/label';
 import { useForgotPasswordMutation } from '../../api/auth';
 import { toast } from 'sonner';
-import useTimer from '../../hooks/useTimer';
+import useTimer from '../../packages/shared/hooks/useTimer';
 
 type TimedButtonProps = {
   time: number;

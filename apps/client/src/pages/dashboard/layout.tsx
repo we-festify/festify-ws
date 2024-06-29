@@ -1,4 +1,4 @@
-import Logo from '../../components/custom/Logo';
+import Logo from '../../packages/shared/components/custom/Logo';
 import { SidebarNav } from '../../components/dashboard/SidebarNav';
 
 const sidebarNavItems = [
@@ -34,7 +34,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <div className="flex flex-col text-center h-screen gap-4 justify-center md:hidden">
         <Logo className="text-2xl" />
         <p className="text-sm text-opacity-50">
-          This dashboard is not optimized for mobile devices.
+          This dashboard is not available for mobile devices.
         </p>
       </div>
     </>

@@ -1,18 +1,18 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { Button } from '../ui/button';
+import { Button } from '../../packages/shared/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+} from '../../packages/shared/ui/card';
+import { Input } from '../../packages/shared/ui/input';
+import { Label } from '../../packages/shared/ui/label';
 import { useResetPasswordMutation } from '../../api/auth';
 import { toast } from 'sonner';
-import { getErrorMessage } from '../../utils/error';
+import { getErrorMessage } from '../../packages/shared/utils/error';
 
 export function ResetPasswordForm() {
   const navigate = useNavigate();
