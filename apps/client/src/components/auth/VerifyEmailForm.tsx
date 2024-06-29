@@ -2,19 +2,19 @@ import {
   useSendVerificationEmailMutation,
   useVerifyEmailMutation,
 } from '../../api/auth';
-import { buttonVariants, Button } from '../ui/button';
+import { buttonVariants, Button } from '../../packages/shared/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import useTimer from '../../hooks/useTimer';
+} from '../../packages/shared/ui/card';
+import useTimer from '../../packages/shared/hooks/useTimer';
 import { cn } from '../../lib/utils';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
-import { getErrorMessage } from '../../utils/error';
+import { getErrorMessage } from '../../packages/shared/utils/error';
 
 type TimedButtonProps = {
   time: number;

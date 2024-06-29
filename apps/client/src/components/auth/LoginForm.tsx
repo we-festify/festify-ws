@@ -1,22 +1,22 @@
 import { Link } from 'react-router-dom';
 
-import { Button } from '../ui/button';
+import { Button } from '../../packages/shared/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+} from '../../packages/shared/ui/card';
+import { Input } from '../../packages/shared/ui/input';
+import { Label } from '../../packages/shared/ui/label';
 
 import { useLoginMutation } from '../../api/auth';
 
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../../store/slices/auth';
-import { getErrorMessage } from '../../utils/error';
+import { getErrorMessage } from '../../packages/shared/utils/error';
 
 export function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();

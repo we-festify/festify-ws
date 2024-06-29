@@ -1,6 +1,6 @@
 import { selectUser } from '../../../store/slices/auth';
 import { useSelector } from 'react-redux';
-import { Separator } from '../../ui/separator';
+import { Separator } from '../../../packages/shared/ui/separator';
 
 const Home = () => {
   const user = useSelector(selectUser);

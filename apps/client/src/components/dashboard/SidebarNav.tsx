@@ -1,7 +1,7 @@
 import { cn } from '../../lib/utils';
-import { buttonVariants } from '../ui/button';
+import { buttonVariants } from '../../packages/shared/ui/button';
 import { Link, useLocation } from 'react-router-dom';
-import Logo from '../custom/Logo';
+import Logo from '../../packages/shared/components/custom/Logo';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {

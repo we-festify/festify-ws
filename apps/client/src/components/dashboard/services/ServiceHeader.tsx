@@ -1,26 +1,14 @@
-import { getErrorMessage } from '../../../utils/error';
+import { getErrorMessage } from '../../../packages/shared/utils/error';
 import {
   useEnableServiceMutation,
   useGetServiceMetaByTypeQuery,
 } from '../../../api/services';
-import { Button } from '../../ui/button';
+import { Button } from '../../../packages/shared/ui/button';
 import { toast } from 'sonner';
-// import { BotMessageSquare, Flame, MailCheck } from "lucide-react";
-// import React from "react";
 
 interface ServiceHeaderProps {
   type: string;
 }
-
-// interface Icons {
-//   [key: string]: React.ElementType;
-// }
-
-// const icons: Icons = {
-//   bes: MailCheck,
-//   ts: BotMessageSquare,
-//   default: Flame,
-// };
 
 const ServiceHeader = ({ type }: ServiceHeaderProps) => {
   const { data: { service = {} } = {} } = useGetServiceMetaByTypeQuery(type);
