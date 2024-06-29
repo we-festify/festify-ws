@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema(
   {
@@ -7,11 +7,11 @@ const serviceSchema = new mongoose.Schema(
       required: true,
       trim: true,
       lowercase: true,
-      enum: ["bes", "ts"],
+      enum: ['bes', 'ts'],
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
 
@@ -19,7 +19,7 @@ const serviceSchema = new mongoose.Schema(
     instances: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Instance",
+        ref: 'Instance',
       },
     ],
 
@@ -40,6 +40,6 @@ const serviceSchema = new mongoose.Schema(
  * @returns7
  */
 module.exports = (db) => {
-  if (!db.models.Service) return db.model("Service", serviceSchema);
+  if (!db.models.Service) return db.model('Service', serviceSchema);
   return db.models.Service;
 };

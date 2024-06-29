@@ -1,20 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const instanceSchema = new mongoose.Schema(
   {
     service: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Service",
+      ref: 'Service',
       required: true,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     creds: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Creds",
+      ref: 'Creds',
       required: true,
     },
 
@@ -25,8 +25,8 @@ const instanceSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+      enum: ['active', 'inactive'],
+      default: 'active',
       required: true,
     },
     apiKey: {
@@ -63,6 +63,6 @@ const instanceSchema = new mongoose.Schema(
  * @returns
  */
 module.exports = (db) => {
-  if (!db.models.Instance) return db.model("Instance", instanceSchema);
+  if (!db.models.Instance) return db.model('Instance', instanceSchema);
   return db.models.Instance;
 };

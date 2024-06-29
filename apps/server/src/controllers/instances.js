@@ -2,9 +2,9 @@ const { applicationDB } = require('../config/db');
 const { BadRequestError, NotFoundError } = require('../utils/errors');
 
 // models
-const Instance = require('../models/Instance')(applicationDB);
-const Service = require('../models/Service')(applicationDB);
-const Creds = require('../models/Creds')(applicationDB);
+const Instance = require('@shared/models/Instance')(applicationDB);
+const Service = require('@shared/models/Service')(applicationDB);
+const Creds = require('@shared/models/Creds')(applicationDB);
 
 // data
 const services = require('../config/services');

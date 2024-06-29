@@ -1,41 +1,41 @@
 // db
-const { applicationDB } = require("../../../config/db");
+const { applicationDB } = require('../../../config/db');
 
 // models
-const EmailTemplate = require("../models/EmailTemplate")(applicationDB);
-const Instance = require("../../../models/Instance")(applicationDB);
+const EmailTemplate = require('../models/EmailTemplate')(applicationDB);
+const Instance = require('@shared/models/Instance')(applicationDB);
 
 // utils
-const { BadRequestError } = require("../../../utils/errors");
+const { BadRequestError } = require('../../../utils/errors');
 
 class EmailTemplatesController {
   static validateTemplate(template) {
     const { name, subject, body } = template;
     if (!name || !subject || !body) {
-      throw new BadRequestError("Name, subject and body are required");
+      throw new BadRequestError('Name, subject and body are required');
     }
 
     if (name.length < 3 || name.length > 50) {
       throw new BadRequestError(
-        "Name length must be between 3 and 50 characters"
+        'Name length must be between 3 and 50 characters'
       );
     }
 
     if (subject.length < 3 || subject.length > 900) {
       throw new BadRequestError(
-        "Subject length must be between 3 and 900 characters"
+        'Subject length must be between 3 and 900 characters'
       );
     }
   }
 
   static extractVariables(subject, body) {
     const regex = /{{(.*?)}}/g;
-    const matches = (subject + " " + body).match(regex);
+    const matches = (subject + ' ' + body).match(regex);
     if (!matches) {
       return [];
     }
 
-    const variableNames = matches.map((match) => match.replace(/{{|}}/g, ""));
+    const variableNames = matches.map((match) => match.replace(/{{|}}/g, ''));
     return [...new Set(variableNames)];
   }
 
@@ -48,8 +48,8 @@ class EmailTemplatesController {
         user: userId,
         _id: instanceId,
       });
-      if (!instance || instance.status !== "active") {
-        throw new BadRequestError("Instance not found or not active");
+      if (!instance || instance.status !== 'active') {
+        throw new BadRequestError('Instance not found or not active');
       }
 
       const templates = await EmailTemplate.find({ instance: instanceId });
@@ -69,8 +69,8 @@ class EmailTemplatesController {
         user: userId,
         _id: instanceId,
       });
-      if (!instance || instance.status !== "active") {
-        throw new BadRequestError("Instance not found or not active");
+      if (!instance || instance.status !== 'active') {
+        throw new BadRequestError('Instance not found or not active');
       }
 
       const existingTemplate = await EmailTemplate.findOne({
@@ -78,7 +78,7 @@ class EmailTemplatesController {
         name,
       });
       if (existingTemplate) {
-        throw new BadRequestError("Template with same name already exists");
+        throw new BadRequestError('Template with same name already exists');
       }
 
       EmailTemplatesController.validateTemplate({ name, subject, body });
@@ -112,8 +112,8 @@ class EmailTemplatesController {
         user: userId,
         _id: instanceId,
       });
-      if (!instance || instance.status !== "active") {
-        throw new BadRequestError("Instance not found or not active");
+      if (!instance || instance.status !== 'active') {
+        throw new BadRequestError('Instance not found or not active');
       }
 
       const template = await EmailTemplate.findOne({
@@ -121,7 +121,7 @@ class EmailTemplatesController {
         _id: templateId,
       });
       if (!template) {
-        throw new BadRequestError("Template not found");
+        throw new BadRequestError('Template not found');
       }
 
       EmailTemplatesController.validateTemplate({ name, subject, body });
@@ -150,8 +150,8 @@ class EmailTemplatesController {
         user: userId,
         _id: instanceId,
       });
-      if (!instance || instance.status !== "active") {
-        throw new BadRequestError("Instance not found or not active");
+      if (!instance || instance.status !== 'active') {
+        throw new BadRequestError('Instance not found or not active');
       }
 
       await EmailTemplate.findByIdAndDelete(templateId);

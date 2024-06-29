@@ -1,15 +1,17 @@
-const { applicationDB } = require("../config/db");
+const { applicationDB } = require('../config/db');
 
 // models
-const Service = require("../models/Service")(applicationDB);
+const Service = require('@shared/models/Service')(applicationDB);
 
 // data
-const allServicesWithDocs = require("../config/services");
-const allServicesWithoutDocs = allServicesWithDocs.map((s) => {
-  const { methods, ...rest } = s;
-  return rest;
-});
-const { BadRequestError, NotFoundError } = require("../utils/errors");
+const allServicesWithDocs = require('../config/services');
+const allServicesWithoutDocs = allServicesWithDocs.map((s) => ({
+  ...s,
+  methods: undefined,
+}));
+
+// utils
+const { BadRequestError, NotFoundError } = require('../utils/errors');
 
 class ServicesController {
   static async getMyServices(req, res, next) {
@@ -33,11 +35,11 @@ class ServicesController {
     try {
       const { serviceType } = req.params;
       if (!serviceType) {
-        throw new BadRequestError("Service type is required");
+        throw new BadRequestError('Service type is required');
       }
       const service = allServicesWithDocs.find((s) => s.type === serviceType);
       if (!service) {
-        throw new NotFoundError("Service not found");
+        throw new NotFoundError('Service not found');
       }
 
       const { userId } = req.user;
@@ -62,7 +64,7 @@ class ServicesController {
     try {
       const { serviceType } = req.params;
       if (!serviceType) {
-        throw new BadRequestError("Service type is required");
+        throw new BadRequestError('Service type is required');
       }
 
       const { userId } = req.user;
@@ -74,7 +76,7 @@ class ServicesController {
       if (existingService) {
         return res.status(200).json({
           message:
-            "Service is already enabled. Please create a new instance to use the service.",
+            'Service is already enabled. Please create a new instance to use the service.',
         });
       }
 

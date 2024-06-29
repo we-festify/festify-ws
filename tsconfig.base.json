@@ -16,8 +16,11 @@
     "baseUrl": ".",
     "paths": {
       "@client/*": ["apps/client/src/*"],
-      "@server/*": ["apps/server/src/*"]
-    }
+      "@server/*": ["apps/server/src/*"],
+      "@shared/*": ["libs/shared/*"]
+    },
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": ["node_modules", "tmp"]
 }

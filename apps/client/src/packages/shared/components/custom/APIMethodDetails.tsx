@@ -1,27 +1,7 @@
+import { ApiMethodType } from '@shared/types';
 import Table from './Table';
 
-interface APIMethodDetailsProps {
-  method: {
-    description: string;
-    headers: {
-      name: string;
-      format: string;
-      description: string;
-    }[];
-    params: {
-      name: string;
-      type: string;
-      required: boolean;
-      description: string;
-    }[];
-    responses: {
-      status: string;
-      description: string;
-    }[];
-  };
-}
-
-const APIMethodDetails = ({ method }: APIMethodDetailsProps) => {
+const APIMethodDetails = ({ method }: { method: ApiMethodType }) => {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-muted-foreground">{method.description}</p>

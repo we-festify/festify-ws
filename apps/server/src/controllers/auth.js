@@ -1,8 +1,8 @@
 const { applicationDB } = require('../config/db');
 
 // models
-const User = require('../models/User')(applicationDB);
-const Account = require('../models/Account')(applicationDB);
+const User = require('@shared/models/User')(applicationDB);
+const Account = require('@shared/models/Account')(applicationDB);
 
 // services
 const Mailer = require('../services/mailer');
