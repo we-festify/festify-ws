@@ -1,8 +1,8 @@
 // db
-const { applicationDB } = require("../config/db");
+const { applicationDB } = require('../config/db');
 
 // models
-const Instance = require("../models/Instance")(applicationDB);
+const Instance = require('@shared/models/Instance')(applicationDB);
 
 const trackApiRequest = async (req, res, next) => {
   try {

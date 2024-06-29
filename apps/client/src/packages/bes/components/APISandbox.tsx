@@ -11,42 +11,16 @@ import {
   SelectValue,
 } from '../../shared/ui/select';
 import { Textarea } from '../../shared/ui/textarea';
-
-interface Instance {
-  _id: string;
-  name: string;
-  apiKey: string;
-}
-
-interface MethodParam {
-  name: string;
-  type: string;
-  ref?: string;
-}
-
-interface Method {
-  name: string;
-  params: MethodParam[];
-  method: string;
-  path: string;
-}
-
-interface EmailTemplate {
-  _id: string;
-  name: string;
-  variables: string[];
-
-  [key: string]: any; // This is a hack to allow any key in the object
-}
+import { ApiMethodType, EmailTemplateType, InstanceType } from '@shared/types';
 
 const BESSandbox = () => {
   const { data: { instances = [] } = {} } = useGetInstancesQuery('bes');
-  const [selectedInstance, setSelectedInstance] = useState<Instance | null>(
+  const [selectedInstance, setSelectedInstance] = useState<InstanceType | null>(
     instances?.[0] || null
   );
 
   const { data: { service = {} } = {} } = useGetServiceMetaByTypeQuery('bes');
-  const [selectedMethod, setSelectedMethod] = useState<Method | null>(
+  const [selectedMethod, setSelectedMethod] = useState<ApiMethodType | null>(
     service.methods?.[0] || null
   );
 
@@ -54,7 +28,7 @@ const BESSandbox = () => {
     instanceId: selectedInstance?._id,
   });
   const [selectedTemplate, setSelectedTemplate] =
-    useState<EmailTemplate | null>(templates?.[0] || null);
+    useState<EmailTemplateType | null>(templates?.[0] || null);
 
   const [response, setResponse] = useState<string>('');
   const [isRequesting, setIsRequesting] = useState(false);
@@ -100,8 +74,8 @@ const BESSandbox = () => {
   };
 
   const createEmptyBodyObject = (
-    method: Method | null,
-    template: EmailTemplate | null
+    method: ApiMethodType | null,
+    template: EmailTemplateType | null
   ): Record<string, any> => {
     const body: any = {};
 
@@ -112,13 +86,15 @@ const BESSandbox = () => {
           try {
             if (param.ref) {
               const refKey = param.ref as string;
-              const refData = template?.[refKey] || '';
+              // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
+              const refData = template?.[refKey] || ('' as any);
 
               if (Array.isArray(refData)) {
                 refData.forEach((ref: string) => {
                   body[param.name][ref] = '' as string;
                 });
               } else if (refData && typeof refData === 'string') {
+                // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
                 body[param.name][refData] = template?.[refData] || '';
               }
             }
@@ -132,6 +108,7 @@ const BESSandbox = () => {
 
           if (param.ref) {
             const refKey = param.ref as string;
+            // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
             const refData = template?.[refKey] || '';
 
             if (refData && typeof refData === 'string') {
@@ -169,7 +146,7 @@ const BESSandbox = () => {
           <Select
             onValueChange={(_id) =>
               setSelectedInstance(
-                instances.find((instance: Instance) => instance._id === _id)
+                instances.find((instance: InstanceType) => instance._id === _id)
               )
             }
             defaultValue={selectedInstance?._id}
@@ -178,7 +155,7 @@ const BESSandbox = () => {
               <SelectValue placeholder="Select instance" />
             </SelectTrigger>
             <SelectContent>
-              {instances.map((instance: Instance) => (
+              {instances.map((instance: InstanceType) => (
                 <SelectItem
                   key={instance._id}
                   value={instance._id}
@@ -193,7 +170,9 @@ const BESSandbox = () => {
             key={selectedInstance?._id + 'method'}
             onValueChange={(name) =>
               setSelectedMethod(
-                service.methods.find((method: Method) => method.name === name)
+                service.methods.find(
+                  (method: ApiMethodType) => method.name === name
+                )
               )
             }
             defaultValue={selectedMethod?.name}
@@ -203,7 +182,7 @@ const BESSandbox = () => {
               <SelectValue placeholder="Select method" />
             </SelectTrigger>
             <SelectContent>
-              {service.methods?.map((method: Method) => (
+              {service.methods?.map((method: ApiMethodType) => (
                 <SelectItem
                   key={method.name}
                   value={method.name}
@@ -220,7 +199,7 @@ const BESSandbox = () => {
             onValueChange={(_id) =>
               setSelectedTemplate(
                 templates.find(
-                  (template: EmailTemplate) => template._id === _id
+                  (template: EmailTemplateType) => template._id === _id
                 )
               )
             }
@@ -231,7 +210,7 @@ const BESSandbox = () => {
               <SelectValue placeholder="Select template" />
             </SelectTrigger>
             <SelectContent>
-              {templates?.map((template: EmailTemplate) => (
+              {templates?.map((template: EmailTemplateType) => (
                 <SelectItem
                   key={template._id}
                   value={template._id}

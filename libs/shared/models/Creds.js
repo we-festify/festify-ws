@@ -1,19 +1,19 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const baseCredsSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ["bes", "ts"],
+      enum: ['bes', 'ts'],
       required: true,
     },
     instance: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Instance",
+      ref: 'Instance',
       required: true,
     },
   },
-  { discriminatorKey: "type" }
+  { discriminatorKey: 'type' }
 );
 
 const besCredsSchema = new mongoose.Schema({
@@ -28,7 +28,7 @@ const besCredsSchema = new mongoose.Schema({
   smtpHost: {
     type: String,
     required: true,
-    default: "smtp.ethereal.email",
+    default: 'smtp.ethereal.email',
   },
   smtpPort: {
     type: Number,
@@ -50,9 +50,9 @@ const tsCredsSchema = new mongoose.Schema({
  */
 module.exports = (db) => {
   if (!db.models.Creds) {
-    const Creds = db.model("Creds", baseCredsSchema);
-    Creds.discriminator("bes", besCredsSchema);
-    Creds.discriminator("ts", tsCredsSchema);
+    const Creds = db.model('Creds', baseCredsSchema);
+    Creds.discriminator('bes', besCredsSchema);
+    Creds.discriminator('ts', tsCredsSchema);
   }
   return db.models.Creds;
 };

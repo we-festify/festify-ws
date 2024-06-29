@@ -8,13 +8,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion';
+import { ServiceDocsType } from '@shared/types';
 
 interface ServiceOverviewProps {
   type: string;
 }
 
+interface QueryResponse {
+  data?: {
+    service: ServiceDocsType;
+  };
+}
+
 const ServiceDocs = ({ type }: ServiceOverviewProps) => {
-  const { data: { service = {} } = {} } = useGetServiceMetaByTypeQuery(type);
+  const { data: { service = {} as ServiceDocsType } = {} } =
+    useGetServiceMetaByTypeQuery<QueryResponse>(type);
 
   return (
     <div className="flex">
@@ -33,7 +41,7 @@ const ServiceDocs = ({ type }: ServiceOverviewProps) => {
             Search for all the methods you need.
           </p>
           <Accordion type="single" collapsible className="w-full">
-            {service.methods?.map((method: any) => (
+            {service.methods?.map((method) => (
               <AccordionItem
                 key={method.name}
                 value={method.name}
@@ -67,7 +75,7 @@ const ServiceDocs = ({ type }: ServiceOverviewProps) => {
           <li>
             <a href="#methods">Methods</a>
             <ul className="flex flex-col gap-4 m-4 mt-2">
-              {service.methods?.map((method: any) => (
+              {service.methods?.map((method) => (
                 <li key={method.name} className="text-muted-foreground">
                   <a href={`#${method.name}`}>{method.name}</a>
                 </li>

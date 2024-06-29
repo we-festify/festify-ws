@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,20 +22,20 @@ const userSchema = new mongoose.Schema(
 
     account: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Account",
+      ref: 'Account',
       required: true,
     },
 
     services: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Service",
+        ref: 'Service',
       },
     ],
     plan: {
       type: String,
-      enum: ["free", "payg"],
-      default: "free",
+      enum: ['free', 'payg'],
+      default: 'free',
     },
   },
   {
@@ -49,6 +49,6 @@ const userSchema = new mongoose.Schema(
  * @returns
  */
 module.exports = (db) => {
-  if (!db.models.User) return db.model("User", userSchema);
+  if (!db.models.User) return db.model('User', userSchema);
   return db.models.User;
 };

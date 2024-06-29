@@ -1,16 +1,16 @@
-const nodemailer = require("nodemailer");
-const validator = require("validator");
+const nodemailer = require('nodemailer');
+const validator = require('validator');
 
 // utils
-const { decrypt } = require("../utils/encrypt");
+const { decrypt } = require('../utils/encrypt');
 
 // db
-const { applicationDB } = require("../../../config/db");
-const { BadRequestError, NotFoundError } = require("../../../utils/errors");
+const { applicationDB } = require('../../../config/db');
+const { BadRequestError, NotFoundError } = require('../../../utils/errors');
 
 // models
-const EmailTemplate = require("../models/EmailTemplate")(applicationDB);
-const Instance = require("../../../models/Instance")(applicationDB);
+const EmailTemplate = require('../models/EmailTemplate')(applicationDB);
+const Instance = require('@shared/models/Instance')(applicationDB);
 
 class EmailController {
   static createTransporter(creds) {
@@ -42,17 +42,17 @@ class EmailController {
     try {
       const { to, templateId, data = {} } = req.body;
       if (!to || !templateId) {
-        throw new BadRequestError("To and template ID are required");
+        throw new BadRequestError('To and template ID are required');
       }
       if (!validator.isEmail(to)) {
-        throw new BadRequestError("Invalid email address");
+        throw new BadRequestError('Invalid email address');
       }
 
       const { _id: instanceId } = req.instance;
 
       // instance will always be there
       // already checked in requireAuthByAPIKey middleware
-      const instance = await Instance.findById(instanceId).populate("creds");
+      const instance = await Instance.findById(instanceId).populate('creds');
 
       const { creds } = instance;
 
@@ -61,7 +61,7 @@ class EmailController {
         instance: instanceId,
       });
       if (!template) {
-        throw new NotFoundError("Invalid template");
+        throw new NotFoundError('Invalid template');
       }
 
       const transporter = EmailController.createTransporter(creds);
@@ -84,9 +84,9 @@ class EmailController {
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          throw new Error("Error sending email");
+          throw new Error('Error sending email');
         } else {
-          res.status(200).json({ message: "Email sent successfully" });
+          res.status(200).json({ message: 'Email sent successfully' });
         }
       });
     } catch (error) {
@@ -100,15 +100,15 @@ class EmailController {
       let { to } = req.body;
       const { templateId, data = {} } = req.body;
       if (!to || !templateId) {
-        throw new BadRequestError("To and template ID are required");
+        throw new BadRequestError('To and template ID are required');
       }
       if (!Array.isArray(to)) {
-        throw new BadRequestError("To should be an array");
+        throw new BadRequestError('To should be an array');
       }
       to = to.filter((email) => validator.isEmail(email));
       if (to.length === 0) {
         throw new BadRequestError(
-          "Invalid email(s) or no valid email(s) found"
+          'Invalid email(s) or no valid email(s) found'
         );
       }
 
@@ -116,7 +116,7 @@ class EmailController {
 
       // instance will always be there
       // already checked in requireAuthByAPIKey middleware
-      const instance = await Instance.findById(instanceId).populate("creds");
+      const instance = await Instance.findById(instanceId).populate('creds');
 
       const { creds } = instance;
 
@@ -125,7 +125,7 @@ class EmailController {
         instance: instanceId,
       });
       if (!template) {
-        throw new NotFoundError("Invalid template");
+        throw new NotFoundError('Invalid template');
       }
 
       const transporter = EmailController.createTransporter(creds);
@@ -148,9 +148,9 @@ class EmailController {
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          throw new Error("Error sending email");
+          throw new Error('Error sending email');
         } else {
-          res.status(200).json({ message: "Email sent successfully" });
+          res.status(200).json({ message: 'Email sent successfully' });
         }
       });
     } catch (error) {
