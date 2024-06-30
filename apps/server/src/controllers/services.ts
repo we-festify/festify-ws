@@ -16,7 +16,7 @@ const allServicesWithoutDocs = allServicesWithDocs.map((s) => ({
 import { BadRequestError, NotFoundError } from '../utils/errors';
 
 // middlewares
-import { RequestWithUser } from '@server/middlewares/auth';
+import { RequestWithUser } from '../middlewares/auth';
 
 class ServicesController {
   static async getMyServices(

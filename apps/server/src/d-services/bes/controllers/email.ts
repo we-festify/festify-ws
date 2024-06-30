@@ -14,7 +14,7 @@ const Instance = InstanceCreator(applicationDB);
 import { decrypt } from '../utils/encrypt';
 import { BadRequestError, NotFoundError } from '../../../utils/errors';
 import { BESCredsType } from '@shared/types';
-import { RequestWithInstance } from '@server/middlewares/auth';
+import { RequestWithInstance } from '../../../middlewares/auth';
 import { Response, NextFunction } from 'express';
 
 class EmailController {

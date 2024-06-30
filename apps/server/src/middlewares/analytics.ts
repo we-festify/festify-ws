@@ -7,7 +7,7 @@ import InstanceCreator from '@shared/models/Instance';
 const Instance = InstanceCreator(applicationDB);
 
 // utils
-import { NotFoundError } from '@server/utils/errors';
+import { NotFoundError } from '../utils/errors';
 
 // middlewares
 import { RequestWithInstance } from './auth';
