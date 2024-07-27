@@ -16,7 +16,7 @@
         "bundle": true,
         "main": "apps/server/src/main.js",
         "tsConfig": "apps/server/tsconfig.app.json",
-        "assets": ["apps/server/src/assets/**/*"],
+        "assets": ["apps/server/src/assets/**"],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,

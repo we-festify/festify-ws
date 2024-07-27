@@ -2,15 +2,19 @@ import { Request, Response, NextFunction } from 'express';
 import { applicationDB } from '../config/db';
 
 // models
-import InstanceCreator, { InstanceDoc } from '@shared/models/Instance';
-const Instance = InstanceCreator(applicationDB);
+import BESInstanceCreator, {
+  BESInstanceDoc,
+} from '../d-services/bes/models/BESInstance';
+const Instance = BESInstanceCreator(applicationDB);
 
 // utils
 import { UnauthorizedError } from '../utils/errors';
-import { verifyAccessToken } from '../utils/token';
+import { AccessTokenPayloadType, verifyAccessToken } from '../utils/token';
 
-export type RequestWithUser = Request & { user: { userId: string } };
-export type RequestWithInstance = Request & { instance: InstanceDoc };
+export type RequestWithUser = Request & {
+  user: AccessTokenPayloadType;
+};
+export type RequestWithInstance = Request & { instance: BESInstanceDoc };
 
 export const requireAuth = (
   req: RequestWithUser,
@@ -33,7 +37,7 @@ export const requireAuth = (
       throw new UnauthorizedError('Unauthorized');
     }
 
-    req.user = payload as { userId: string };
+    req.user = payload as AccessTokenPayloadType & { userId: string };
     next();
   } catch (err) {
     return next(err);
@@ -59,18 +63,6 @@ export const requireAuthByAPIKey = async (
 
     const instance = await Instance.findOne({ apiKey });
     if (!instance || instance.status !== 'active') {
-      throw new UnauthorizedError('Unauthorized');
-    }
-
-    // check if origin is allowed
-    const origin = req.headers.origin;
-    const internalAllowedOrigins = process.env.ALLOWED_ORIGINS?.split(',');
-    if (
-      instance.allowedOrigins.includes('*') === false &&
-      instance.allowedOrigins.length > 0 &&
-      !instance.allowedOrigins.includes(origin || '') &&
-      !internalAllowedOrigins?.includes(origin || '')
-    ) {
       throw new UnauthorizedError('Unauthorized');
     }
 

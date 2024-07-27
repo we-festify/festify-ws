@@ -59,7 +59,7 @@ class Mailer {
     return await Mailer.sendMail({
       from: process.env.MAILING_SERVICE_USER as string,
       to: email,
-      subject: 'Verify your email for Festify Web Services',
+      subject: 'Verify your email for FWS',
       html: templates.emailVerification({
         verificationUrl,
       }),
@@ -79,7 +79,7 @@ class Mailer {
     return await Mailer.sendMail({
       from: process.env.MAILING_SERVICE_USER as string,
       to,
-      subject: 'Festify-WS Password Reset',
+      subject: 'Password Reset for FWS account',
       html: templates.forgotPassword({
         redirectUrl,
         user,
@@ -94,6 +94,26 @@ class Mailer {
             zip: '826004',
           },
         },
+      }),
+    });
+  }
+
+  static async sendLoginCredentialsEmail({
+    to,
+    user,
+    password,
+  }: {
+    to: string;
+    user: { username: string };
+    password: string;
+  }) {
+    return await Mailer.sendMail({
+      from: process.env.MAILING_SERVICE_USER as string,
+      to,
+      subject: 'Your temporary password for FWS account',
+      html: templates.loginCredentials({
+        username: user.username,
+        temporaryPassword: password,
       }),
     });
   }

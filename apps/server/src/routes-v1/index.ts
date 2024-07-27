@@ -4,7 +4,6 @@ import cors from 'cors';
 
 import AuthRoutes from './auth';
 import ServicesRoutes from './services';
-import InstancesRoutes from './instances';
 
 // cors
 router.use(
@@ -16,6 +15,5 @@ router.use(
 
 router.use('/auth', AuthRoutes);
 router.use('/services', ServicesRoutes);
-router.use('/instances', InstancesRoutes);
 
 export default router;

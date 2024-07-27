@@ -43,12 +43,13 @@ const api = createApi({
   }),
   tagTypes: [
     // ...tagTypes
-    'Service',
-    'Instance',
+    // auth
+    'Auth',
 
     // d-services
     // BES
     'EmailTemplate',
+    'BESInstance',
   ],
 });
 

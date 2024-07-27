@@ -8,6 +8,7 @@ const authApi = api.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: ['Auth'],
     }),
     login: builder.mutation({
       query: (credentials) => ({
@@ -15,12 +16,14 @@ const authApi = api.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: ['Auth'],
     }),
     logout: builder.mutation({
       query: () => ({
         url: '/v1/auth/logout',
         method: 'GET',
       }),
+      invalidatesTags: ['Auth'],
     }),
     refresh: builder.mutation({
       query: () => ({
@@ -29,7 +32,7 @@ const authApi = api.injectEndpoints({
       }),
     }),
     forgotPassword: builder.mutation({
-      query: (email) => ({
+      query: (email: string) => ({
         url: '/v1/auth/forgot-password',
         method: 'POST',
         body: {
@@ -38,7 +41,7 @@ const authApi = api.injectEndpoints({
       }),
     }),
     resetPassword: builder.mutation({
-      query: ({ token, password }) => ({
+      query: ({ token, password }: { token: string; password: string }) => ({
         url: '/v1/auth/reset-password',
         method: 'POST',
         body: {
@@ -48,7 +51,7 @@ const authApi = api.injectEndpoints({
       }),
     }),
     verifyEmail: builder.mutation({
-      query: (token) => ({
+      query: (token: string) => ({
         url: '/v1/auth/verify-email',
         method: 'POST',
         body: {
@@ -57,13 +60,20 @@ const authApi = api.injectEndpoints({
       }),
     }),
     sendVerificationEmail: builder.mutation({
-      query: (email) => ({
+      query: (email: string) => ({
         url: '/v1/auth/send-verification-email',
         method: 'POST',
         body: {
           email,
         },
       }),
+    }),
+    getMe: builder.query({
+      query: () => ({
+        url: '/v1/auth/me',
+        method: 'GET',
+      }),
+      providesTags: ['Auth'],
     }),
   }),
 });
@@ -77,6 +87,7 @@ export const {
   useResetPasswordMutation,
   useVerifyEmailMutation,
   useSendVerificationEmailMutation,
+  useGetMeQuery,
 } = authApi;
 
 export default authApi;

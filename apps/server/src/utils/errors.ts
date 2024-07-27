@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export class BadRequestError extends Error {
   statusCode: number;
@@ -50,7 +50,13 @@ type ErrorType =
   | UnauthorizedError
   | ForbiddenError;
 
-export const handleErrors = (err: ErrorType, _: Request, res: Response) => {
+export const handleErrors = (
+  err: ErrorType,
+  req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction
+) => {
   const { statusCode, errorCode } = err;
   const { message } = err;
   sendError(res, statusCode, message, errorCode);
