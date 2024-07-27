@@ -5,28 +5,29 @@ import validator from 'validator';
 import { applicationDB } from '../../../config/db';
 
 // models
-import EmailTemplateCreator from '../models/EmailTemplate';
-import InstanceCreator from '@shared/models/Instance';
-const EmailTemplate = EmailTemplateCreator(applicationDB);
-const Instance = InstanceCreator(applicationDB);
+import BESEmailTemplateCreator from '../models/BESEmailTemplate';
+import BESInstanceCreator from '../models/BESInstance';
+const BESEmailTemplate = BESEmailTemplateCreator(applicationDB);
+const BESInstance = BESInstanceCreator(applicationDB);
 
 // utils
 import { decrypt } from '../utils/encrypt';
 import { BadRequestError, NotFoundError } from '../../../utils/errors';
-import { BESCredsType } from '@shared/types';
 import { RequestWithInstance } from '../../../middlewares/auth';
 import { Response, NextFunction } from 'express';
+import { BESInstanceType } from '@shared/types/bes';
 
 class EmailController {
-  static createTransporter(creds: BESCredsType) {
-    const decryptedPassword = decrypt(creds.password);
+  static createTransporter(instance: BESInstanceType) {
+    const decryptedPassword = decrypt(instance.senderPassword);
 
     return nodemailer.createTransport({
-      host: creds.smtpHost,
-      port: creds.smtpPort,
+      host: instance.smtpHost,
+      port: instance.smtpPort,
       secure: false,
+      sender: instance.senderName,
       auth: {
-        user: creds.email,
+        user: instance.senderEmail,
         pass: decryptedPassword,
       },
     });
@@ -74,15 +75,13 @@ class EmailController {
 
       // instance will always be there
       // already checked in requireAuthByAPIKey middleware
-      const instance = await Instance.findById(instanceId).populate('creds');
+      const instance = await BESInstance.findById(instanceId);
 
       if (!instance) {
         throw new NotFoundError('Invalid instance');
       }
 
-      const creds = instance.creds as BESCredsType;
-
-      const template = await EmailTemplate.findOne({
+      const template = await BESEmailTemplate.findOne({
         _id: templateId,
         instance: instanceId,
       });
@@ -90,9 +89,7 @@ class EmailController {
         throw new NotFoundError('Invalid template');
       }
 
-      const transporter = EmailController.createTransporter(
-        creds as BESCredsType
-      );
+      const transporter = EmailController.createTransporter(instance);
       const filledBody = EmailController.fillVariables(
         template.body,
         data,
@@ -104,7 +101,7 @@ class EmailController {
         template.variables
       );
       const mailOptions = {
-        from: creds.email,
+        from: instance.senderEmail,
         to,
         subject: filledSubject,
         text: filledBody,
@@ -150,15 +147,13 @@ class EmailController {
 
       const { _id: instanceId } = req.instance;
 
-      const instance = await Instance.findById(instanceId).populate('creds');
+      const instance = await BESInstance.findById(instanceId);
 
       if (!instance) {
         throw new NotFoundError('Invalid instance');
       }
 
-      const creds = instance.creds as BESCredsType;
-
-      const template = await EmailTemplate.findOne({
+      const template = await BESEmailTemplate.findOne({
         _id: templateId,
         instance: instanceId,
       });
@@ -166,7 +161,7 @@ class EmailController {
         throw new NotFoundError('Invalid template');
       }
 
-      const transporter = EmailController.createTransporter(creds);
+      const transporter = EmailController.createTransporter(instance);
       const filledBody = EmailController.fillVariables(
         template.body,
         data,
@@ -178,7 +173,7 @@ class EmailController {
         template.variables
       );
       const mailOptions = {
-        from: creds.email,
+        from: instance.senderEmail,
         to,
         subject: filledSubject,
         text: filledBody,

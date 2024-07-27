@@ -1,15 +1,20 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Button } from '../../packages/shared/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '../../packages/shared/ui/card';
+import { Form, FormField, FormFieldItem } from '../../packages/shared/ui/form';
 import { Input } from '../../packages/shared/ui/input';
 import { Label } from '../../packages/shared/ui/label';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../packages/shared/ui/radio-group';
 
 import { useLoginMutation } from '../../api/auth';
 
@@ -18,21 +23,53 @@ import { useDispatch } from 'react-redux';
 import { setCredentials } from '../../store/slices/auth';
 import { getErrorMessage } from '../../packages/shared/utils/error';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { rootUserLoginSchema, aimUserLoginSchema } from './schemas/login';
+import { z } from 'zod';
+import { cn } from '../../lib/utils';
+
 export function LoginForm() {
+  const navigate = useNavigate();
+  const [type, setType] = useState<'root' | 'aim'>('root');
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
 
-  const handleLoginFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const rootUserForm = useForm<z.infer<typeof rootUserLoginSchema>>({
+    resolver: zodResolver(rootUserLoginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+  const aimUserForm = useForm<z.infer<typeof aimUserLoginSchema>>({
+    resolver: zodResolver(aimUserLoginSchema),
+    defaultValues: {
+      accountId: '',
+      alias: '',
+      password: '',
+    },
+  });
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
+  const handleLoginFormSubmit = async (
+    values:
+      | z.infer<typeof rootUserLoginSchema>
+      | z.infer<typeof aimUserLoginSchema>
+  ) => {
     try {
-      const payload = await login({ email, password }).unwrap();
-      toast.success(payload.message);
-      dispatch(setCredentials(payload));
+      const payload = {
+        ...values,
+        type,
+      };
+      const response = await login(payload).unwrap();
+      toast.success(response.message);
+      const { isPasswordResetRequired, resetPasswordToken } = response;
+      if (isPasswordResetRequired) {
+        // navigate to reset password page
+        navigate(`/a/reset-password?token=${resetPasswordToken}`);
+      } else {
+        dispatch(setCredentials(response));
+      }
     } catch (error: unknown) {
       const message = getErrorMessage(error);
       toast.error(message);
@@ -40,46 +77,151 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="mx-auto max-w-sm min-w-60">
+    <Card className="mx-auto min-w-64">
       <CardHeader>
-        <CardTitle className="text-xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
+        <CardTitle className="text-xl">
+          Login as {type === 'root' ? 'root' : 'AIM'} user
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={handleLoginFormSubmit}>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="leafpetal@example.com"
-              autoComplete="email"
-              required
+      <CardContent className="grid gap-4">
+        <RadioGroup
+          defaultValue="root"
+          onValueChange={(value) => setType(value as 'root' | 'aim')}
+          className="flex w-full"
+        >
+          <div
+            className={cn(
+              'flex-1 max-w-48 flex space-x-2 p-2',
+              type === 'root' ? 'rounded-md ring-1 ring-muted-foreground' : ''
+            )}
+          >
+            <RadioGroupItem
+              value="root"
+              id="login-root"
+              className="flex-shrink-0"
             />
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="login-root">Root User</Label>
+              <p className="text-xs text-muted-foreground">
+                Root user with full access to the account
+              </p>
+            </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
+          <div
+            className={cn(
+              'flex-1 max-w-48 flex space-x-2 p-2',
+              type === 'aim' ? 'rounded-md ring-1 ring-muted-foreground' : ''
+            )}
+          >
+            <RadioGroupItem
+              value="aim"
+              id="login-aim"
+              className="flex-shrink-0"
             />
-            <Link
-              to="/a/forgot-password"
-              className="ml-auto inline-block text-sm underline"
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="login-aim">AIM User</Label>
+              <p className="text-xs text-muted-foreground">
+                Users within an account with limited access
+              </p>
+            </div>
+          </div>
+        </RadioGroup>
+        {type === 'root' ? (
+          <Form {...rootUserForm}>
+            <form
+              className="grid gap-4"
+              onSubmit={rootUserForm.handleSubmit(handleLoginFormSubmit)}
             >
-              Forgot your password?
-            </Link>
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Logging in...' : 'Login'}
-          </Button>
-        </form>
+              <FormField
+                control={rootUserForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormFieldItem label="Root user email address">
+                    <Input
+                      key="root-email"
+                      placeholder="username@example.com"
+                      autoComplete="email"
+                      type="email"
+                      {...field}
+                    />
+                  </FormFieldItem>
+                )}
+              />
+              <FormField
+                control={rootUserForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormFieldItem label="Password">
+                    <Input
+                      key="root-password"
+                      type="password"
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      {...field}
+                    />
+                  </FormFieldItem>
+                )}
+              />
+              <Button type="submit" className="mt-4" disabled={isLoading}>
+                Login
+              </Button>
+            </form>
+          </Form>
+        ) : (
+          <Form {...aimUserForm}>
+            <form
+              onSubmit={aimUserForm.handleSubmit(handleLoginFormSubmit)}
+              className="grid gap-4"
+            >
+              <FormField
+                control={aimUserForm.control}
+                name="accountId"
+                render={({ field }) => (
+                  <FormFieldItem label="Account ID">
+                    <Input
+                      key="aim-account-id"
+                      placeholder="24-character account id"
+                      autoComplete="account-id"
+                      {...field}
+                    />
+                  </FormFieldItem>
+                )}
+              />
+              <FormField
+                control={aimUserForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormFieldItem label="Password">
+                    <Input
+                      key="aim-password"
+                      type="password"
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      {...field}
+                    />
+                  </FormFieldItem>
+                )}
+              />
+              <FormField
+                control={aimUserForm.control}
+                name="alias"
+                render={({ field }) => (
+                  <FormFieldItem label="FWS account alias">
+                    <Input
+                      key="aim-alias"
+                      placeholder="username"
+                      autoComplete="username"
+                      {...field}
+                    />
+                  </FormFieldItem>
+                )}
+              />
+              <Button type="submit" className="mt-4" disabled={isLoading}>
+                Login
+              </Button>
+            </form>
+          </Form>
+        )}
         <div className="mt-4 text-center text-sm">
           Don't have an account?{' '}
           <Link to="/a/register" className="underline">

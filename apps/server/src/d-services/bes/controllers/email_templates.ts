@@ -3,10 +3,8 @@ import { NextFunction, Response } from 'express';
 import { applicationDB } from '../../../config/db';
 
 // models
-import EmailTemplateCreator from '../models/EmailTemplate';
-import InstanceCreator from '@shared/models/Instance';
-const EmailTemplate = EmailTemplateCreator(applicationDB);
-const Instance = InstanceCreator(applicationDB);
+import BESEmailTemplateCreator from '../models/BESEmailTemplate';
+const BESEmailTemplate = BESEmailTemplateCreator(applicationDB);
 
 // utils
 import { BadRequestError } from '../../../utils/errors';
@@ -49,25 +47,42 @@ class EmailTemplatesController {
     return [...new Set(variableNames)];
   }
 
-  static async getTemplatesByInstanceId(
+  static async getTemplates(
     req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { userId } = req.user;
-      const { instanceId } = req.params;
+      const { rootAccountId } = req.user;
 
-      const instance = await Instance.findOne({
-        user: userId,
-        _id: instanceId,
+      const templates = await BESEmailTemplate.find({
+        account: rootAccountId,
       });
-      if (!instance || instance.status !== 'active') {
-        throw new BadRequestError('Instance not found or not active');
+
+      res.status(200).json({ templates });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getTemplateById(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { rootAccountId } = req.user;
+      const { templateId } = req.params;
+
+      const template = await BESEmailTemplate.findOne({
+        account: rootAccountId,
+        _id: templateId,
+      });
+      if (!template) {
+        throw new BadRequestError('Template not found');
       }
 
-      const templates = await EmailTemplate.find({ instance: instanceId });
-      res.status(200).json({ templates });
+      res.status(200).json({ template });
     } catch (error) {
       next(error);
     }
@@ -79,20 +94,11 @@ class EmailTemplatesController {
     next: NextFunction
   ) {
     try {
-      const { userId } = req.user;
-      const { instanceId } = req.params;
+      const { rootAccountId } = req.user;
       const { name, subject, body } = req.body;
 
-      const instance = await Instance.findOne({
-        user: userId,
-        _id: instanceId,
-      });
-      if (!instance || instance.status !== 'active') {
-        throw new BadRequestError('Instance not found or not active');
-      }
-
-      const existingTemplate = await EmailTemplate.findOne({
-        instance: instanceId,
+      const existingTemplate = await BESEmailTemplate.findOne({
+        account: rootAccountId,
         name,
       });
       if (existingTemplate) {
@@ -105,8 +111,8 @@ class EmailTemplatesController {
         subject,
         body
       );
-      const template = new EmailTemplate({
-        instance: instanceId,
+      const template = new BESEmailTemplate({
+        account: rootAccountId,
         name,
         subject,
         body,
@@ -126,20 +132,12 @@ class EmailTemplatesController {
     next: NextFunction
   ) {
     try {
-      const { userId } = req.user;
-      const { instanceId, templateId } = req.params;
+      const { rootAccountId } = req.user;
+      const { templateId } = req.params;
       const { name, subject, body } = req.body;
 
-      const instance = await Instance.findOne({
-        user: userId,
-        _id: instanceId,
-      });
-      if (!instance || instance.status !== 'active') {
-        throw new BadRequestError('Instance not found or not active');
-      }
-
-      const template = await EmailTemplate.findOne({
-        instance: instanceId,
+      const template = await BESEmailTemplate.findOne({
+        account: rootAccountId,
         _id: templateId,
       });
       if (!template) {
@@ -163,26 +161,21 @@ class EmailTemplatesController {
     }
   }
 
-  static async deleteTemplate(
+  static async deleteTemplates(
     req: RequestWithUser,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { userId } = req.user;
-      const { instanceId, templateId } = req.params;
+      const { rootAccountId } = req.user;
+      const { templateIds } = req.body;
 
-      const instance = await Instance.findOne({
-        user: userId,
-        _id: instanceId,
+      await BESEmailTemplate.deleteMany({
+        account: rootAccountId,
+        _id: { $in: templateIds },
       });
-      if (!instance || instance.status !== 'active') {
-        throw new BadRequestError('Instance not found or not active');
-      }
 
-      await EmailTemplate.findByIdAndDelete(templateId);
-
-      res.status(204).end();
+      res.status(200).json({ message: 'Templates deleted successfully' });
     } catch (error) {
       next(error);
     }

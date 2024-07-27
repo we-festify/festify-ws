@@ -1,16 +1,23 @@
 import { Route, Routes } from 'react-router-dom';
 import AuthRoutes from './auth';
-import RequireLoggedIn from './custom/RequireLoggedIn';
-import DashboardRoutes from './dashboard';
+import BESRoutes from '../packages/bes/routes';
+import Header from '../packages/shared/components/Header';
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/a/*" element={<AuthRoutes />} />
       <Route path="" element={<div>Home</div>} />
-      <Route path="*" element={<RequireLoggedIn />}>
-        <Route path="dashboard/*" element={<DashboardRoutes />} />
-      </Route>
+
+      <Route
+        path="bes/*"
+        element={
+          <>
+            <Header />
+            <BESRoutes />
+          </>
+        }
+      />
     </Routes>
   );
 };

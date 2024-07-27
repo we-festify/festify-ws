@@ -3,7 +3,6 @@ import {
   RegisterForm,
   ForgotPasswordForm,
   ResetPasswordForm,
-  VerifyEmailForm,
 } from '../components/auth/index';
 import AuthLayout from '../pages/auth/layout';
 import { Route, Routes } from 'react-router-dom';
@@ -16,7 +15,6 @@ const AuthRoutes = () => {
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
         <Route path="/reset-password" element={<ResetPasswordForm />} />
-        <Route path="/verify-email" element={<VerifyEmailForm />} />
       </Routes>
     </AuthLayout>
   );

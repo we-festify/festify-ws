@@ -1,9 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { applicationDB } from '../config/db';
-
-// models
-import ServiceCreator from '@shared/models/Service';
-const Service = ServiceCreator(applicationDB);
 
 // data
 import allServicesWithDocs from '../config/services';
@@ -19,19 +14,6 @@ import { BadRequestError, NotFoundError } from '../utils/errors';
 import { RequestWithUser } from '../middlewares/auth';
 
 class ServicesController {
-  static async getMyServices(
-    req: RequestWithUser,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const services = await Service.find({ user: req.user.userId });
-      res.status(200).json({ services });
-    } catch (err) {
-      next(err);
-    }
-  }
-
   static async getAllAvailableServicesMeta(
     req: Request,
     res: Response,
@@ -59,11 +41,7 @@ class ServicesController {
         throw new NotFoundError('Service not found');
       }
 
-      const { userId } = req.user;
-      const existingService = await Service.findOne({
-        user: userId,
-        type: serviceType,
-      });
+      const existingService = false;
 
       const payload = {
         ...service,
@@ -72,46 +50,6 @@ class ServicesController {
       };
 
       res.status(200).json({ service: payload });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async enableService(
-    req: RequestWithUser,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { serviceType } = req.params;
-      if (!serviceType) {
-        throw new BadRequestError('Service type is required');
-      }
-
-      const { userId } = req.user;
-      const existingService = await Service.findOne({
-        user: userId,
-        type: serviceType,
-      });
-
-      if (existingService) {
-        return res.status(200).json({
-          message:
-            'Service is already enabled. Please create a new instance to use the service.',
-        });
-      }
-
-      await Service.create({
-        user: userId,
-        type: serviceType,
-      });
-
-      const serviceName = allServicesWithDocs.find(
-        (s) => s.type === serviceType
-      )?.fullName;
-      res.status(200).json({
-        message: `${serviceName} enabled successfully.`,
-      });
     } catch (err) {
       next(err);
     }

@@ -1,34 +1,49 @@
+import { BESEmailTemplateType } from '@shared/types/bes';
 import api from '../../../api';
 
 const emailTemplatesApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getEmailTemplates: builder.query({
-      query: ({ instanceId }) => ({
-        url: `/d/in/bes/${instanceId}/templates`,
+      query: () => ({
+        url: `/d/bes/v1/templates`,
+        method: 'GET',
+      }),
+      providesTags: ['EmailTemplate'],
+    }),
+    getEmailTemplateById: builder.query({
+      query: (templateId) => ({
+        url: `/d/bes/v1/templates/${templateId}`,
         method: 'GET',
       }),
       providesTags: ['EmailTemplate'],
     }),
     createEmailTemplate: builder.mutation({
-      query: ({ instanceId, template }) => ({
-        url: `/d/in/bes/${instanceId}/templates`,
+      query: (template) => ({
+        url: `/d/bes/v1/templates`,
         method: 'POST',
         body: template,
       }),
       invalidatesTags: ['EmailTemplate'],
     }),
     updateEmailTemplate: builder.mutation({
-      query: ({ instanceId, templateId, template }) => ({
-        url: `/d/in/bes/${instanceId}/templates/${templateId}`,
+      query: ({
+        templateId,
+        template,
+      }: {
+        templateId: string;
+        template: Partial<BESEmailTemplateType>;
+      }) => ({
+        url: `/d/bes/v1/templates/${templateId}`,
         method: 'PUT',
         body: template,
       }),
       invalidatesTags: ['EmailTemplate'],
     }),
-    deleteEmailTemplate: builder.mutation({
-      query: ({ instanceId, templateId }) => ({
-        url: `/d/in/bes/${instanceId}/templates/${templateId}`,
+    deleteEmailTemplates: builder.mutation({
+      query: (templateIds) => ({
+        url: `/d/bes/v1/templates`,
         method: 'DELETE',
+        body: { templateIds: templateIds },
       }),
       invalidatesTags: ['EmailTemplate'],
     }),
@@ -37,7 +52,8 @@ const emailTemplatesApi = api.injectEndpoints({
 
 export const {
   useGetEmailTemplatesQuery,
+  useGetEmailTemplateByIdQuery,
   useCreateEmailTemplateMutation,
   useUpdateEmailTemplateMutation,
-  useDeleteEmailTemplateMutation,
+  useDeleteEmailTemplatesMutation,
 } = emailTemplatesApi;

@@ -8,82 +8,97 @@ import {
   CardHeader,
   CardTitle,
 } from '../../packages/shared/ui/card';
+import { Form, FormField, FormFieldItem } from '../../packages/shared/ui/form';
 import { Input } from '../../packages/shared/ui/input';
-import { Label } from '../../packages/shared/ui/label';
 import { useResetPasswordMutation } from '../../api/auth';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../packages/shared/utils/error';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { resetAccountPasswordSchema } from './schemas/resetPassword';
+import { z } from 'zod';
+import { setCredentials } from '../../store/slices/auth';
 
 export function ResetPasswordForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
-
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
-  const handleResetPaswordSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
+  const form = useForm<z.infer<typeof resetAccountPasswordSchema>>({
+    resolver: zodResolver(resetAccountPasswordSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const onResetPasswordSubmit = async (
+    values: z.infer<typeof resetAccountPasswordSchema>
   ) => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const newPassword = formData.get('new-password') as string;
-    const confirmPassword = formData.get('confirm-password') as string;
-
-    if (newPassword !== confirmPassword) {
-      return toast.error('Password and confrim password must be same.');
-    }
-
     try {
-      const payload = await resetPassword({
+      const response = await resetPassword({
         token,
-        password: newPassword,
+        password: values.password,
       }).unwrap();
-      toast.success(payload.message);
-      navigate('/a/login');
+      toast.success(response.message);
+      setCredentials(response);
+      navigate('/console');
     } catch (error: unknown) {
-      const message = getErrorMessage(error);
-      toast.error(message);
+      toast.error(getErrorMessage(error));
     }
   };
 
   return (
     <Card className="mx-auto max-w-sm min-w-60">
       <CardHeader>
-        <CardTitle className="text-xl">Reset Password</CardTitle>
+        <CardTitle className="text-xl">Reset Password for FWS</CardTitle>
         <CardDescription>
           Enter your new password and confirm password
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4" onSubmit={handleResetPaswordSubmit}>
-          <div className="grid gap-2">
-            <Label htmlFor="email">New Password</Label>
-            <Input
-              id="new-password"
-              name="new-password"
-              type="password"
-              autoComplete="new-password"
-              required
+        <Form {...form}>
+          <form
+            className="grid gap-4"
+            onSubmit={form.handleSubmit(onResetPasswordSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormFieldItem label="Password">
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    {...field}
+                  />
+                </FormFieldItem>
+              )}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Confirm Password</Label>
-            <Input
-              id="confirm-password"
-              name="confirm-password"
-              type="password"
-              autoComplete="new-password"
-              required
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormFieldItem label="Confirm Password">
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    {...field}
+                  />
+                </FormFieldItem>
+              )}
             />
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Reseting Password...' : 'Reset Password'}
-          </Button>
-        </form>
+            <Button type="submit" className="w-full mt-4" disabled={isLoading}>
+              {isLoading ? 'Reseting Password...' : 'Reset Password'}
+            </Button>
+          </form>
+        </Form>
         <div className="mt-4 text-center text-sm">
-          Already have an account?{' '}
+          Want to login?{' '}
           <Link to="/a/login" className="underline">
             Login
           </Link>
