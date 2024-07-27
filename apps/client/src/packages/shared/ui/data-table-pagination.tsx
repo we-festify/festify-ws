@@ -7,7 +7,7 @@ import {
 import { Table } from '@tanstack/react-table';
 
 import { Button } from './button';
-import { cn } from '@client/lib/utils';
+import { cn } from '../../../lib/utils';
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
