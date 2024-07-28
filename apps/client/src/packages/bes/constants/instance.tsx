@@ -7,7 +7,9 @@ export const instanceStatusMapping = {
 };
 
 export const instanceStatusIcons = {
-  active: <CircleCheck className="fill-green-600 text-white size-5" />,
-  unverified: <CircleAlert className="fill-yellow-600 text-white size-5" />,
-  inactive: <CircleX className="fill-red-600 text-white size-5" />,
+  active: <CircleCheck className="fill-green-600 text-background size-5" />,
+  unverified: (
+    <CircleAlert className="fill-yellow-600 text-background size-5" />
+  ),
+  inactive: <CircleX className="fill-red-600 text-background size-5" />,
 };
