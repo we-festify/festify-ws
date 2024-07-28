@@ -39,7 +39,7 @@ const MarkdownContent = ({ source }: MarkdownProps) => {
         skipHtml={true}
         components={{
           h1: ({ children }) => (
-            <h1 className="text-4xl font-light mt-6 mb-3">{children}</h1>
+            <h1 className="text-4xl font-light mt-6 mb-10">{children}</h1>
           ),
           h2: ({ children }) => {
             const slug = generateSlug(children as string);
