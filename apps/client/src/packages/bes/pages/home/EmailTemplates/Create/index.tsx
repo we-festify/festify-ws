@@ -10,7 +10,7 @@ import { Button } from '../../../../../shared/ui/button';
 import { useCreateEmailTemplateMutation } from '../../../../api/emailTemplates';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../../../../shared/utils/error';
-import { paths } from '../../../../constants/paths';
+import { besPaths } from '../../../../constants/paths';
 import { useNavigate } from 'react-router-dom';
 
 const CreateEmailTemplatePage = () => {
@@ -28,7 +28,7 @@ const CreateEmailTemplatePage = () => {
       const payload = await createEmailTemplate(values).unwrap();
       toast.success(payload.message || 'Email template created successfully');
       form.reset();
-      navigate(paths.EMAIL_TEMPLATES, { replace: true });
+      navigate(besPaths.EMAIL_TEMPLATES, { replace: true });
     } catch (err) {
       toast.error(getErrorMessage(err));
     }

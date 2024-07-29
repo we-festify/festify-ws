@@ -1,4 +1,4 @@
-import { paths as besPaths } from '../../bes/constants/paths';
+import { besPaths } from '../../bes/constants/paths';
 
 export const paths = {
   bes: besPaths,

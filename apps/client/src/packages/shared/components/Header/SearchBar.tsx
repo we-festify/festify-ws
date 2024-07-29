@@ -1,12 +1,17 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
-import { services } from '../../constants/services';
-import { useEffect, useState } from 'react';
+import { ServiceMetaType, services } from '../../constants/services';
+import { useSelector } from 'react-redux';
+import { selectIsLoggedIn } from '../../../../store/slices/auth';
 
 const HeaderSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [filteredServices, setFilteredServices] = useState([...services]);
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   useEffect(() => {
     if (!query) {
@@ -19,6 +24,15 @@ const HeaderSearchBar = () => {
     setFilteredServices(filtered);
     setOpen(filtered.length > 0);
   }, [query]);
+
+  const handleServiceClick = (service: ServiceMetaType) => {
+    if (!service.docsPath || !service.homePath) return;
+    if (isLoggedIn) {
+      navigate(service.homePath);
+    } else {
+      navigate(service.docsPath);
+    }
+  };
 
   return (
     <Popover open={open}>
@@ -40,6 +54,8 @@ const HeaderSearchBar = () => {
               <div
                 key={service.name}
                 className="flex gap-3 p-2 items-center rounded-sm text-xs cursor-pointer hover:bg-slate-800"
+                onClick={() => handleServiceClick(service)}
+                role="button"
               >
                 <img src={service.src} alt={service.name} className="size-5" />
                 <span className="text-sm">{service.name}</span>

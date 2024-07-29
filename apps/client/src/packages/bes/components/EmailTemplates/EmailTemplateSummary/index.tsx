@@ -5,7 +5,7 @@ import { BESEmailTemplateType } from '@shared/types/bes';
 import { buttonVariants } from '../../../../shared/ui/button';
 import { cn } from '../../../../../lib/utils';
 import { formatTimeFromNow } from '@shared/utils/time';
-import { paths } from '../../../constants/paths';
+import { besPaths } from '../../../constants/paths';
 
 interface EmailTemplatesummaryProps {
   template: BESEmailTemplateType;
@@ -21,7 +21,7 @@ const EmailTemplateSummary = ({ template }: EmailTemplatesummaryProps) => {
         <h3 className="text-lg font-semibold">Email template summary</h3>
         <div className="flex gap-4">
           <Link
-            to={`${paths.UPDATE_EMAIL_TEMPLATE}/${template._id}`}
+            to={`${besPaths.UPDATE_EMAIL_TEMPLATE}/${template._id}`}
             className={cn(
               buttonVariants({
                 size: 'sm',

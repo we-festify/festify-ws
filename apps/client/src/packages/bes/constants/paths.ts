@@ -1,4 +1,6 @@
-export const paths = {
+export const besPaths = {
+  SERVICE: '/bes',
+
   HOME: '/bes/home',
 
   DOCS: '/bes/docs/',

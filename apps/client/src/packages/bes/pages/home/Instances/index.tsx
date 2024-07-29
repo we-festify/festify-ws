@@ -4,7 +4,7 @@ import { Card, CardContent } from '../../../../shared/ui/card';
 import { columns } from '../../../components/instances/InstancesTable/columns';
 import { Button, buttonVariants } from '../../../../shared/ui/button';
 import { Link } from 'react-router-dom';
-import { paths } from '../../../constants/paths';
+import { besPaths } from '../../../constants/paths';
 import { BESInstanceType } from '@shared/types/bes';
 import { RotateCw } from 'lucide-react';
 import {
@@ -71,7 +71,7 @@ const Instances = () => {
                     <RotateCw size={16} className="text-muted-foreground" />
                   </Button>
                   <Link
-                    to={paths.CREATE_NEW_INSTANCE}
+                    to={besPaths.CREATE_NEW_INSTANCE}
                     className={buttonVariants({
                       size: 'sm',
                       variant: 'secondary',

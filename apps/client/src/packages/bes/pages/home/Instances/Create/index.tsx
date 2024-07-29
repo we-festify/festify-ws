@@ -6,7 +6,7 @@ import { getErrorMessage } from '../../../../../shared/utils/error';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { paths } from '../../../../constants/paths';
+import { besPaths } from '../../../../constants/paths';
 
 const CreateInstancePage = () => {
   const [createInstance] = useCreateBESInstanceMutation();
@@ -18,7 +18,7 @@ const CreateInstancePage = () => {
     try {
       const payload = await createInstance(values).unwrap();
       toast.success(payload.message || 'Instance created successfully');
-      navigate(paths.INSTANCES, { replace: true });
+      navigate(besPaths.INSTANCES, { replace: true });
     } catch (err) {
       toast.error(getErrorMessage(err));
     }

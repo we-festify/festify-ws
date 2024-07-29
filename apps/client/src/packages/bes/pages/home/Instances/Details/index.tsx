@@ -10,7 +10,7 @@ import {
   instanceStatusMapping,
 } from '../../../../constants/instance';
 import { RotateCw } from 'lucide-react';
-import { paths } from '../../../../constants/paths';
+import { besPaths } from '../../../../constants/paths';
 import { cn } from '../../../../../../lib/utils';
 import {
   useDeleteBESInstancesMutation,
@@ -38,7 +38,7 @@ const InstanceDetailsPage = () => {
 
     try {
       await deleteInstances([instance._id]).unwrap();
-      navigate(paths.INSTANCES);
+      navigate(besPaths.INSTANCES);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
@@ -77,7 +77,7 @@ const InstanceDetailsPage = () => {
               <RotateCw size={16} className="text-muted-foreground" />
             </Button>
             <Link
-              to={paths.CREATE_NEW_INSTANCE}
+              to={besPaths.CREATE_NEW_INSTANCE}
               className={buttonVariants({
                 size: 'sm',
                 variant: 'secondary',
@@ -96,7 +96,7 @@ const InstanceDetailsPage = () => {
                   <h2 className="text-lg font-medium">{step.title}</h2>
                   {instance && (
                     <Link
-                      to={`${paths.UPDATE_INSTANCE}/${instance.alias}`}
+                      to={`${besPaths.UPDATE_INSTANCE}/${instance.alias}`}
                       className={cn(
                         buttonVariants({
                           size: 'sm',

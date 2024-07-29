@@ -3,7 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { BESEmailTemplateType } from '@shared/types/bes/emailTemplate';
 import { formatTimeFromNow } from '@shared/utils/time';
 import { Link } from 'react-router-dom';
-import { paths } from '../../../constants/paths';
+import { besPaths } from '../../../constants/paths';
 import { Checkbox } from '../../../../shared/ui/checkbox';
 
 export const columns: ColumnDef<BESEmailTemplateType>[] = [
@@ -37,7 +37,7 @@ export const columns: ColumnDef<BESEmailTemplateType>[] = [
       const name = row.original.name;
       return (
         <Link
-          to={`${paths.EMAIL_TEMPLATE_DETAILS}${id}`}
+          to={`${besPaths.EMAIL_TEMPLATE_DETAILS}${id}`}
           className="text-blue-600 hover:underline"
         >
           {name}

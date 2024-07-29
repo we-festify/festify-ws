@@ -7,7 +7,7 @@ export const services: ServiceMetaType[] = [
     src: '/logos/BES.png',
     description: 'A basic email service that sends and receives emails',
     docsPath: paths.bes.DOCS,
-    homePath: paths.bes.HOME,
+    homePath: paths.bes.SERVICE,
   },
   {
     name: 'Telegram Service',
