@@ -22,7 +22,10 @@ const Profile = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const location = useLocation();
-  const isHomeRoute = location.pathname.split(/.*\//)[1] === 'home';
+  // home route - /<service>/home
+  const isHomeRoute =
+    location.pathname.split('/').length >= 2 &&
+    location.pathname.split('/')[2] === 'home';
 
   const handleLogOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -43,81 +46,88 @@ const Profile = () => {
             variant: 'outline',
             size: 'sm',
           }),
-          'w-24 h-8'
+          'min-w-24 h-8 text-slate-900 bg-white hover:bg-white/90 hover:text-slate-900'
         )}
         state={{
           from: window.location.pathname,
         }}
       >
-        Sign in
-      </Link>
-    );
-  }
-
-  if (isLoggedIn && !isHomeRoute) {
-    const currentPath = location.pathname;
-    const link = currentPath.split('/').slice(0, 2).join('/') + '/home';
-
-    return (
-      <Link
-        to={link}
-        className={cn(
-          buttonVariants({
-            variant: 'outline',
-            size: 'sm',
-          }),
-          'h-8 text-primary'
-        )}
-      >
-        Go to console
+        Sign in to console
       </Link>
     );
   }
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <div className="flex items-center gap-1 p-2 rounded-sm text-xs cursor-pointer text-white/90 hover:bg-slate-800">
-          <span>
-            {account?.alias}
-            {account?.type !== 'root' &&
-              typeof account?.rootAccount !== 'string' && (
-                <span className="text-xs text-muted-foreground pl-1">
-                  @ {account?.rootAccount.alias}
-                </span>
-              )}
-          </span>
-          <ChevronDown size={16} />
-        </div>
-      </PopoverTrigger>
-      <PopoverContent className="p-0 px-2 shadow-none rounded-none ring-0 border-0 bg-transparent max-w-none">
-        <div className="bg-slate-900 text-slate-200 shadow-md text-muted p-4 rounded-md w-max min-w-64">
-          <div className="mb-3 text-sm text-slate-400">Profile</div>
-          <div className="flex flex-col gap-3 text-xs text-end">
-            <div className="flex gap-4 justify-between">
-              <span>Account Id</span>
-              <span>{account?._id}</span>
-            </div>
-            <div className="flex gap-4 justify-between">
-              <span>Alias</span>
-              <span>
-                {account?.alias}
-                {account?.type !== 'root' &&
-                  typeof account?.rootAccount !== 'string' && (
-                    <span className="text-xs text-muted-foreground pl-1">
-                      @ {account?.rootAccount.alias}
-                    </span>
-                  )}
-              </span>
-            </div>
-            <Separator className="bg-slate-600 mt-4 mb-2" />
-            <Button variant="secondary" size="sm" onClick={handleLogOut}>
-              Sign out
-            </Button>
+    <>
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="flex items-center gap-1 p-2 rounded-sm text-xs cursor-pointer text-white/90 hover:bg-slate-800">
+            <span>
+              {account?.alias}
+              {account?.type !== 'root' &&
+                typeof account?.rootAccount !== 'string' && (
+                  <span className="text-xs text-muted-foreground pl-1">
+                    @ {account?.rootAccount.alias}
+                  </span>
+                )}
+            </span>
+            <ChevronDown size={16} />
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverTrigger>
+        <PopoverContent className="p-0 px-2 shadow-none rounded-none ring-0 border-0 bg-transparent max-w-none">
+          <div className="bg-slate-900 text-slate-200 shadow-md text-muted p-4 rounded-md w-max min-w-64">
+            <div className="mb-3 text-sm text-slate-400">Profile</div>
+            <div className="flex flex-col gap-3 text-xs text-end">
+              <div className="flex gap-4 justify-between">
+                <span>Account Id</span>
+                <span>{account?._id}</span>
+              </div>
+              <div className="flex gap-4 justify-between">
+                <span>Alias</span>
+                <span>
+                  {account?.alias}
+                  {account?.type !== 'root' &&
+                    typeof account?.rootAccount !== 'string' && (
+                      <span className="text-xs text-muted-foreground pl-1">
+                        @ {account?.rootAccount.alias}
+                      </span>
+                    )}
+                </span>
+              </div>
+              <Separator className="bg-slate-600 mt-4 mb-2" />
+              <Button variant="secondary" size="sm" onClick={handleLogOut}>
+                Sign out
+              </Button>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+      {isLoggedIn &&
+        !isHomeRoute &&
+        (() => {
+          const servicePath = location.pathname.split('/')[1];
+          const link = `/${servicePath}/home`;
+
+          if (!servicePath) {
+            return null;
+          }
+
+          return (
+            <Link
+              to={link}
+              className={cn(
+                buttonVariants({
+                  variant: 'outline',
+                  size: 'sm',
+                }),
+                'h-8 text-slate-900 bg-white hover:bg-white/90 hover:text-slate-900'
+              )}
+            >
+              Go to console
+            </Link>
+          );
+        })()}
+    </>
   );
 };
 

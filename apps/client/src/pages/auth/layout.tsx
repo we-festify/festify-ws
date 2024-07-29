@@ -12,14 +12,13 @@ const getFilteredFromRoute = (from: string) => {
     '/register',
     '/forgot-password',
     '/reset-password',
-    '/verify-email',
   ];
 
   if (excludedRoutes.includes(from)) {
     return '/';
   }
 
-  return from;
+  return from || '/';
 };
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {

@@ -4,7 +4,7 @@ import { Card, CardContent } from '../../../../shared/ui/card';
 import { columns } from '../../../components/EmailTemplates/EmailTemplatesTable/columns';
 import { Button, buttonVariants } from '../../../../shared/ui/button';
 import { Link } from 'react-router-dom';
-import { paths } from '../../../constants/paths';
+import { besPaths } from '../../../constants/paths';
 import { RotateCw } from 'lucide-react';
 import {
   useDeleteEmailTemplatesMutation,
@@ -73,7 +73,7 @@ const EmailTemplates = () => {
                     <RotateCw size={16} className="text-muted-foreground" />
                   </Button>
                   <Link
-                    to={paths.CREATE_NEW_EMAIL_TEMPLATE}
+                    to={besPaths.CREATE_NEW_EMAIL_TEMPLATE}
                     className={buttonVariants({
                       size: 'sm',
                       variant: 'secondary',

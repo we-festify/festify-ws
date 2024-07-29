@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { cn } from '../../../../lib/utils';
 
 interface LogoProps {
@@ -7,7 +8,8 @@ interface LogoProps {
 
 const Logo = ({ variant = 'dark', size = 'md' }: LogoProps) => {
   return (
-    <div
+    <Link
+      to="/"
       className={cn(
         'flex items-center justify-center select-none',
         variant === 'light' ? 'text-white/90' : 'text-primary',
@@ -24,7 +26,7 @@ const Logo = ({ variant = 'dark', size = 'md' }: LogoProps) => {
       >
         WS
       </span>
-    </div>
+    </Link>
   );
 };
 

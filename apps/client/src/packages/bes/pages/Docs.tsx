@@ -9,7 +9,7 @@ import {
 import { useGetBESDocsNavQuery } from '../api/docs';
 import BESDocsContent from '../components/Docs/Content';
 import BESDocsNav from '../components/Docs/Nav';
-import { paths } from '../constants/paths';
+import { besPaths } from '../constants/paths';
 import { BESDocsNavItemType } from '@shared/types/bes/docs';
 import { ItemProps } from '../../shared/components/PageLayout/SideNavItem';
 import { useFetch } from '../../shared/hooks/useFetch';
@@ -25,7 +25,7 @@ const BESDocsPage = () => {
   const [activeItem, setActiveItem] = useState<ItemProps | undefined>(
     undefined
   );
-  const section = location.pathname.split(paths.DOCS)[1] || '';
+  const section = location.pathname.split(besPaths.DOCS)[1] || '';
 
   const isSectionActive = (sectionPath: string | undefined) => {
     if (!sectionPath) return section === '';

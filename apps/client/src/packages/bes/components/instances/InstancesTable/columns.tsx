@@ -9,7 +9,7 @@ import {
   instanceStatusMapping,
 } from '../../../constants/instance';
 import { Link } from 'react-router-dom';
-import { paths } from '../../../constants/paths';
+import { besPaths } from '../../../constants/paths';
 import { Checkbox } from '../../../../shared/ui/checkbox';
 
 export const columns: ColumnDef<BESInstanceType>[] = [
@@ -42,7 +42,7 @@ export const columns: ColumnDef<BESInstanceType>[] = [
       const alias = row.original.alias;
       return (
         <Link
-          to={`${paths.INSTANCE_DETAILS}${alias}`}
+          to={`${besPaths.INSTANCE_DETAILS}${alias}`}
           className="text-blue-600 hover:underline"
         >
           {alias}

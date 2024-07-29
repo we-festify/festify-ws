@@ -9,7 +9,7 @@ import {
 } from '../../../../api/emailTemplates';
 import { Button, buttonVariants } from '../../../../../shared/ui/button';
 import { RotateCw } from 'lucide-react';
-import { paths } from '../../../../constants/paths';
+import { besPaths } from '../../../../constants/paths';
 import { getErrorMessage } from '../../../../../shared/utils/error';
 import { toast } from 'sonner';
 import { BESEmailTemplateType } from '@shared/types/bes';
@@ -31,7 +31,7 @@ const EmailTemplateDetailsPage = () => {
 
     try {
       await deleteEmailTemplates([template._id]).unwrap();
-      navigate(paths.EMAIL_TEMPLATES);
+      navigate(besPaths.EMAIL_TEMPLATES);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
@@ -75,7 +75,7 @@ const EmailTemplateDetailsPage = () => {
               <RotateCw size={16} className="text-muted-foreground" />
             </Button>
             <Link
-              to={paths.CREATE_NEW_EMAIL_TEMPLATE}
+              to={besPaths.CREATE_NEW_EMAIL_TEMPLATE}
               className={buttonVariants({
                 size: 'sm',
                 variant: 'secondary',

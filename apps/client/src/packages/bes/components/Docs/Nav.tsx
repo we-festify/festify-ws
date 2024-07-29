@@ -1,13 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useGetBESDocsNavQuery } from '../../api/docs';
-import { paths } from '../../constants/paths';
+import { besPaths } from '../../constants/paths';
 import { BESDocsNavItemType } from '@shared/types/bes/docs';
 import { cn } from '../../../../lib/utils';
 
 const BESDocsNav = () => {
   const { data: { nav } = {} } = useGetBESDocsNavQuery({});
   const location = useLocation();
-  const rootPath = location.pathname.split(paths.DOCS)[1] || '';
+  const rootPath = location.pathname.split(besPaths.DOCS)[1] || '';
   const activePath = rootPath ? rootPath?.split('/')[0] : '';
 
   const isPathActive = (path: string | undefined) => {
@@ -21,7 +21,7 @@ const BESDocsNav = () => {
         {nav?.map((item: BESDocsNavItemType) => (
           <Link
             key={item.title}
-            to={item.path ? `${paths.DOCS}${item.path}` : paths.DOCS}
+            to={item.path ? `${besPaths.DOCS}${item.path}` : besPaths.DOCS}
             className={cn(
               'text-xs text-muted-foreground',
 

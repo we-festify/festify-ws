@@ -1,5 +1,5 @@
 import { Link as LinkIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import Markdown from 'react-markdown';
 import { Link, useLocation } from 'react-router-dom';
 import rehypeHighlight from 'rehype-highlight';
@@ -14,25 +14,6 @@ interface MarkdownProps {
 }
 
 const MarkdownContent = ({ source }: MarkdownProps) => {
-  const location = useLocation();
-
-  const generateSlug = (text: string) => {
-    return text
-      .toString()
-      .toLowerCase()
-      .replace(/ /g, '-')
-      .replace(/[^\w-]+/g, '');
-  };
-
-  useEffect(() => {
-    if (location.hash) {
-      const element = document.getElementById(location.hash.slice(1));
-      if (element) {
-        element.scrollIntoView();
-      }
-    }
-  }, [location.hash]);
-
   return (
     <div className="w-full scroll-pt-20">
       <Markdown
@@ -41,27 +22,7 @@ const MarkdownContent = ({ source }: MarkdownProps) => {
           h1: ({ children }) => (
             <h1 className="text-4xl font-light mt-6 mb-10">{children}</h1>
           ),
-          h2: ({ children }) => {
-            const slug = generateSlug(children as string);
-            const url = `${window.location.href.split('#')[0]}#${slug}`;
-
-            return (
-              <h2 className="text-2xl font-semibold mt-6 mb-3 pt-6 border-t-2 border-muted relative group">
-                <span id={slug} className="absolute -top-20" />
-                <CopyIcon
-                  icon={
-                    <LinkIcon
-                      size={14}
-                      className="text-muted-foreground hover:text-primary"
-                    />
-                  }
-                  value={url}
-                  className="absolute top-[22px] -left-9 hover:bg-transparent cursor-pointer hidden group-hover:block"
-                />
-                {children}
-              </h2>
-            );
-          },
+          h2: Heading2,
           h3: ({ children }) => (
             <h3 className="text-xl font-semibold mt-7 mb-4">{children}</h3>
           ),
@@ -111,6 +72,53 @@ const MarkdownContent = ({ source }: MarkdownProps) => {
         {source}
       </Markdown>
     </div>
+  );
+};
+
+const generateSlug = (text: string) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '');
+};
+
+interface HeadingProps {
+  children?: ReactNode;
+}
+
+const Heading2 = ({ children }: HeadingProps) => {
+  const location = useLocation();
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const slug = generateSlug(children as string);
+  const url = `${window.location.href.split('#')[0]}#${slug}`;
+
+  useEffect(() => {
+    if (location.hash === `#${slug}`) {
+      headingRef.current?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }
+  }, [location.hash, slug]);
+
+  return (
+    <h2
+      ref={headingRef}
+      className="text-2xl font-semibold mt-6 mb-3 pt-6 border-t-2 border-muted relative group"
+    >
+      <span id={slug} className="absolute -top-20" />
+      <CopyIcon
+        icon={
+          <LinkIcon
+            size={14}
+            className="text-muted-foreground hover:text-primary"
+          />
+        }
+        value={url}
+        className="absolute top-[22px] -left-9 hover:bg-transparent cursor-pointer hidden group-hover:block"
+      />
+      {children}
+    </h2>
   );
 };
 

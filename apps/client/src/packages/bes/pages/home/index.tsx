@@ -5,7 +5,7 @@ import {
   PageSideNav,
 } from '../../../shared/components/PageLayout';
 import HomePage from './HomePage';
-import { paths } from '../../constants/paths';
+import { besPaths } from '../../constants/paths';
 
 import Instances from './Instances';
 import CreateInstancePage from './Instances/Create';
@@ -61,14 +61,14 @@ const BESHome = () => {
 };
 
 const sideNavItems = [
-  { title: 'Home', path: paths.HOME },
+  { title: 'Home', path: besPaths.HOME },
   {
     title: 'Instances',
-    path: paths.INSTANCES,
+    path: besPaths.INSTANCES,
   },
   {
     title: 'Email templates',
-    path: paths.EMAIL_TEMPLATES,
+    path: besPaths.EMAIL_TEMPLATES,
   },
 ] as ItemProps[];
 

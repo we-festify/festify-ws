@@ -14,7 +14,7 @@ import {
 } from '../../../../api/emailTemplates';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../../../../shared/utils/error';
-import { paths } from '../../../../constants/paths';
+import { besPaths } from '../../../../constants/paths';
 
 const UpdateEmailTemplatePage = () => {
   const { templateId } = useParams<{ templateId: string }>();
@@ -37,7 +37,7 @@ const UpdateEmailTemplatePage = () => {
         template: values,
       }).unwrap();
       toast.success(payload.message || 'Email template updated successfully');
-      navigate(`${paths.EMAIL_TEMPLATE_DETAILS}${template._id}`);
+      navigate(`${besPaths.EMAIL_TEMPLATE_DETAILS}${template._id}`);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
