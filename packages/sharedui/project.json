@@ -4,7 +4,6 @@
   "sourceRoot": "packages/sharedui/src",
   "projectType": "library",
   "tags": ["scope:sharedui"],
-  "// targets": "to see all targets run: nx show project sharedui --web",
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",

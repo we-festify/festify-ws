@@ -4,7 +4,6 @@
   "sourceRoot": "packages/rootui/src",
   "projectType": "library",
   "tags": ["scope:rootui"],
-  "// targets": "to see all targets run: nx show project rootui --web",
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",

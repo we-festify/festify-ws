@@ -18,7 +18,7 @@
     },
     "test": {
       "executor": "@nx/react:test",
-      "outputs": ["coverage/packages/root"],
+      "outputs": ["{workspaceRoot}/coverage/packages/root"],
       "options": {
         "jestConfig": "packages/root/jest.config.js",
         "tsConfig": "packages/root/tsconfig.spec.json"

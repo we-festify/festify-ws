@@ -34,7 +34,7 @@
     },
     "test": {
       "executor": "@nx/react:test",
-      "outputs": ["coverage/packages/bes"],
+      "outputs": ["{workspaceRoot}/coverage/packages/bes"],
       "options": {
         "jestConfig": "packages/bes/jest.config.js",
         "tsConfig": "packages/bes/tsconfig.spec.json",
