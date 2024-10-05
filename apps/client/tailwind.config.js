@@ -6,6 +6,13 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+
+    // Include rootui and sharedui packages
+    '../../packages/rootui/src/**/*.{ts,tsx}',
+    '../../packages/sharedui/src/**/*.{ts,tsx}',
+
+    // Include ui packages
+    '../../packages/bes-ui/src/**/*.{ts,tsx}',
   ],
   prefix: '',
   theme: {

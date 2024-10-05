@@ -1,0 +1,11 @@
+{
+  "name": "rootui",
+  "version": "0.0.1",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
+}

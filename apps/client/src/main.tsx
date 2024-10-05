@@ -5,11 +5,11 @@ import './styles.css';
 import './animations.css';
 import './gradients.css';
 import './typography.css';
-import { ThemeProvider } from './providers/ThemeProvider';
+import { ThemeProvider } from '@rootui/providers/ThemeProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
-import store from './store';
-import { Toaster } from './packages/shared/ui/sonner';
+import store from '@rootui/store';
+import { Toaster } from '@sharedui/primitives/sonner';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

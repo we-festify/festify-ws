@@ -1,4 +1,4 @@
-import AuthProvider from './providers/AuthProvider';
+import AuthProvider from '@rootui/providers/AuthProvider';
 import AppRoutes from './routes';
 
 function App() {

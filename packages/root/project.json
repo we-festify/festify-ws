@@ -1,0 +1,34 @@
+{
+  "name": "root",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/root/src",
+  "projectType": "library",
+  "tags": ["scope:root"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/root",
+        "tsConfig": "packages/root/tsconfig.lib.json",
+        "packageJson": "packages/root/package.json",
+        "main": "packages/root/src/index.ts",
+        "assets": ["packages/root/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/react:test",
+      "outputs": ["coverage/packages/root"],
+      "options": {
+        "jestConfig": "packages/root/jest.config.js",
+        "tsConfig": "packages/root/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["packages/root/**/*.ts"]
+      }
+    }
+  }
+}

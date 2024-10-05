@@ -15,6 +15,55 @@
               {
                 "sourceTag": "*",
                 "onlyDependOnLibsWithTags": ["*"]
+              },
+              // root libraries can only depend on other root libraries
+              {
+                "sourceTag": "scope:root",
+                "onlyDependOnLibsWithTags": ["scope:root"]
+              },
+              {
+                "sourceTag": "scope:rootui",
+                "onlyDependOnLibsWithTags": ["scope:rootui"]
+              },
+              {
+                "sourceTag": "scope:types",
+                "onlyDependOnLibsWithTags": ["scope:types"]
+              },
+
+              // shared libraries can only depend on root and other shared libraries
+              {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": [
+                  "scope:root",
+                  "scope:shared",
+                  "scope:types"
+                ]
+              },
+              {
+                "sourceTag": "scope:sharedui",
+                "onlyDependOnLibsWithTags": [
+                  "scope:rootui",
+                  "scope:sharedui",
+                  "scope:types"
+                ]
+              },
+
+              // all other api libraries can only depend on root and shared libraries
+              {
+                "sourceTag": "type:api",
+                "onlyDependOnLibsWithTags": [
+                  "scope:root",
+                  "scope:shared",
+                  "scope:types"
+                ]
+              },
+              {
+                "sourceTag": "type:ui",
+                "onlyDependOnLibsWithTags": [
+                  "scope:rootui",
+                  "scope:sharedui",
+                  "scope:types"
+                ]
               }
             ]
           }

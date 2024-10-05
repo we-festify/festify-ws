@@ -1,24 +1,22 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-
-import { Button } from '../../packages/shared/ui/button';
+import { Button } from '@sharedui/primitives/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../packages/shared/ui/card';
-import { Form, FormField, FormFieldItem } from '../../packages/shared/ui/form';
-import { Input } from '../../packages/shared/ui/input';
-import { useResetPasswordMutation } from '../../api/auth';
+} from '@sharedui/primitives/card';
+import { Form, FormField, FormFieldItem } from '@sharedui/primitives/form';
+import { Input } from '@sharedui/primitives/input';
+import { getErrorMessage } from '@sharedui/utils/error';
+import { useResetPasswordMutation } from '@rootui/api/auth';
+import { setCredentials } from '@rootui/slices/auth';
 import { toast } from 'sonner';
-import { getErrorMessage } from '../../packages/shared/utils/error';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { resetAccountPasswordSchema } from './schemas/resetPassword';
 import { z } from 'zod';
-import { setCredentials } from '../../store/slices/auth';
+import { resetAccountPasswordSchema } from './schemas/resetPassword';
 
 export function ResetPasswordForm() {
   const navigate = useNavigate();
@@ -38,6 +36,11 @@ export function ResetPasswordForm() {
     values: z.infer<typeof resetAccountPasswordSchema>
   ) => {
     try {
+      if (!token) {
+        toast.error('Invalid token or token expired');
+        return;
+      }
+
       const response = await resetPassword({
         token,
         password: values.password,

@@ -2,7 +2,7 @@ import express, { RequestHandler } from 'express';
 const router = express.Router();
 
 import AuthController from '../controllers/auth';
-import { RequestWithUser, requireAuth } from '../middlewares/auth';
+import { RequestWithUser, requireAuth } from '@root/middlewares/auth';
 
 router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);

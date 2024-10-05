@@ -20,18 +20,14 @@ app.get('/', async (req, res) => {
 });
 
 // Database
-require('./config/db');
+require('@root/config/db');
 
-// Routes
+// API Routes v1
 import routes from './routes-v1';
 app.use('/api/v1', routes);
 
-// Services routes
-import servicesRoutes from './d-services';
-app.use('/api/d', servicesRoutes);
-
 // errors
-import { handleErrors } from './utils/errors';
+import { handleErrors } from '@root/utils/errors';
 app.use(handleErrors);
 
 const PORT = process.env.PORT || 5000;

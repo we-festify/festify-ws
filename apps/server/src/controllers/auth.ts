@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { applicationDB } from '../config/db';
+import { applicationDB } from '@root/config/db';
 
 // models
 import UserCreator from '@shared/models/User';
@@ -8,32 +8,32 @@ const User = UserCreator(applicationDB);
 const Account = AccountCreator(applicationDB);
 
 // services
-import Mailer from '../services/mailer';
+import Mailer from '@root/services/mailer';
 
 // utils
 import {
   hashPassword,
   comparePassword,
   generateRandomPassword,
-} from '../utils/password';
+} from '@root/utils/password';
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
   generateResetPasswordToken,
   verifyResetPasswordToken,
-} from '../utils/token';
+} from '@root/utils/token';
 import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
-} from '../utils/errors';
+} from '@root/utils/errors';
 
 // packages
 import validator from 'validator';
 
 // middlewares
-import { RequestWithUser } from '../middlewares/auth';
+import { RequestWithUser } from '@root/middlewares/auth';
 
 class AuthController {
   /**
@@ -257,7 +257,9 @@ class AuthController {
 
       const payload = { accountId: account._id };
       const resetPasswordToken =
-        generateResetPasswordToken(payload, account.password) + ':' + account._id;
+        generateResetPasswordToken(payload, account.password) +
+        ':' +
+        account._id;
 
       account.passwordResetToken = resetPasswordToken;
       await account.save();
@@ -348,9 +350,11 @@ class AuthController {
       const account = await Account.findOne({
         _id: accountId,
         alias: accountAlias,
-      }).select('-password -passwordResetToken').populate('rootAccount', 'alias');
+      })
+        .select('-password -passwordResetToken')
+        .populate('rootAccount', 'alias');
       if (!account) throw new NotFoundError('Account not found');
-      
+
       res.status(200).json({ account });
     } catch (err) {
       next(err);

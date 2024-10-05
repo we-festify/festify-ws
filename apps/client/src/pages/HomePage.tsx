@@ -1,10 +1,10 @@
-import { Card, CardContent } from '../packages/shared/ui/card';
-import Header from '../packages/shared/components/Header';
-import { services } from '../packages/shared/constants/services';
-import GradientShadow from '../packages/shared/components/ui/GradientShadow';
+import { Card, CardContent } from '@sharedui/primitives/card';
+import Header from '@sharedui/components/Header';
+import { services } from '@sharedui/constants/services';
+import GradientShadow from '@sharedui/components/GradientShadow';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import Footer from '../packages/shared/components/Footer';
+import Footer from '@sharedui/components/Footer';
 
 const HomePage = () => {
   return (

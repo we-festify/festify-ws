@@ -1,0 +1,45 @@
+{
+  "name": "bes",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/bes/src",
+  "projectType": "library",
+  "tags": ["type:api"],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/packages/bes",
+        "format": ["cjs"],
+        "bundle": true,
+        "main": "packages/bes/src/index.ts",
+        "tsConfig": "packages/bes/tsconfig.lib.json",
+        "assets": ["packages/bes/src/assets/**"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["packages/bes/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/react:test",
+      "outputs": ["coverage/packages/bes"],
+      "options": {
+        "jestConfig": "packages/bes/jest.config.js",
+        "tsConfig": "packages/bes/tsconfig.spec.json",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

@@ -1,24 +1,20 @@
 import { Link, useNavigate } from 'react-router-dom';
-
-import { Button } from '../../packages/shared/ui/button';
+import { Button } from '@sharedui/primitives/button';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from '../../packages/shared/ui/card';
-import { Form, FormField, FormFieldItem } from '../../packages/shared/ui/form';
-import { Input } from '../../packages/shared/ui/input';
-
-import { useRegisterMutation } from '../../api/auth';
-
+} from '@sharedui/primitives/card';
+import { Form, FormField, FormFieldItem } from '@sharedui/primitives/form';
+import { Input } from '@sharedui/primitives/input';
+import { getErrorMessage } from '@sharedui/utils/error';
+import { useRegisterMutation } from '@rootui/api/auth';
 import { toast } from 'sonner';
-import { getErrorMessage } from '../../packages/shared/utils/error';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { rootUserRegisterSchema } from './schemas/register';
 import { z } from 'zod';
+import { rootUserRegisterSchema } from './schemas/register';
 
 export function RegisterForm() {
   const [register] = useRegisterMutation();

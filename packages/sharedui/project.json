@@ -1,0 +1,22 @@
+{
+  "name": "sharedui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sharedui/src",
+  "projectType": "library",
+  "tags": ["scope:sharedui"],
+  "// targets": "to see all targets run: nx show project sharedui --web",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/sharedui/src/**/*.ts",
+          "packages/sharedui/src/**/*.tsx",
+          "packages/sharedui/src/**/*.js",
+          "packages/sharedui/src/**/*.jsx"
+        ]
+      }
+    }
+  }
+}

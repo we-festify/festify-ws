@@ -1,6 +1,6 @@
-import { selectIsLoggedIn } from '../../store/slices/auth';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
+import { selectIsLoggedIn } from '@rootui/slices/auth';
 
 type AuthLayoutProps = {
   children: JSX.Element;
