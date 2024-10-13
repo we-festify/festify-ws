@@ -14,7 +14,7 @@ export const encryptCookieValue = async (secret: string): Promise<string> => {
   }
   const derivedKey = crypto.scryptSync(key, 'salt', 32);
   const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv('aes-256-cbc', derivedKey, iv);
+  const cipher = crypto.createCipheriv('aes-256-gcm', derivedKey, iv);
   let encrypted = cipher.update(secret, 'utf8', 'hex');
   encrypted += cipher.final('hex');
   encrypted = `${iv.toString('hex')}:${encrypted}`;
@@ -36,7 +36,7 @@ export const decryptCookieValue = async (
   const derivedKey = crypto.scryptSync(key, 'salt', 32);
   const [iv, encryptedText] = encrypted.split(':');
   const decipher = crypto.createDecipheriv(
-    'aes-256-cbc',
+    'aes-256-gcm',
     derivedKey,
     Buffer.from(iv, 'hex'),
   );

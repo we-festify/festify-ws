@@ -32,16 +32,15 @@ const PageSecondaryNav = ({
 
   useEffect(() => {
     if (defaultOpen) {
-      setPageNavBar({
+      return setPageNavBar({
         isOpen: true,
         width: '72',
       });
-    } else {
-      setPageNavBar({
-        isOpen: false,
-        width: '12',
-      });
     }
+    setPageNavBar({
+      isOpen: false,
+      width: '12',
+    });
   }, [defaultOpen, setPageNavBar]);
 
   return (
@@ -56,7 +55,8 @@ const PageSecondaryNav = ({
     >
       {pageNavBar.isOpen ? (
         <div className="w-full relative">
-          <span
+          <button
+            title="Close"
             onClick={() =>
               setPageNavBar({
                 isOpen: false,
@@ -66,7 +66,7 @@ const PageSecondaryNav = ({
             className="absolute top-0.5 right-1 rounded-full p-2 hover:stroke-primary hover:bg-muted cursor-pointer"
           >
             <X size={20} className="text-muted-foreground" />
-          </span>
+          </button>
           {title && (
             <div className="w-full py-3 px-6 border-b-2 border-b-muted dark:border-slate-800">
               <h3 className="text-lg font-semibold pr-4">{title}</h3>
@@ -89,7 +89,8 @@ const PageSecondaryNav = ({
           {footer}
         </div>
       ) : (
-        <div
+        <button
+          title="Open"
           onClick={() =>
             setPageNavBar({
               isOpen: true,
@@ -99,7 +100,7 @@ const PageSecondaryNav = ({
           className="w-full h-full cursor-pointer flex justify-center py-2"
         >
           <Info size={20} className="text-muted-foreground" />
-        </div>
+        </button>
       )}
     </div>
   );
