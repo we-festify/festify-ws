@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .email-wrapper {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header img {
+      max-width: 150px;
+      height: auto;
+    }
+    .content {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .content h1 {
+      font-size: 22px;
+      margin-top: 0;
+      color: #333;
+    }
+    .content p {
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 0 0 20px;
+    }
+    .verify-link-container {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+      margin: 20px 0;
+      letter-spacing: 1px;
+    }
+    .verify-link {
+      display: inline-block;
+      padding: 12px 20px;
+      font-size: 16px;
+      color: #ffffff;
+      background-color: #000000; /* Black button */
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+      margin: 20px 0;
+      border: 1px solid #000000; /* Black border to match button color */
+    }
+    .verify-link:hover {
+      background-color: #333333; /* Darker shade of black for hover */
+    }
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+      margin-top: 20px;
+    }
+
+    /* Responsive Styles */
+    @media only screen and (max-width: 600px) {
+      .email-wrapper {
+        padding: 10px;
+      }
+      .content h1 {
+        font-size: 20px;
+      }
+      .content p {
+        font-size: 14px;
+      }
+      .verify-link-container {
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+      .verify-link {
+        font-size: 14px;
+        padding: 10px 15px;
+      }
+      .footer {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="header">
+      <img src="{{company.logo_url}}" alt="Company Logo">
+    </div>
+    <div class="content">
+      <h1>Email Verification</h1>
+      <p>Dear {{user.name}},</p>
+      <p>Thank you for creating an account with us. To complete your registration, please verify your email address by clicking the link below. 
+        The link will expire in {{expires_in}}.
+      </p>
+      <div class="verify-link-container">
+        <a href="{{email_verification_url}}" class="verify-link">Verify Your Email</a>
+      </div>
+      <p>If you did not create an account, please ignore this email. No changes will be made to your email address.</p>
+    </div>
+    <div class="footer">
+      <p>&copy; {{company.copyright_year}} {{company.name}}. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

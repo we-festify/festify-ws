@@ -5,52 +5,57 @@ import {
   PageLayout,
   PageSecondaryNav,
   PageSideNav,
-} from '@sharedui/components/PageLayout';
+} from '@sharedui/components/page-layout';
 import { useGetDocsNavQuery } from '@rootui/api/docs';
-import DocsContent from '@sharedui/components/Docs/Content';
-import DocsNav from '@sharedui/components/Docs/Nav';
-import { besPaths } from '@sharedui/constants/paths';
-import { BESDocsNavItemType } from '@sharedtypes/bes/docs';
-import { ItemProps } from '@sharedui/components/PageLayout/SideNavItem';
+import DocsContent from '@sharedui/components/docs/content';
+import DocsNav from '@sharedui/components/docs/nav';
+import paths from '@sharedui/constants/paths';
+import { IDocsNav } from '@sharedtypes/docs';
+import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
 import { useFetch } from '@sharedui/hooks/useFetch';
 import { Helmet } from 'react-helmet';
 import { useState } from 'react';
-import Header from '@sharedui/components/Header';
+import Header from '@sharedui/components/header';
+import { services } from '@sharedui/constants/services';
 
 const DocsPage = () => {
-  const { service } = useParams();
-  const { data: { nav } = {} } = useGetDocsNavQuery<{
-    data: { nav: BESDocsNavItemType[] };
-  }>(service);
+  const { service: serviceShort } = useParams();
+  const { data: { nav, base_uri } = {} } = useGetDocsNavQuery<{
+    data: { nav: IDocsNav; base_uri: string };
+  }>(serviceShort);
+  const service = services.find(
+    (s) => s.shortName.toLowerCase() === serviceShort?.toLowerCase(),
+  );
+  const rootPath = service
+    ? paths.root.DOCS + '/' + serviceShort
+    : paths.root.DOCS;
   const location = useLocation();
+  const currentSectionPath =
+    location.pathname.split(rootPath)[1]?.split('/')[1] ?? '';
   const [queryParams, setQueryParams] = useSearchParams();
   const [activeItem, setActiveItem] = useState<ItemProps | undefined>(
-    undefined
+    undefined,
   );
-  const section = location.pathname.split(besPaths.DOCS)[1] || '';
 
   const isSectionActive = (sectionPath: string | undefined) => {
-    if (!sectionPath) return section === '';
-    return section === sectionPath;
+    if (!sectionPath) return currentSectionPath === '';
+    return currentSectionPath === sectionPath;
   };
 
   const activeSection = nav?.find((item) => isSectionActive(item.path));
   const filePath =
-    queryParams.get('path') || activeSection?.children?.[0]?.path || '';
-  const docsPath = service
-    ? `/${service}?path=${filePath}`
-    : `?path=${filePath}`;
+    queryParams.get('path') ?? activeSection?.children?.[0]?.path ?? '';
 
-  const { data: docsData } = useFetch<string>(
-    `${import.meta.env.VITE_API_URL}/v1/docs${docsPath}`,
-    { skip: !filePath, responseFormatter: (res) => res.text() }
-  );
+  const { data: docsData } = useFetch<string>(`${base_uri}/${filePath}`, {
+    skip: !filePath,
+    responseFormatter: (res) => res.text(),
+  });
 
-  const headingsWithPaths = getSecondHeadings(docsData || '').map(
+  const headingsWithPaths = getSecondHeadings(docsData ?? '').map(
     (heading) => ({
       title: heading,
       path: `#${heading.toLowerCase().replace(/\s/g, '-')}`,
-    })
+    }),
   );
 
   const scrollToElement = (path: string) => {
@@ -68,7 +73,7 @@ const DocsPage = () => {
           <DocsNav />
         </PageHeader>
         <PageSideNav
-          title="Festify Basic Email Service"
+          title={service?.name}
           subTitle={activeSection?.title}
           items={activeSection?.children as ItemProps[]}
           selectedItem={(path) => filePath === path}
@@ -80,15 +85,15 @@ const DocsPage = () => {
         <PageContent className="bg-background">
           <Helmet>
             <title>
-              {activeItem?.title || activeSection?.title
+              {(activeItem?.title ?? activeSection?.title)
                 ? `${
-                    activeItem?.title || activeSection?.title
-                  } - Festify BES Docs`
-                : 'Festify Basic Email Service Docs'}
+                    activeItem?.title ?? activeSection?.title
+                  } - Festify ${service?.shortName.toUpperCase()} Docs`
+                : `Festify ${service?.name} Docs`}
             </title>
           </Helmet>
           <div className="px-20 pt-6 pb-12 bg-background">
-            <DocsContent data={docsData || ''} />
+            <DocsContent data={docsData ?? ''} />
           </div>
         </PageContent>
         <PageSecondaryNav

@@ -7,12 +7,8 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
 
-    // Include rootui and sharedui packages
-    '../../packages/rootui/src/**/*.{ts,tsx}',
-    '../../packages/sharedui/src/**/*.{ts,tsx}',
-
     // Include ui packages
-    '../../packages/bes-ui/src/**/*.{ts,tsx}',
+    './packages/**/*.{ts,tsx}',
   ],
   prefix: '',
   theme: {

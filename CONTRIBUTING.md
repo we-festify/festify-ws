@@ -40,13 +40,13 @@ npm install
 
 ```bash
 # check linting
-npx nx lint
+npm run lint
 
 # check unit tests
-npx nx test
+npm run test
 
 # check build
-npx nx build
+npm run build
 ```
 
 5. Commit your changes:

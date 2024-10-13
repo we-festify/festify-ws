@@ -1,23 +1,35 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
-    "types": [
-      "node",
-      "@nx/react/typings/cssmodule.d.ts",
-      "@nx/react/typings/image.d.ts",
-      "vite/client"
-    ]
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@rootui/*": ["packages/rootui/src/*"],
+      "@sharedui/*": ["packages/sharedui/src/*"],
+      "@bes-ui/*": ["packages/bes-ui/src/*"],
+
+      "@sharedtypes/*": ["../../sharedtypes/src/*"]
+    }
   },
-  "exclude": [
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/**/*.spec.tsx",
-    "src/**/*.test.tsx",
-    "src/**/*.spec.js",
-    "src/**/*.test.js",
-    "src/**/*.spec.jsx",
-    "src/**/*.test.jsx"
-  ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src", "packages"]
 }

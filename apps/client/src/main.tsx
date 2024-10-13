@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from '@/app';
 import './styles.css';
 import './animations.css';
 import './gradients.css';
 import './typography.css';
-import { ThemeProvider } from '@rootui/providers/ThemeProvider';
+import { ThemeProvider } from '@rootui/providers/theme-provider';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import store from '@rootui/store';
@@ -21,5 +21,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </BrowserRouter>
       </ThemeProvider>
     </ReduxProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
