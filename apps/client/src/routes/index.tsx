@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import AuthRoutes from './auth';
 import HomePage from '../pages/home-page';
-import DocsPage from '../pages/docs';
+import DocsPage from '../pages/documentation';
 
 // packages
 import BESServiceIndex from '@bes-ui/index';
