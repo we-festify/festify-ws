@@ -18,6 +18,8 @@ import {
 } from '../../../../api/instances';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
+import { readableFRN } from '@sharedui/utils/frn';
+import CopyIcon from '@sharedui/components/copy-icon';
 
 const InstanceDetailsPage = () => {
   const { alias = '' } = useParams<{ alias: string }>();
@@ -134,6 +136,16 @@ const grids = [
     cols: 4,
     keys: [
       { key: 'alias', label: 'Alias' },
+      {
+        key: 'frn',
+        label: 'Festify Resource Name (FRN)',
+        formatter: (value: unknown) => (
+          <span>
+            {readableFRN(value as string)}
+            <CopyIcon value={value as string} className="h-7 p-1 ml-2" />
+          </span>
+        ),
+      },
       {
         key: 'status',
         label: 'Status',

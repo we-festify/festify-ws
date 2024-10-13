@@ -41,7 +41,7 @@ function KeyValueGrid<TData extends Record<string, unknown>>({
       {title && <h1 className="font-semibold text-lg mb-3 mt-2">{title}</h1>}
       <div
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        style={{ gridTemplateColumns: `repeat(${colsCount}, 1fr)` }}
+        style={{ gridTemplateColumns: `repeat(${colsCount}, auto)` }}
       >
         {keys
           ? keys.map((currentKey) => {

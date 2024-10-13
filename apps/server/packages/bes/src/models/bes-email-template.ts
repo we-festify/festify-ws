@@ -1,8 +1,21 @@
 import mongoose from 'mongoose';
 import { IBESEmailTemplate } from '@sharedtypes/bes';
+import { validateFRNForService } from '@/utils/frn';
 
 const BESEmailTemplateSchema = new mongoose.Schema<IBESEmailTemplate>(
   {
+    frn: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (value: string) => validateFRNForService(value, 'bes'),
+        message: (props) => `${props.value} is not a valid FRN!`,
+      },
+      default: function () {
+        return `frn:bes:${this.account}:template:${this._id}`;
+      },
+    },
+
     account: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Account',

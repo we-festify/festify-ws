@@ -8,6 +8,8 @@ import { buttonVariants } from '@sharedui/primitives/button';
 import { cn } from '@sharedui/utils/tw';
 import { formatTimeFromNow } from '@sharedui/utils/time';
 import { besPaths } from '@sharedui/constants/paths';
+import { readableFRN } from '@sharedui/utils/frn';
+import CopyIcon from '@sharedui/components/copy-icon';
 
 interface EmailTemplatesummaryProps {
   template: IBESEmailTemplate;
@@ -40,7 +42,19 @@ const EmailTemplateSummary = ({ template }: EmailTemplatesummaryProps) => {
         <KeyValueGrid
           keys={
             [
-              { key: '_id', label: 'Template Id' },
+              {
+                key: 'frn',
+                label: 'Festify Resource Name (FRN)',
+                formatter: (value: unknown) => (
+                  <span>
+                    {readableFRN(value as string)}
+                    <CopyIcon
+                      value={value as string}
+                      className="h-7 p-1 ml-2"
+                    />
+                  </span>
+                ),
+              },
               { key: 'name', label: 'Name' },
               { key: 'subject', label: 'Subject' },
               {

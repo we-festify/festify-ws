@@ -1,8 +1,21 @@
 import mongoose from 'mongoose';
 import { IBESInstance } from '@sharedtypes/bes';
+import { validateFRNForService } from '@/utils/frn';
 
 const BESInstanceSchema = new mongoose.Schema<IBESInstance>(
   {
+    frn: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (value: string) => validateFRNForService(value, 'bes'),
+        message: (props) => `${props.value} is not a valid FRN!`,
+      },
+      default: function () {
+        return `frn:bes:${this.account}:instance:${this._id}`;
+      },
+    },
+
     // Account details
     account: {
       type: mongoose.Schema.Types.ObjectId,
