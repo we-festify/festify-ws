@@ -20,7 +20,8 @@ jobs:
           node-version: 20
 
       # Install dependencies
-      - run: npm ci
+      - run: cd apps/client && npm ci
+      - run: cd apps/server && npm ci
 
       # Run lint check for all projects
       - run: cd apps/client && npm run lint
@@ -39,7 +40,8 @@ jobs:
           node-version: 20
 
       # Install dependencies
-      - run: npm ci
+      - run: cd apps/client && npm ci
+      - run: cd apps/server && npm ci
 
       # Run test for all projects
       - run: cd apps/client && npm run test
@@ -58,7 +60,8 @@ jobs:
           node-version: 20
 
       # Install dependencies
-      - run: npm ci
+      - run: cd apps/client && npm ci
+      - run: cd apps/server && npm ci
 
       # Run build for all projects
       - run: cd apps/client && npm run build
