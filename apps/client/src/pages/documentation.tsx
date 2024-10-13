@@ -46,7 +46,7 @@ const DocsPage = () => {
   const filePath =
     queryParams.get('path') ?? activeSection?.children?.[0]?.path ?? '';
 
-  const { data: docsData } = useFetch<string>(`${base_uri}/${filePath}`, {
+  const { data: docsData } = useFetch<string>(`${base_uri}/${filePath}.md`, {
     skip: !filePath,
     responseFormatter: (res) => res.text(),
   });

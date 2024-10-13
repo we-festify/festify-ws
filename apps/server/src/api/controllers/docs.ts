@@ -21,7 +21,7 @@ export class DocsController {
 
       // get the document navigation
       res.json({
-        base_uri: env.docs.base_uri,
+        base_uri: env.docs.base_uri + '/' + service,
         nav: docsNav[service],
       });
     } catch (err) {
