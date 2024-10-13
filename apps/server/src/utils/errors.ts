@@ -1,85 +1,96 @@
-import { NextFunction, Request, Response } from 'express';
+import * as express from 'express';
+import { errorLogger } from './logger';
 
-export class BadRequestError extends Error {
-  statusCode: number;
-  errorCode: string;
+export type StatusCode = 400 | 401 | 403 | 404 | 409 | 429 | 500;
 
-  constructor(message: string, errorCode = 'BAD_REQUEST') {
+export const CommonErrors = {
+  BadRequest: {
+    name: 'Bad request',
+    statusCode: 400,
+  },
+  Unauthorized: {
+    name: 'Unauthorized',
+    statusCode: 401,
+  },
+  Forbidden: {
+    name: 'Forbidden',
+    statusCode: 403,
+  },
+  NotFound: {
+    name: 'Not found',
+    statusCode: 404,
+  },
+  Conflict: {
+    name: 'Conflict',
+    statusCode: 409,
+  },
+  TooManyRequests: {
+    name: 'Too many requests',
+    statusCode: 429,
+  },
+  InternalServerError: {
+    name: 'Internal server error',
+    statusCode: 500,
+  },
+} as const;
+
+export class AppError extends Error {
+  public readonly name: string;
+  public readonly statusCode: StatusCode;
+  public readonly isOperational: boolean; // Indicates if the error is operational, i.e. can be handled
+
+  constructor(
+    name: string,
+    statusCode: StatusCode,
+    message: string,
+    isOperational = true,
+  ) {
     super(message);
-    this.statusCode = 400;
-    this.errorCode = errorCode;
+
+    this.name = name;
+    this.statusCode = statusCode || 500;
+    this.isOperational = isOperational;
+
+    Error.captureStackTrace(this);
   }
 }
 
-export class NotFoundError extends Error {
-  statusCode: number;
-  errorCode: string;
-
-  constructor(message: string, errorCode = 'NOT_FOUND') {
-    super(message);
-    this.statusCode = 404;
-    this.errorCode = errorCode;
-  }
-}
-
-export class UnauthorizedError extends Error {
-  statusCode: number;
-  errorCode: string;
-
-  constructor(message: string, errorCode = 'UNAUTHORIZED') {
-    super(message);
-    this.statusCode = 401;
-    this.errorCode = errorCode;
-  }
-}
-
-export class ForbiddenError extends Error {
-  statusCode: number;
-  errorCode: string;
-
-  constructor(message: string, errorCode = 'FORBIDDEN') {
-    super(message);
-    this.statusCode = 403;
-    this.errorCode = errorCode;
-  }
-}
-
-type ErrorType =
-  | BadRequestError
-  | NotFoundError
-  | UnauthorizedError
-  | ForbiddenError;
-
-export const handleErrors = (
-  err: ErrorType,
-  req: Request,
-  res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _next: NextFunction
-) => {
-  const { statusCode, errorCode } = err;
-  const { message } = err;
-  sendError(res, statusCode, message, errorCode);
-};
-
-export const sendError = (
-  res: Response,
-  statusCode: number,
-  message: string,
-  errorCode = 'ERROR'
-) => {
-  try {
-    return res.status(statusCode || 500).json({
-      status: 'error',
-      statusCode: statusCode || 500,
-      message: message || 'Internal Server Error',
-      errorCode,
-    });
-  } catch (err) {
-    const message = 'Internal Server Error';
-    if (err instanceof Error) {
-      return console.error('Error while sending error response', err.message);
+class ErrorHandler {
+  private sendErrorResponse(err: Error, res: express.Response): void {
+    if (err instanceof AppError) {
+      res.status(err.statusCode).json({
+        error: {
+          name: err.name,
+          status: err.statusCode,
+          message: err.message,
+        },
+      });
+    } else {
+      res.status(500).json({
+        error: {
+          name: err.name || 'Internal server error',
+          status: 500,
+          message: err.message || 'Something went wrong',
+        },
+      });
     }
-    return console.error('Error while sending error response', message);
   }
-};
+
+  public async handleError(
+    error: Error,
+    res: express.Response | null,
+  ): Promise<void> {
+    errorLogger.error(error.message, { stack: error.stack });
+    if (res !== null) this.sendErrorResponse(error, res);
+  }
+
+  public isTrustedError(error: Error): boolean {
+    if (error instanceof AppError) {
+      return error.isOperational;
+    }
+
+    return false;
+  }
+}
+
+export const handler = new ErrorHandler();

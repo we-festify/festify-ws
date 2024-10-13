@@ -7,7 +7,11 @@ export const rootUserRegisterSchema = z.object({
     .max(20, 'Alias must be at most 20 characters long')
     .regex(
       /^[a-z0-9_-]+$/,
-      'Only lowercase letters, numbers, hyphens, and underscores are allowed'
+      'Only lowercase letters, numbers, hyphens, and underscores are allowed',
     ),
   email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
+  confirmPassword: z
+    .string()
+    .min(8, 'Password must be at least 8 characters long'),
 });

@@ -1,22 +1,20 @@
 {
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "allowJs": false,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "types": ["vite/client"],
-    "forceConsistentCasingInFileNames": true
-  },
   "files": [],
-  "include": [],
   "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
   ],
-  "extends": "../../tsconfig.base.json"
+  "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@rootui/*": ["packages/rootui/src/*"],
+      "@sharedui/*": ["packages/sharedui/src/*"],
+      "@bes-ui/*": ["packages/bes-ui/src/*"],
+
+      "@sharedtypes/*": ["../../sharedtypes/src/*"]
+    }
+  }
 }

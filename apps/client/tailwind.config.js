@@ -6,6 +6,9 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+
+    // Include ui packages
+    './packages/**/*.{ts,tsx}',
   ],
   prefix: '',
   theme: {

@@ -24,13 +24,17 @@ git clone https://github.com/we-festify/festify-ws.git
 2. Run the server by running the following command in the terminal:
 
 ```bash
-npx nx serve server
+cd apps/server
+npm install
+npm start
 ```
 
 3. Run the client by running the following command in the terminal:
 
 ```bash
-npx nx serve client
+cd apps/client
+npm install
+npm start
 ```
 
 ## Contributing

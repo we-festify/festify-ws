@@ -1,0 +1,83 @@
+import { Link } from 'react-router-dom';
+import { Button } from '@sharedui/primitives/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@sharedui/primitives/card';
+import { Input } from '@sharedui/primitives/input';
+import { Label } from '@sharedui/primitives/label';
+import useTimer from '@sharedui/hooks/useTimer';
+import { useRequestResetPasswordMutation } from '@rootui/api/auth';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@sharedui/utils/error';
+
+type TimedButtonProps = {
+  time: number;
+} & React.ComponentProps<typeof Button>;
+
+const TimedButton: React.FC<TimedButtonProps> = ({ time, disabled }) => {
+  return (
+    <Button disabled={time > 0 ? true : disabled} className="w-full">
+      {time === 0 ? 'Resend Email' : `Resend in ${time}s`}
+    </Button>
+  );
+};
+
+export function ForgotPasswordForm() {
+  const { time, setTime } = useTimer(0); // 0 seconds for the first time
+
+  const [sendForgotPasswordEmail] = useRequestResetPasswordMutation();
+
+  const handleForgotPaswordSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const email = formData.get('email') as string;
+
+    setTime(60);
+    toast.promise(sendForgotPasswordEmail({ email }).unwrap(), {
+      loading: 'Sending forgot password email...',
+      success: (data) => data?.message,
+      error: getErrorMessage,
+    });
+  };
+
+  return (
+    <Card className="mx-auto max-w-sm min-w-60">
+      <CardHeader>
+        <CardTitle className="text-xl">Forgot Password</CardTitle>
+        <CardDescription>
+          Enter your email below to reset your password
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="grid gap-4" onSubmit={handleForgotPaswordSubmit}>
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="leafpetal@example.com"
+              autoComplete="email"
+              required
+            />
+          </div>
+          <TimedButton time={time} type="submit" />
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Don't have an account?{' '}
+          <Link to="/a/register" className="underline">
+            Sign Up
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

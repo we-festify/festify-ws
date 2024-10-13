@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-
 const {
   JWT_SECRET,
   JWT_EXPIRES_IN,
@@ -18,80 +17,80 @@ export interface AccessTokenPayloadType {
 }
 
 export const generateAccessToken = (payload: AccessTokenPayloadType) => {
-  return jwt.sign(payload, JWT_SECRET || '', {
-    expiresIn: parseInt(JWT_EXPIRES_IN || ''),
+  return jwt.sign(payload, JWT_SECRET ?? '', {
+    expiresIn: parseInt(JWT_EXPIRES_IN ?? ''),
   });
 };
 
 export const verifyAccessToken = (
-  token: string
+  token: string,
 ): AccessTokenPayloadType | null => {
   try {
     if (!JWT_SECRET) {
       throw new Error('JWT_SECRET must be defined');
     }
     return jwt.verify(token, JWT_SECRET) as AccessTokenPayloadType;
-  } catch (err) {
+  } catch (_) {
     return null;
   }
 };
 
 export const generateRefreshToken = (payload: AccessTokenPayloadType) => {
-  return jwt.sign(payload, JWT_REFRESH_SECRET || '', {
-    expiresIn: parseInt(JWT_REFRESH_EXPIRES_IN || ''),
+  return jwt.sign(payload, JWT_REFRESH_SECRET ?? '', {
+    expiresIn: parseInt(JWT_REFRESH_EXPIRES_IN ?? ''),
   });
 };
 
 export const verifyRefreshToken = (
-  token: string
+  token: string,
 ): AccessTokenPayloadType | null => {
   try {
     return jwt.verify(
       token,
-      JWT_REFRESH_SECRET || ''
+      JWT_REFRESH_SECRET ?? '',
     ) as AccessTokenPayloadType;
-  } catch (err) {
+  } catch (_) {
     return null;
   }
 };
 
 export const generateEmailVerificationToken = (payload: string | object) => {
-  return jwt.sign(payload, JWT_EMAIL_VERIFICATION_SECRET || '', {
-    expiresIn: parseInt(JWT_EMAIL_VERIFICATION_EXPIRES_IN || ''),
+  return jwt.sign(payload, JWT_EMAIL_VERIFICATION_SECRET ?? '', {
+    expiresIn: parseInt(JWT_EMAIL_VERIFICATION_EXPIRES_IN ?? ''),
   });
 };
 
 export const verifyEmailVerificationToken = (token: string) => {
   try {
-    return jwt.verify(token, JWT_EMAIL_VERIFICATION_SECRET || '');
-  } catch (err) {
+    return jwt.verify(token, JWT_EMAIL_VERIFICATION_SECRET ?? '');
+  } catch (_) {
     return null;
   }
 };
 
 export const generateResetPasswordToken = (
   payload: string | object,
-  oldPasswordHash: string
+  oldPasswordHash: string,
 ) => {
   return jwt.sign(
     payload,
-    oldPasswordHash + (JWT_RESET_PASSWORD_SECRET || ''),
+    oldPasswordHash + (JWT_RESET_PASSWORD_SECRET ?? ''),
     {
-      expiresIn: parseInt(JWT_RESET_PASSWORD_EXPIRES_IN || ''),
-    }
+      expiresIn: parseInt(JWT_RESET_PASSWORD_EXPIRES_IN ?? ''),
+    },
   );
 };
 
 export const verifyResetPasswordToken = (
   token: string,
-  oldPasswordHash: string
+  oldPasswordHash: string,
 ) => {
   try {
     return jwt.verify(
       token,
-      oldPasswordHash + (JWT_RESET_PASSWORD_SECRET || '')
+      oldPasswordHash + (JWT_RESET_PASSWORD_SECRET ?? ''),
     );
-  } catch (err) {
+  } catch (_) {
     return null;
   }
 };
