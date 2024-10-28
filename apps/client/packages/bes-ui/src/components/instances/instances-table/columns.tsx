@@ -39,7 +39,7 @@ export const columns: ColumnDef<IBESInstance>[] = [
       const alias = row.original.alias;
       return (
         <Link
-          to={`${besPaths.INSTANCE_DETAILS}${alias}`}
+          to={`${besPaths.INSTANCE_DETAILS}/${alias}`}
           className="text-blue-600 hover:underline"
         >
           {alias}

@@ -43,7 +43,7 @@ export function DataTable<TData, TValue>({
   description,
   header,
   noResultsComponent,
-}: DataTableProps<TData, TValue>) {
+}: Readonly<DataTableProps<TData, TValue>>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
               <p className="text-xs text-muted-foreground">{description}</p>
             )}
           </div>
-          {header && header({ table })}
+          {header?.({ table })}
         </div>
       )}
       <div className="flex items-center gap-4 pb-4">

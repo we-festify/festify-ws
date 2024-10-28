@@ -110,6 +110,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@bes/*": ["./packages/bes/src/*"],
+      "@aim/*": ["./packages/aim/src/*"],
 
       "@sharedtypes/*": ["../../sharedtypes/src/*"]
     }

@@ -1,8 +1,8 @@
 import express from 'express';
+import { DocsController } from '../controllers/docs';
 
 const router = express.Router();
 
-import { DocsController } from '../controllers/docs';
 const docsController = new DocsController();
 
 router.get(

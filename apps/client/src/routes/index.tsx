@@ -2,10 +2,11 @@ import { Route, Routes } from 'react-router-dom';
 import AuthRoutes from './auth';
 import HomePage from '../pages/home-page';
 import DocsPage from '../pages/documentation';
+import NotFound from '@/pages/not-found';
 
 // packages
 import BESServiceIndex from '@bes-ui/index';
-import NotFound from '@/pages/not-found';
+import AIMServiceIndex from '@aim-ui/index';
 
 const AppRoutes = () => {
   return (
@@ -16,7 +17,12 @@ const AppRoutes = () => {
         <Route path=":service/*" element={<DocsPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* d-services */}
       <Route path="bes/*" element={<BESServiceIndex />} />
+      <Route path="aim/*" element={<AIMServiceIndex />} />
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

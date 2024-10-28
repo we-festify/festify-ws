@@ -34,6 +34,7 @@ const CreateInstancePage = () => {
       steps={stepsForCreatingInstance}
       submitButtonText="Create instance"
       onSubmit={handleCreateInstance}
+      onCancel={() => navigate(besPaths.INSTANCES, { replace: true })}
     />
   );
 };

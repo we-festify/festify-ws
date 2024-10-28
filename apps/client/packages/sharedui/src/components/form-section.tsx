@@ -1,7 +1,7 @@
 interface FormSectionProps {
   title: string;
   description?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const FormSection = ({ title, description, children }: FormSectionProps) => {
@@ -11,7 +11,7 @@ const FormSection = ({ title, description, children }: FormSectionProps) => {
         <h2 className="text-lg font-medium">{title}</h2>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
-      <div className="space-y-4 py-8">{children}</div>
+      {children && <div className="space-y-4 py-8">{children}</div>}
     </div>
   );
 };

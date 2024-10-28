@@ -15,7 +15,7 @@ const PageSection = ({
     <section>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">{title}</h1>
-        {header && header}
+        {header}
       </div>
       <p className="text-muted-foreground mt-2 leading-6">{description}</p>
       <div className="mt-6">{children}</div>

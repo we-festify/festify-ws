@@ -37,7 +37,7 @@ export const columns: ColumnDef<IBESEmailTemplate>[] = [
       const name = row.original.name;
       return (
         <Link
-          to={`${besPaths.EMAIL_TEMPLATE_DETAILS}${id}`}
+          to={`${besPaths.EMAIL_TEMPLATE_DETAILS}/${id}`}
           className="text-blue-600 hover:underline"
         >
           {name}

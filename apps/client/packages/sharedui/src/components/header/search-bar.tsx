@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '../../primitives/popover';
-import { ServiceMetaType, services } from '../../constants/services';
+import { IServiceMeta, services } from '../../constants/services';
 import { useSelector } from 'react-redux';
 import { selectIsLoggedIn } from '@rootui/store/auth';
 
@@ -29,7 +29,7 @@ const HeaderSearchBar = () => {
     setOpen(filtered.length > 0);
   }, [query]);
 
-  const handleServiceClick = (service: ServiceMetaType) => {
+  const handleServiceClick = (service: IServiceMeta) => {
     if (!service.docsPath || !service.homePath) return;
     if (isLoggedIn) {
       navigate(service.homePath);

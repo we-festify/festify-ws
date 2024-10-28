@@ -140,7 +140,7 @@ const grids = [
         key: 'frn',
         label: 'Festify Resource Name (FRN)',
         formatter: (value: unknown) => (
-          <span>
+          <span className="flex items-center">
             {readableFRN(value as string)}
             <CopyIcon value={value as string} className="h-7 p-1 ml-2" />
           </span>

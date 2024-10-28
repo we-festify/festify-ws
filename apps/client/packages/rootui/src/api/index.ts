@@ -54,9 +54,14 @@ export const api = createApi({
   endpoints: () => ({}),
   tagTypes: [
     'Auth', // This is a tag for the auth related endpoints
+    'Meta', // This is a tag for the metadata endpoints
 
     // BES
     'BESInstance',
     'EmailTemplate',
+
+    // AIM
+    'ManagedUser',
+    'PermissionPolicy',
   ],
 });

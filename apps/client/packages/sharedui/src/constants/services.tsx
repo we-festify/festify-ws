@@ -1,6 +1,6 @@
 import paths from './paths';
 
-export const services: ServiceMetaType[] = [
+export const services: IServiceMeta[] = [
   {
     name: 'Basic Email Service',
     shortName: 'BES',
@@ -20,6 +20,8 @@ export const services: ServiceMetaType[] = [
     shortName: 'AIM',
     src: '/logos/AIM.png',
     description: 'A service that manages access and identity',
+    docsPath: paths.aim.DOCS,
+    homePath: paths.aim.SERVICE,
   },
   {
     name: 'Secure Key Vault',
@@ -41,7 +43,7 @@ export const services: ServiceMetaType[] = [
   },
 ] as const;
 
-export interface ServiceMetaType {
+export interface IServiceMeta {
   name: string;
   shortName: string;
   src: string;
