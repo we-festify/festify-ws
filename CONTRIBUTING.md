@@ -34,6 +34,14 @@ git checkout -b <your-unique-branch-name>
 ```bash
 # install dependencies
 npm install
+
+# start the development server
+cd apps/server
+npm run dev
+
+# start the client
+cd apps/client
+npm run dev
 ```
 
 4. Make your changes and check if they work:
