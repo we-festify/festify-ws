@@ -5,22 +5,28 @@ const besInstancesApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getBESInstances: builder.query({
       query: () => ({
-        url: `/v1/d/bes/instances`,
-        method: 'GET',
+        url: `/v1/d/bes/execute/ListInstances`,
+        method: 'POST',
       }),
       providesTags: ['BESInstance'],
     }),
     getInstanceById: builder.query({
       query: (instanceId: string) => ({
-        url: `/v1/d/bes/instances/${instanceId}`,
-        method: 'GET',
+        url: `/v1/d/bes/execute/ReadInstance`,
+        method: 'POST',
+        body: {
+          resource: instanceId,
+        },
       }),
       providesTags: ['BESInstance'],
     }),
     getBESInstanceByAlias: builder.query({
       query: (alias: string) => ({
-        url: `/v1/d/bes/instances/alias/${alias}`,
-        method: 'GET',
+        url: `/v1/d/bes/execute/ReadInstance`,
+        method: 'POST',
+        body: {
+          resource: alias,
+        },
       }),
       providesTags: ['BESInstance'],
     }),
@@ -54,6 +60,24 @@ const besInstancesApi = api.injectEndpoints({
       }),
       invalidatesTags: ['BESInstance'],
     }),
+
+    listInstances: builder.query<unknown, string>({
+      query: () => ({
+        url: `/v1/d/bes/execute/ListInstances`,
+        method: 'POST',
+      }),
+      providesTags: ['BESInstance'],
+    }),
+    readInstance: builder.query<{ instance: IBESInstance }, string>({
+      query: (frn: string) => ({
+        url: `/v1/d/bes/execute/ReadInstance`,
+        method: 'POST',
+        body: {
+          resource: frn,
+        },
+      }),
+      providesTags: ['BESInstance'],
+    }),
   }),
 });
 
@@ -63,4 +87,7 @@ export const {
   useCreateBESInstanceMutation,
   useUpdateBESInstanceMutation,
   useDeleteBESInstancesMutation,
+
+  useListInstancesQuery,
+  useReadInstanceQuery,
 } = besInstancesApi;

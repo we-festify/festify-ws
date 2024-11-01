@@ -17,4 +17,8 @@ router.use('/d', packagesRoutes);
 import docsRoutes from './routes/docs';
 router.use('/docs', docsRoutes);
 
+// meta
+import metaRoutes from './routes/meta';
+router.use('/meta', metaRoutes);
+
 export default router;

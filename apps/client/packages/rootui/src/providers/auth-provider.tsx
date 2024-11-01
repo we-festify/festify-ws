@@ -9,10 +9,17 @@ type AuthProviderProps = {
 
 type AuthProviderState = {
   isLoading: boolean;
+  user: {
+    alias: string;
+    accountId: string;
+    type: string;
+    rootAccountAlias: string;
+  } | null;
 };
 
 const initialState: AuthProviderState = {
   isLoading: true,
+  user: null,
 };
 
 const AuthContext = createContext<AuthProviderState>(initialState);
@@ -30,7 +37,10 @@ function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     }
   }, [data, dispatch]);
 
-  const value = useMemo(() => ({ isLoading }), [isLoading]);
+  const value = useMemo(
+    () => ({ isLoading, user: data?.user ?? null }),
+    [isLoading, data],
+  );
 
   return (
     <AuthContext.Provider value={value}>

@@ -167,7 +167,7 @@ const BESService = () => {
               initialOpacity={0}
               hoverOpacity={0.9}
             >
-              <Link to={`${besPaths.DOCS}faqs`}>
+              <Link to={`${besPaths.DOCS}/faqs`}>
                 <Card className="w-full group border-none rounded-2xl">
                   <CardContent className="aspect-video flex flex-col gap-4 justify-end bg-gradient-to-br from-pink-200 to-purple-200 dark:from-pink-500/70 dark:to-purple-500/70">
                     <h3 className="text-2xl font-semibold">

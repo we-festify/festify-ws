@@ -52,7 +52,7 @@ const expressLoader = async ({ app }: { app: express.Application }) => {
   // Request logging
   if (env.nodeEnv === 'development') {
     app.use((req, _res, next) => {
-      logger.http(`${req.method} ${req.originalUrl}`);
+      logger.http(`${req.method} ${req.url}`);
       next();
     });
   }
@@ -84,7 +84,8 @@ const expressLoader = async ({ app }: { app: express.Application }) => {
           new AppError(
             CommonErrors.BadRequest.name,
             CommonErrors.BadRequest.statusCode,
-            err.details.get('body')?.message ?? 'Something went wrong',
+            err.details.get('body')?.message ??
+              'Something went wrong while validating your request',
           ),
           res,
         );

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { IBESEmailTemplate } from '@sharedtypes/bes';
-import { validateFRNForService } from '@/utils/frn';
+import { generateFRN, validateFRNForService } from '@/utils/frn';
 
 const BESEmailTemplateSchema = new mongoose.Schema<IBESEmailTemplate>(
   {
@@ -12,7 +12,7 @@ const BESEmailTemplateSchema = new mongoose.Schema<IBESEmailTemplate>(
         message: (props) => `${props.value} is not a valid FRN!`,
       },
       default: function () {
-        return `frn:bes:${this.account}:template:${this._id}`;
+        return generateFRN('bes', this.account as string, 'template', this._id);
       },
     },
 

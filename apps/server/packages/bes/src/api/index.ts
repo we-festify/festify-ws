@@ -14,4 +14,8 @@ router.use('/instances', instanceRoutes);
 import emailTemplateRoutes from './routes/email-templates';
 router.use('/templates', emailTemplateRoutes);
 
+// action execution routes
+import handlerRoutes from './routes/handlers';
+router.use('/execute', handlerRoutes);
+
 export default router;

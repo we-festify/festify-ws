@@ -37,7 +37,7 @@ const UpdateEmailTemplatePage = () => {
         template: values,
       }).unwrap();
       toast.success(payload.message || 'Email template updated successfully');
-      navigate(`${besPaths.EMAIL_TEMPLATE_DETAILS}${template._id}`);
+      navigate(`${besPaths.EMAIL_TEMPLATE_DETAILS}/${template._id}`);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }

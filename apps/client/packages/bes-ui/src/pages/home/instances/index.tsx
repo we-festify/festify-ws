@@ -13,6 +13,7 @@ import {
 } from '../../../api/instances';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
+import { Table } from '@tanstack/react-table';
 
 const Instances = () => {
   const { data: { instances = [] } = {}, refetch } = useGetBESInstancesQuery(
@@ -49,38 +50,7 @@ const Instances = () => {
               title="Instances"
               columns={columns}
               data={instances}
-              header={({ table }) => (
-                <div className="flex items-center justify-end gap-4">
-                  <Button
-                    size="sm"
-                    variant="destructive-outline"
-                    onClick={() =>
-                      handleDelete(
-                        table.getSelectedRowModel().rows.map((r) => r.original),
-                      )
-                    }
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    name="Refresh instances"
-                    size="sm"
-                    variant="outline"
-                    onClick={handleRefetch}
-                  >
-                    <RotateCw size={16} className="text-muted-foreground" />
-                  </Button>
-                  <Link
-                    to={besPaths.CREATE_NEW_INSTANCE}
-                    className={buttonVariants({
-                      size: 'sm',
-                      variant: 'secondary',
-                    })}
-                  >
-                    Create intance
-                  </Link>
-                </div>
-              )}
+              header={TableHeader(handleDelete, handleRefetch)}
             />
           </CardContent>
         </Card>
@@ -88,5 +58,45 @@ const Instances = () => {
     </div>
   );
 };
+
+interface TableHeaderProps {
+  table: Table<IBESInstance>;
+}
+
+type DeleteFunction = (rows: IBESInstance[]) => void;
+type RefetchFunction = (e: React.MouseEvent<HTMLButtonElement>) => void;
+
+const TableHeader =
+  (handleDelete: DeleteFunction, handleRefetch: RefetchFunction) =>
+  ({ table }: TableHeaderProps) => (
+    <div className="flex items-center justify-end gap-4">
+      <Button
+        size="sm"
+        variant="destructive-outline"
+        onClick={() =>
+          handleDelete(table.getSelectedRowModel().rows.map((r) => r.original))
+        }
+      >
+        Delete
+      </Button>
+      <Button
+        name="Refresh instances"
+        size="sm"
+        variant="outline"
+        onClick={handleRefetch}
+      >
+        <RotateCw size={16} className="text-muted-foreground" />
+      </Button>
+      <Link
+        to={besPaths.CREATE_NEW_INSTANCE}
+        className={buttonVariants({
+          size: 'sm',
+          variant: 'secondary',
+        })}
+      >
+        Create intance
+      </Link>
+    </div>
+  );
 
 export default Instances;

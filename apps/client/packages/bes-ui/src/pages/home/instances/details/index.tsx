@@ -14,18 +14,21 @@ import { besPaths } from '@sharedui/constants/paths';
 import { cn } from '@sharedui/utils/tw';
 import {
   useDeleteBESInstancesMutation,
-  useGetBESInstanceByAliasQuery,
+  useReadInstanceQuery,
 } from '../../../../api/instances';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
-import { readableFRN } from '@sharedui/utils/frn';
+import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import CopyIcon from '@sharedui/components/copy-icon';
+import { useAuth } from '@rootui/providers/auth-provider';
 
 const InstanceDetailsPage = () => {
+  const { user } = useAuth();
   const { alias = '' } = useParams<{ alias: string }>();
-  const { data: { instance } = {}, refetch } = useGetBESInstanceByAliasQuery<{
+  const frn = generateFRN('bes', user?.accountId ?? '', 'instance', alias);
+  const { data: { instance } = {}, refetch } = useReadInstanceQuery<{
     data: { instance: IBESInstance };
-  }>(alias, {
+  }>(frn, {
     skip: !alias,
   });
   const navigate = useNavigate();
@@ -140,7 +143,7 @@ const grids = [
         key: 'frn',
         label: 'Festify Resource Name (FRN)',
         formatter: (value: unknown) => (
-          <span>
+          <span className="flex items-center">
             {readableFRN(value as string)}
             <CopyIcon value={value as string} className="h-7 p-1 ml-2" />
           </span>

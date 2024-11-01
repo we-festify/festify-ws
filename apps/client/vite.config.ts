@@ -13,6 +13,7 @@ export default defineConfig({
       '@rootui': path.resolve(__dirname, './packages/rootui/src'),
       '@sharedui': path.resolve(__dirname, './packages/sharedui/src'),
       '@bes-ui': path.resolve(__dirname, './packages/bes-ui/src'),
+      '@aim-ui': path.resolve(__dirname, './packages/aim-ui/src'),
     },
   },
 });

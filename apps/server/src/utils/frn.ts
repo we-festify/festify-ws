@@ -12,8 +12,22 @@ export const parseFRN = (frn: string) => {
   return { service, accountId, resourceType, resourceId };
 };
 
-export const validateFRN = (frn: string) =>
-  /^frn:([a-z0-9]{2,4}-){2,4}[a-z0-9]{2,4}$/.test(frn);
+export const validateFRN = (frn: string) => {
+  const parts = frn.split(':');
+  return (
+    parts.length === 5 &&
+    parts[0] === 'frn' &&
+    parts[1] &&
+    parts[2] &&
+    parts[3] &&
+    parts[4]
+  );
+};
 
-export const validateFRNForService = (frn: string, service: string) =>
-  new RegExp(`^frn:${service}:[a-z0-9]{2,4}:[a-z0-9]{2,4}$`).test(frn);
+export const validateFRNForService = (frn: string, service: string) => {
+  if (!validateFRN(frn)) {
+    return false;
+  }
+  const { service: frnService } = parseFRN(frn);
+  return frnService === service;
+};

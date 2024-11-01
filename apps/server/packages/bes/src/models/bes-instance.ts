@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { IBESInstance } from '@sharedtypes/bes';
-import { validateFRNForService } from '@/utils/frn';
+import { generateFRN, validateFRNForService } from '@/utils/frn';
 
 const BESInstanceSchema = new mongoose.Schema<IBESInstance>(
   {
@@ -12,7 +12,12 @@ const BESInstanceSchema = new mongoose.Schema<IBESInstance>(
         message: (props) => `${props.value} is not a valid FRN!`,
       },
       default: function () {
-        return `frn:bes:${this.account}:instance:${this._id}`;
+        return generateFRN(
+          'bes',
+          this.account as string,
+          'instance',
+          this.alias,
+        );
       },
     },
 

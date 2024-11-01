@@ -1,13 +1,21 @@
+import { cn } from '@sharedui/utils/tw';
 import { Info } from 'lucide-react';
 
 interface HelpProps {
   children: React.ReactNode;
+  variant?: 'muted' | 'primary';
 }
 
-const Help = ({ children }: HelpProps) => {
+const Help = ({ children, variant = 'primary' }: HelpProps) => {
   return (
-    <span className="inline-block relative top-1 group">
-      <Info size={16} className="text-blue-600" />
+    <span className="inline-block relative group">
+      <Info
+        size={16}
+        className={cn(
+          'text-muted-foreground',
+          variant === 'primary' && 'text-primary',
+        )}
+      />
       <div className="text-sm absolute bottom-[24px] left-1/3 w-max max-w-60 mx-2 px-2 py-1 rounded-sm z-50 hidden group-hover:block bg-muted ring-1 ring-primary/10">
         {children}
       </div>

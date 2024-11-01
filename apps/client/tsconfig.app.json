@@ -27,6 +27,7 @@
       "@rootui/*": ["packages/rootui/src/*"],
       "@sharedui/*": ["packages/sharedui/src/*"],
       "@bes-ui/*": ["packages/bes-ui/src/*"],
+      "@aim-ui/*": ["packages/aim-ui/src/*"],
 
       "@sharedtypes/*": ["../../sharedtypes/src/*"]
     }

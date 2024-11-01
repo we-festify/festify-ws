@@ -36,7 +36,7 @@ import {
   ManagedUserTokenPayload,
 } from '../types/services/auth.d';
 import { authenticator } from 'otplib';
-import { IManagedUser } from '@sharedtypes/auth/user';
+import { IManagedUser } from '@sharedtypes/aim/managed-user';
 import {
   convertToSHA256,
   decryptUsingAES,

@@ -78,7 +78,7 @@ export default tseslint.config(
           // for non hooks, allow KebabCase
           '**/!(use*).{tsx,jsx,ts,js}': 'KEBAB_CASE',
           // for hooks, allow CamelCase
-          '**/use*.{tsx,jsx}': 'CAMEL_CASE',
+          '**/use([A-Z]+[a-z]*)+.{tsx,jsx,ts,js}': 'CAMEL_CASE',
         },
         {
           // ignore the middle extensions of the filename to support filename like bable.config.js or smoke.spec.ts
