@@ -26,6 +26,9 @@ git clone https://github.com/we-festify/festify-ws.git
 cd apps/server
 npm install
 npm start
+
+# if you want to run the server in development mode
+npm run dev
 ```
 
 3. Run the client by running the following command in the terminal:
@@ -34,6 +37,9 @@ npm start
 cd apps/client
 npm install
 npm start
+
+# if you want to run the client in development mode
+npm run dev
 ```
 
 ## Contributing
