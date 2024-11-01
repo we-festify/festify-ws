@@ -23,14 +23,12 @@ export class UserValidators {
 
   public validateAttachPoliciesToUser = celebrate({
     [Segments.BODY]: Joi.object().keys({
-      userId: Joi.string().required(),
       policyIds: Joi.array().items(Joi.string()).required(),
     }),
   });
 
   public validateDetachPoliciesFromUser = celebrate({
     [Segments.BODY]: Joi.object().keys({
-      userId: Joi.string().required(),
       policyIds: Joi.array().items(Joi.string()).required(),
     }),
   });

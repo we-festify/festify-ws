@@ -4,7 +4,6 @@ import FormSection from '@sharedui/components/form-section';
 import { Button } from '@sharedui/primitives/button';
 import { useMultiStepForm } from '@sharedui/components/multi-step-form';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
-import { IServiceMeta } from '@sharedtypes/meta';
 import {
   Table,
   TableBody,
@@ -26,12 +25,12 @@ const ReviewAndCreate = () => {
   const rules = form.getValues('rules');
   const rows: RuleRow[] = rules.map(
     (rule: {
-      service: IServiceMeta;
+      service: string;
       effect: string;
       actions: string[];
       resources: string[];
     }) => ({
-      service: rule.service.shortName,
+      service: rule.service,
       effect: rule.effect,
       actions: rule.actions.length,
       resouces: rule.resources.length,

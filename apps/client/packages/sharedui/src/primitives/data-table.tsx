@@ -4,6 +4,7 @@ import { Input } from './input';
 import {
   ColumnDef,
   ColumnFiltersState,
+  Row,
   SortingState,
   VisibilityState,
   flexRender,
@@ -24,6 +25,7 @@ import {
 } from './table';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableViewOptions } from './data-table-view-options';
+import { SquareMinus, SquarePlus } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +36,9 @@ interface DataTableProps<TData, TValue> {
     table: ReturnType<typeof useReactTable<TData>>;
   }) => React.ReactNode;
   noResultsComponent?: React.ReactNode;
+  expandedComponent?: (props: { row: Row<TData> }) => React.ReactNode;
+  showActions?: boolean;
+  isDataLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -43,6 +48,9 @@ export function DataTable<TData, TValue>({
   description,
   header,
   noResultsComponent,
+  expandedComponent,
+  showActions = true,
+  isDataLoading = false,
 }: Readonly<DataTableProps<TData, TValue>>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -50,6 +58,9 @@ export function DataTable<TData, TValue>({
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+  const [expandedRow, setExpandedRow] = React.useState<string | undefined>(
+    undefined,
+  );
 
   const table = useReactTable({
     data,
@@ -74,7 +85,7 @@ export function DataTable<TData, TValue>({
         <div className="flex items-start justify-between pb-4">
           <div className="flex flex-col gap-2 pl-0.5">
             {title && (
-              <h2 className="text-xl font-semibold flex items-center gap-2">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
                 {title}
                 <span className="text-base font-normal text-muted-foreground">
                   {' '}
@@ -89,68 +100,97 @@ export function DataTable<TData, TValue>({
           {header?.({ table })}
         </div>
       )}
-      <div className="flex items-center gap-4 pb-4">
-        <Input
-          type="text"
-          placeholder="Search by field:value"
-          onChange={(e) => {
-            const keyValues = e.target.value.split(' ');
-            const filters = keyValues.map((keyValue) => {
-              const [key, value] = keyValue.split(':');
-              return { key, value };
-            });
-            filters.forEach(({ key, value }) => {
-              if (!key || !value) return table.setColumnFilters([]);
-              console.log({ key, value });
-              table.getColumn(key)?.setFilterValue(value || '');
-            });
-          }}
-          className="max-w-sm h-8"
-        />
-        <div className="flex items-center space-x-4 ml-auto">
-          <DataTablePagination table={table} />
-          <DataTableViewOptions table={table} />
+      {showActions && (
+        <div className="flex items-center gap-4 pb-4">
+          <Input
+            type="text"
+            placeholder="Search by field:value"
+            onChange={(e) => {
+              const keyValues = e.target.value.split(' ');
+              const filters = keyValues.map((keyValue) => {
+                const [key, value] = keyValue.split(':');
+                return { key, value };
+              });
+              filters.forEach(({ key, value }) => {
+                if (!key || !value) return table.setColumnFilters([]);
+                console.log({ key, value });
+                table.getColumn(key)?.setFilterValue(value || '');
+              });
+            }}
+            className="max-w-sm h-8"
+          />
+          <div className="flex items-center space-x-4 ml-auto">
+            <DataTablePagination table={table} />
+            <DataTableViewOptions table={table} />
+          </div>
         </div>
-      </div>
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="py-2 bg-muted/50 dark:bg-muted-foreground/5"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {expandedComponent && (
+                  <TableHead className="w-3 bg-muted/50 dark:bg-muted-foreground/5" />
+                )}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="py-2 bg-muted/50 dark:bg-muted-foreground/5"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-2">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {expandedComponent && (
+                      <TableCell className="py-0">
+                        {expandedRow === row.id ? (
+                          <SquareMinus
+                            size={16}
+                            onClick={() => setExpandedRow(undefined)}
+                            className="text-secondary cursor-pointer"
+                          />
+                        ) : (
+                          <SquarePlus
+                            size={16}
+                            onClick={() => setExpandedRow(row.id)}
+                            className="text-muted-foreground cursor-pointer"
+                          />
+                        )}
+                      </TableCell>
+                    )}
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="py-2">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {expandedComponent && expandedRow === row.id && (
+                    <TableRow className="hover:bg-transparent">
+                      <TableCell colSpan={columns.length + 1} className="p-0">
+                        {expandedComponent({ row })}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </>
               ))
             ) : (
               <TableRow>
@@ -158,7 +198,10 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="min-h-24 text-center"
                 >
-                  {noResultsComponent || (
+                  {isDataLoading && (
+                    <span className="text-muted-foreground">Loading...</span>
+                  )}
+                  {(!isDataLoading && noResultsComponent) || (
                     <span className="text-muted-foreground">
                       No results found
                     </span>

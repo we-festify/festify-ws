@@ -12,8 +12,12 @@ import { api } from '@rootui/api';
 
 const usersApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getManagedUsers: builder.query<GetManagedUsersResponse, void>({
-      query: () => '/v1/d/aim/users',
+    getManagedUsers: builder.query<
+      GetManagedUsersResponse,
+      { policy?: string } | void
+    >({
+      query: ({ policy } = {}) =>
+        '/v1/d/aim/users' + (policy ? `?policy=${policy}` : ''),
       providesTags: ['ManagedUser'],
     }),
     getManagedUserById: builder.query<GetManagedUserByIdResponse, string>({

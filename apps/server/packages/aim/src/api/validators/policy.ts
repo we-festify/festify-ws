@@ -45,14 +45,12 @@ export class PolicyValidators {
 
   public validateAttachUsersToPolicy = celebrate({
     [Segments.BODY]: Joi.object().keys({
-      policyId: Joi.string().required(),
       userIds: Joi.array().items(Joi.string()).required(),
     }),
   });
 
   public validateDetachUsersFromPolicy = celebrate({
     [Segments.BODY]: Joi.object().keys({
-      policyId: Joi.string().required(),
       userIds: Joi.array().items(Joi.string()).required(),
     }),
   });

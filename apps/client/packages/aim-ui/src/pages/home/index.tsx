@@ -13,6 +13,8 @@ import UpdateUserPage from './users/update';
 import ManagedUserDetailsPage from './users/details';
 import PermissionPoliciesPage from './policies';
 import CreatePolicyPage from './policies/create';
+import PermissionPolicyDetailsPage from './policies/details';
+import UpdatePolicyPage from './policies/update';
 
 const AIMHome = () => {
   const navigate = useNavigate();
@@ -44,10 +46,10 @@ const AIMHome = () => {
           <Route path="policies/*">
             <Route path="" element={<PermissionPoliciesPage />} />
             <Route path="create" element={<CreatePolicyPage />} />
-            <Route path="update/:userId" element={<UpdateUserPage />} />
+            <Route path="update/:policyId" element={<UpdatePolicyPage />} />
             <Route
-              path="details/:userId"
-              element={<ManagedUserDetailsPage />}
+              path="details/:policyId"
+              element={<PermissionPolicyDetailsPage />}
             />
           </Route>
         </Routes>

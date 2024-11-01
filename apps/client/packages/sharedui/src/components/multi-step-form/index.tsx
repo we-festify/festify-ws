@@ -159,7 +159,7 @@ function MultiStepForm<TSchema extends z.ZodTypeAny>({
                     className={cn(
                       'text-sm',
                       index === currentStep
-                        ? 'text-blue-600 font-semibold'
+                        ? 'text-secondary font-semibold'
                         : 'text-muted-foreground',
                     )}
                   >
@@ -182,7 +182,7 @@ function MultiStepForm<TSchema extends z.ZodTypeAny>({
                     className={cn(
                       'size-8 rounded-full flex items-center justify-center',
                       index === currentStep
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-secondary text-white'
                         : 'ring-1 ring-muted text-muted-foreground bg-background hover:bg-muted hover:ring-muted-foreground/10 cursor-pointer',
                     )}
                     onClick={(e) => handleChangeStep(e, index)}

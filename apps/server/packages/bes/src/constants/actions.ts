@@ -9,6 +9,10 @@ export const besActions: {
     description: 'List all the instances in the root account',
   },
   {
+    alias: 'bes:ReadInstance',
+    description: 'Read an instance in the root account',
+  },
+  {
     alias: 'bes:CreateInstance',
     description: 'Create a new instance in the root account',
   },

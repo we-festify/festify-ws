@@ -1,7 +1,7 @@
 import { IPermissionPolicy } from '@sharedtypes/aim/permission-policy';
 
 export interface GetPoliciesByAccountIdResponse {
-  policies: Omit<IPermissionPolicy, 'rules'>[];
+  policies: IPermissionPolicy[];
 }
 
 export interface GetPolicyByIdResponse {
@@ -36,7 +36,7 @@ export interface UpdatePolicyRequest {
 }
 
 export interface UpdatePolicyResponse {
-  policy: IPermissionPolicy;
+  message: string;
 }
 
 export interface AttachUsersToPolicyRequest {

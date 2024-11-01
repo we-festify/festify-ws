@@ -217,4 +217,17 @@ export class ManagedUserService {
       { $pullAll: { policies: policyIds } },
     );
   }
+
+  public async getUsersAttachedToPolicy(
+    policyId: string,
+    accountId: string,
+  ): Promise<IManagedUser[]> {
+    const users = await this.userModel.find({
+      rootAccount: accountId,
+      policies: policyId,
+    });
+    return Promise.all(
+      users.map((user) => this.excludeSensitiveFields(user.toObject())),
+    );
+  }
 }

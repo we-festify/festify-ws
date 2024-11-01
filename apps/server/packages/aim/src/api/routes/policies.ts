@@ -32,7 +32,7 @@ router.put(
   permissionController.updatePolicy.bind(permissionController),
 );
 router.delete(
-  '/:policyId',
+  '/',
   authMiddleware.requireAuthenticated.bind(authMiddleware),
   policyValidators.validateDeletePolicies.bind(policyValidators),
   permissionController.deletePolicies.bind(permissionController),

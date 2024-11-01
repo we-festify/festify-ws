@@ -47,7 +47,6 @@ import {
   PermissionPolicyResource,
 } from '@sharedtypes/aim/permission-policy';
 import { Label } from '@sharedui/primitives/label';
-import { IServiceMeta } from '@sharedtypes/meta';
 import { cn } from '@sharedui/utils/tw';
 import { TriangleRightIcon } from '@radix-ui/react-icons';
 import { RadioGroup, RadioGroupItem } from '@sharedui/primitives/radio-group';
@@ -152,7 +151,9 @@ interface RuleInputProps {
 
 const RuleInput = ({ index, onClone, onRemove }: RuleInputProps) => {
   const { form } = useMultiStepForm();
-  const service = form.watch(`rules.${index}.service`) as IServiceMeta;
+  const { data: { services } = {} } = useGetServicesMetadataQuery();
+  const serviceAlias = form.watch(`rules.${index}.service`) as string;
+  const service = services?.find((s) => s.alias === serviceAlias);
   const effect = form.watch(`rules.${index}.effect`);
   const [forceUpdate, setForceUpdate] = useState(true);
 
@@ -433,7 +434,7 @@ const ResourcesInput = ({ index }: { index: number }) => {
 };
 
 interface ServiceComboboxProps {
-  onSelect: (value: IServiceMeta | undefined) => void;
+  onSelect: (value: string | undefined) => void;
 }
 
 const ServiceCombobox = ({ onSelect }: ServiceComboboxProps) => {
@@ -465,7 +466,9 @@ const ServiceCombobox = ({ onSelect }: ServiceComboboxProps) => {
                   key={service.alias}
                   value={service.alias}
                   onSelect={(currentValue) => {
-                    onSelect(services.find((s) => s.alias === currentValue));
+                    onSelect(
+                      services.find((s) => s.alias === currentValue)?.alias,
+                    );
                     setOpen(false);
                   }}
                 >

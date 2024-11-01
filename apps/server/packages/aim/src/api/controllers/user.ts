@@ -19,9 +19,20 @@ export class UserController {
     next: e.NextFunction,
   ): Promise<void> {
     try {
+      const { policy } = req.query;
       const accountId = req.user.accountId;
-      const users =
-        await this.managedUserService.getUsersByAccountId(accountId);
+
+      let users = [];
+
+      if (policy) {
+        users = await this.managedUserService.getUsersAttachedToPolicy(
+          policy as string,
+          accountId,
+        );
+      } else {
+        users = await this.managedUserService.getUsersByAccountId(accountId);
+      }
+
       res.status(200).json({ users });
     } catch (err) {
       next(err);

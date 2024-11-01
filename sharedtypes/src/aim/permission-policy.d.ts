@@ -10,7 +10,7 @@ export interface IPermissionPolicyRule {
   resources: PermissionPolicyResource[];
 }
 
-export interface IPermissionPolicy {
+export interface IPermissionPolicy extends Record<string, unknown> {
   _id: string;
   frn: string;
 
