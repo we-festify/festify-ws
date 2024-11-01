@@ -7,6 +7,7 @@ import { useGetManagedUsersQuery } from '@aim-ui/api/users';
 import { columns as policyColumns } from '@aim-ui/components/policies/policy-rules-table-columns';
 import { columns as userColumns } from '@aim-ui/components/users/users-table/columns';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
+import { IPermissionPolicyRule } from '@sharedtypes/aim/permission-policy';
 import CopyIcon from '@sharedui/components/copy-icon';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import PageSection from '@sharedui/components/page-section';
@@ -18,7 +19,7 @@ import { getErrorMessage } from '@sharedui/utils/error';
 import { readableFRN } from '@sharedui/utils/frn';
 import { formatTimeFromNow } from '@sharedui/utils/time';
 import { cn } from '@sharedui/utils/tw';
-import { Table } from '@tanstack/react-table';
+import { Row, Table } from '@tanstack/react-table';
 import { RotateCw } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -185,7 +186,7 @@ const PermissionPolicyDetailsPage = () => {
               <DataTable
                 columns={policyColumns}
                 data={policy.rules || []}
-                expandedComponent={PolicyActionDetails}
+                expandedComponent={PolicyRuleActionDetails}
               />
             </CardContent>
           </Card>
@@ -292,7 +293,11 @@ const grids = [
   },
 ];
 
-const PolicyActionDetails = ({ row }: { row: any }) => (
+const PolicyRuleActionDetails = ({
+  row,
+}: {
+  row: Row<IPermissionPolicyRule>;
+}) => (
   <div className="p-4 flex gap-2">
     <span className="font-semibold text-muted-foreground">Actions:</span>
     <span className="w-full">

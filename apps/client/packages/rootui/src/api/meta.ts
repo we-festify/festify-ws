@@ -1,4 +1,7 @@
-import { GetActionsByServiceResponse, GetServicesMetaResponse } from '@rootui/types/api/meta';
+import {
+  GetActionsByServiceResponse,
+  GetServicesMetaResponse,
+} from '@rootui/types/api/meta';
 import { api } from '.';
 
 const metaApi = api.injectEndpoints({
