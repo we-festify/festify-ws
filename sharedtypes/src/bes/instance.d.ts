@@ -4,7 +4,6 @@ export type BESInstanceStatus = 'active' | 'unverified' | 'inactive';
 
 export interface IBESInstance extends Record<string, unknown> {
   _id: string;
-  frn: string;
 
   // Account details
   account: string | IAccount;

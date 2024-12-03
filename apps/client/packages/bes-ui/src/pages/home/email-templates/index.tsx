@@ -8,22 +8,27 @@ import { besPaths } from '@sharedui/constants/paths';
 import { RotateCw } from 'lucide-react';
 import {
   useDeleteEmailTemplatesMutation,
-  useGetEmailTemplatesQuery,
+  useListEmailTemplatesQuery,
 } from '../../../api/email-templates';
 import { IBESEmailTemplate } from '@sharedtypes/bes';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { toast } from 'sonner';
 import { Table } from '@tanstack/react-table';
+import { generateFRN } from '@sharedui/utils/frn';
+import { useAuth } from '@rootui/providers/auth-provider';
 
 const EmailTemplates = () => {
-  const { data: { templates = [] } = {}, refetch } = useGetEmailTemplatesQuery(
-    {},
-  );
+  const { data: { templates = [] } = {}, refetch } =
+    useListEmailTemplatesQuery(undefined);
   const [deleteEmailTemplates] = useDeleteEmailTemplatesMutation();
+  const { user } = useAuth();
 
   const handleDelete = async (rows: IBESEmailTemplate[]) => {
     try {
-      await deleteEmailTemplates(rows.map((row) => row._id)).unwrap();
+      const frns = rows.map((row) =>
+        generateFRN('bes', user?.accountId ?? '', 'template', row._id),
+      );
+      await deleteEmailTemplates(frns).unwrap();
     } catch (err) {
       toast.error(getErrorMessage(err));
     }

@@ -20,10 +20,10 @@ const Profile = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const location = useLocation();
-  // home route - /<service>/home
-  const isHomeRoute =
-    location.pathname.split('/').length >= 2 &&
-    location.pathname.split('/')[2] === 'home';
+  // home routes
+  // /home
+  // /service-id/home
+  const isHomeRoute = location.pathname.split('/').includes('home');
 
   const handleLogOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -94,31 +94,20 @@ const Profile = () => {
           </div>
         </PopoverContent>
       </Popover>
-      {isLoggedIn &&
-        !isHomeRoute &&
-        (() => {
-          const servicePath = location.pathname.split('/')[1];
-          const link = `/${servicePath}/home`;
-
-          if (!servicePath) {
-            return null;
-          }
-
-          return (
-            <Link
-              to={link}
-              className={cn(
-                buttonVariants({
-                  variant: 'outline',
-                  size: 'sm',
-                }),
-                'h-8 text-slate-900 bg-white hover:bg-white/90 hover:text-slate-900',
-              )}
-            >
-              Go to console
-            </Link>
-          );
-        })()}
+      {isLoggedIn && !isHomeRoute && (
+        <Link
+          to="/"
+          className={cn(
+            buttonVariants({
+              variant: 'outline',
+              size: 'sm',
+            }),
+            'h-8 text-slate-900 bg-white hover:bg-white/90 hover:text-slate-900',
+          )}
+        >
+          Go to home
+        </Link>
+      )}
     </>
   );
 };

@@ -3,65 +3,7 @@ import { api } from '@rootui/api';
 
 const besInstancesApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getBESInstances: builder.query({
-      query: () => ({
-        url: `/v1/d/bes/execute/ListInstances`,
-        method: 'POST',
-      }),
-      providesTags: ['BESInstance'],
-    }),
-    getInstanceById: builder.query({
-      query: (instanceId: string) => ({
-        url: `/v1/d/bes/execute/ReadInstance`,
-        method: 'POST',
-        body: {
-          resource: instanceId,
-        },
-      }),
-      providesTags: ['BESInstance'],
-    }),
-    getBESInstanceByAlias: builder.query({
-      query: (alias: string) => ({
-        url: `/v1/d/bes/execute/ReadInstance`,
-        method: 'POST',
-        body: {
-          resource: alias,
-        },
-      }),
-      providesTags: ['BESInstance'],
-    }),
-    createBESInstance: builder.mutation({
-      query: (data: Partial<IBESInstance>) => ({
-        url: `/v1/d/bes/instances`,
-        method: 'POST',
-        body: data,
-      }),
-      invalidatesTags: ['BESInstance'],
-    }),
-    updateBESInstance: builder.mutation({
-      query: ({
-        instanceId,
-        instance,
-      }: {
-        instanceId: string;
-        instance: Partial<IBESInstance>;
-      }) => ({
-        url: `/v1/d/bes/instances/${instanceId}`,
-        method: 'PATCH',
-        body: instance,
-      }),
-      invalidatesTags: ['BESInstance'],
-    }),
-    deleteBESInstances: builder.mutation({
-      query: (instanceIds: string[]) => ({
-        url: `/v1/d/bes/instances`,
-        method: 'DELETE',
-        body: { instanceIds },
-      }),
-      invalidatesTags: ['BESInstance'],
-    }),
-
-    listInstances: builder.query<unknown, string>({
+    listInstances: builder.query<{ instances: IBESInstance[] }, undefined>({
       query: () => ({
         url: `/v1/d/bes/execute/ListInstances`,
         method: 'POST',
@@ -78,16 +20,40 @@ const besInstancesApi = api.injectEndpoints({
       }),
       providesTags: ['BESInstance'],
     }),
+    createInstance: builder.mutation<undefined, Partial<IBESInstance>>({
+      query: (instance: Partial<IBESInstance>) => ({
+        url: `/v1/d/bes/execute/CreateInstance`,
+        method: 'POST',
+        body: { data: { instance } },
+      }),
+      invalidatesTags: ['BESInstance'],
+    }),
+    updateInstance: builder.mutation<
+      undefined,
+      { frn: string; instance: Partial<IBESInstance> }
+    >({
+      query: ({ frn, instance }) => ({
+        url: `/v1/d/bes/execute/UpdateInstance`,
+        method: 'POST',
+        body: { resource: frn, data: { instance } },
+      }),
+      invalidatesTags: ['BESInstance'],
+    }),
+    deleteInstances: builder.mutation<undefined, string[]>({
+      query: (frns: string[]) => ({
+        url: `/v1/d/bes/execute/DeleteInstances`,
+        method: 'POST',
+        body: { resource: frns },
+      }),
+      invalidatesTags: ['BESInstance'],
+    }),
   }),
 });
 
 export const {
-  useGetBESInstancesQuery,
-  useGetBESInstanceByAliasQuery,
-  useCreateBESInstanceMutation,
-  useUpdateBESInstanceMutation,
-  useDeleteBESInstancesMutation,
-
   useListInstancesQuery,
   useReadInstanceQuery,
+  useCreateInstanceMutation,
+  useUpdateInstanceMutation,
+  useDeleteInstancesMutation,
 } = besInstancesApi;

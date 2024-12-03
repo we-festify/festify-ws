@@ -4,24 +4,25 @@ import BESInstance from '@bes/models/bes-instance';
 import { IBESInstance } from '@sharedtypes/bes';
 import { Model } from 'mongoose';
 
-export const validator: ValidatorFunction<string, null> = (resource) => {
-  return validateFRNForServiceAndResourceType(resource, 'bes', 'instance');
+export const validator: ValidatorFunction<string[], null> = (resource) => {
+  return resource.every((r) =>
+    validateFRNForServiceAndResourceType(r, 'bes', 'instance'),
+  );
 };
 
 const handlerWithoutDeps =
-  (instanceModel: Model<IBESInstance>): HandlerFunction<string, null> =>
+  (instanceModel: Model<IBESInstance>): HandlerFunction<string[], null> =>
   async (resource, _data, context) => {
     const { accountId } = context.user;
-    const { resourceId: alias } = parseFRN(resource);
+    const aliases = resource.map((frn) => parseFRN(frn).resourceId);
 
-    const instance = await instanceModel.findOne({
+    await instanceModel.deleteMany({
       account: accountId,
-      alias,
+      alias: { $in: aliases },
     });
-    return { instance };
   };
 
 const handler = handlerWithoutDeps(BESInstance);
 
-export const name = 'ReadInstance';
+export const name = 'DeleteInstances';
 export default handler;

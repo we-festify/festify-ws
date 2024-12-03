@@ -8,8 +8,8 @@ export const readableFRN = (frn: string): string => {
 export const generateFRN = (
   service: string,
   account: string,
-  resource: string,
-  id: string,
+  resourceType: string,
+  resourceId: string,
 ): string => {
-  return `frn:${service}:${account}:${resource}:${id}`;
+  return `frn:${service}:${account}:${resourceType}:${resourceId}`;
 };

@@ -1,24 +1,30 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MultiStepForm from '@sharedui/components/multi-step-form';
 import { updateInstanceSchema } from './schema';
 import { stepsForCreatingInstance } from './steps';
 import {
-  useGetBESInstanceByAliasQuery,
-  useUpdateBESInstanceMutation,
+  useReadInstanceQuery,
+  useUpdateInstanceMutation,
 } from '../../../../api/instances';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { z } from 'zod';
 import { IBESInstance } from '@sharedtypes/bes';
+import { useAuth } from '@rootui/providers/auth-provider';
+import { generateFRN } from '@sharedui/utils/frn';
+import { besPaths } from '@sharedui/constants/paths';
 
 const UpdateInstancePage = () => {
   const { alias = '' } = useParams<{ alias: string }>();
-  const { data: { instance } = {} } = useGetBESInstanceByAliasQuery<{
+  const { user } = useAuth();
+  const frn = generateFRN('bes', user?.accountId ?? '', 'instance', alias);
+  const { data: { instance } = {} } = useReadInstanceQuery<{
     data: { instance: IBESInstance };
-  }>(alias, {
+  }>(frn, {
     skip: !alias,
   });
-  const [updateInstance] = useUpdateBESInstanceMutation();
+  const [updateInstance] = useUpdateInstanceMutation();
+  const navigate = useNavigate();
 
   const handleUpdateInstance = async (
     values: z.infer<typeof updateInstanceSchema>,
@@ -26,11 +32,12 @@ const UpdateInstancePage = () => {
     if (!instance) return;
 
     try {
-      const payload = await updateInstance({
-        instanceId: instance._id,
+      await updateInstance({
+        frn,
         instance: values,
       }).unwrap();
-      toast.success(payload.message || 'Instance updated successfully');
+      toast.success('Instance updated successfully');
+      navigate(besPaths.INSTANCES);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
