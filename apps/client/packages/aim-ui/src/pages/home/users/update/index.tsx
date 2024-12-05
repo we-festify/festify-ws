@@ -12,27 +12,32 @@ import { Card, CardContent } from '@sharedui/primitives/card';
 import { Button } from '@sharedui/primitives/button';
 import UserForm from '@aim-ui/components/users/user-form';
 import {
-  useGetManagedUserByIdQuery,
+  useReadManagedUserQuery,
   useUpdateManagedUserMutation,
 } from '@aim-ui/api/users';
+import { useAuth } from '@rootui/providers/auth-provider';
+import { generateFRN } from '@sharedui/utils/frn';
 
 const UpdateUserPage = () => {
-  const { userId } = useParams<{ userId: string }>();
-  const { data: { user } = {} } = useGetManagedUserByIdQuery(userId as string);
+  const { alias } = useParams<{ alias: string }>();
+  const { user } = useAuth();
+  const frn = generateFRN('aim', user?.accountId ?? '', 'user', alias ?? '');
+  const { data: { user: managedUser } = {} } = useReadManagedUserQuery(frn);
   const form = useForm<z.infer<typeof createUserSchema>>({
-    defaultValues: user,
+    defaultValues: managedUser,
     resolver: zodResolver(createUserSchema),
   });
   const navigate = useNavigate();
   const [updateManagedUser] = useUpdateManagedUserMutation();
 
-  const handleUpdateUser = async (
-    _values: z.infer<typeof createUserSchema>,
-  ) => {
+  const handleUpdateUser = async (values: z.infer<typeof createUserSchema>) => {
     try {
       await updateManagedUser({
-        userId: userId as string,
-        user: form.getValues(),
+        frn,
+        user: {
+          alias: values.alias,
+          password: values.password,
+        },
       }).unwrap();
       toast.success('User updated successfully');
       form.reset();

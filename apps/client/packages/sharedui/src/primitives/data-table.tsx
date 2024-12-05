@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
         <div className="flex items-start justify-between pb-4">
           <div className="flex flex-col gap-2 pl-0.5">
             {title && (
-              <h2 className="text-lg font-semibold flex items-center gap-2">
+              <h2 className="text-lg font-medium flex items-center gap-2">
                 {title}
                 <span className="text-base font-normal text-muted-foreground">
                   {' '}
@@ -195,7 +195,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns.length + (expandedComponent ? 1 : 0)}
                   className="min-h-24 text-center"
                 >
                   {isDataLoading && (

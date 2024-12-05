@@ -4,15 +4,15 @@ export type PermissionPolicyEffect = 'allow' | 'deny';
 export type PermissionPolicyAction = `${string}:${string}`; // service:action
 export type PermissionPolicyResource = string; // FRN
 
-export interface IPermissionPolicyRule {
+export interface IPermissionPolicyRule extends Record<string, unknown> {
   effect: PermissionPolicyEffect;
+  service: string;
   actions: PermissionPolicyAction[];
   resources: PermissionPolicyResource[];
 }
 
 export interface IPermissionPolicy extends Record<string, unknown> {
   _id: string;
-  frn: string;
 
   account: string | IAccount;
 

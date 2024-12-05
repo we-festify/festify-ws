@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const policyRuleSchema = z.object({
-  service: z.any(), // only for frontend logic of selecting services
+  service: z.string(),
   effect: z.enum(['allow', 'deny']),
   actions: z.array(z.string()).min(1, "Actions can't be empty"),
   resources: z.array(z.string()),

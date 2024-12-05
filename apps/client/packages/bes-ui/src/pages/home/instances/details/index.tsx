@@ -13,7 +13,7 @@ import { RotateCw } from 'lucide-react';
 import { besPaths } from '@sharedui/constants/paths';
 import { cn } from '@sharedui/utils/tw';
 import {
-  useDeleteBESInstancesMutation,
+  useDeleteInstancesMutation,
   useReadInstanceQuery,
 } from '../../../../api/instances';
 import { toast } from 'sonner';
@@ -32,7 +32,7 @@ const InstanceDetailsPage = () => {
     skip: !alias,
   });
   const navigate = useNavigate();
-  const [deleteInstances] = useDeleteBESInstancesMutation();
+  const [deleteInstances] = useDeleteInstancesMutation();
 
   const handleDeleteInstance = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -42,7 +42,7 @@ const InstanceDetailsPage = () => {
     if (!instance) return;
 
     try {
-      await deleteInstances([instance._id]).unwrap();
+      await deleteInstances([frn]).unwrap();
       navigate(besPaths.INSTANCES);
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -142,12 +142,16 @@ const grids = [
       {
         key: 'frn',
         label: 'Festify Resource Name (FRN)',
-        formatter: (value: unknown) => (
-          <span className="flex items-center">
-            {readableFRN(value as string)}
-            <CopyIcon value={value as string} className="h-7 p-1 ml-2" />
-          </span>
-        ),
+        formatter: (_: unknown, row: unknown) => {
+          const { alias } = row as IBESInstance;
+          const value = generateFRN('bes', '', 'instance', alias);
+          return (
+            <div className="flex items-center gap-2">
+              <span>{readableFRN(value as string)}</span>
+              <CopyIcon value={value as string} />
+            </div>
+          );
+        },
       },
       {
         key: 'status',

@@ -8,22 +8,27 @@ import { besPaths } from '@sharedui/constants/paths';
 import { IBESInstance } from '@sharedtypes/bes';
 import { RotateCw } from 'lucide-react';
 import {
-  useDeleteBESInstancesMutation,
-  useGetBESInstancesQuery,
+  useDeleteInstancesMutation,
+  useListInstancesQuery,
 } from '../../../api/instances';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { Table } from '@tanstack/react-table';
+import { generateFRN } from '@sharedui/utils/frn';
+import { useAuth } from '@rootui/providers/auth-provider';
 
 const Instances = () => {
-  const { data: { instances = [] } = {}, refetch } = useGetBESInstancesQuery(
-    {},
-  );
-  const [deleteInstances] = useDeleteBESInstancesMutation();
+  const { user } = useAuth();
+  const { data: { instances = [] } = {}, refetch } =
+    useListInstancesQuery(undefined);
+  const [deleteInstances] = useDeleteInstancesMutation();
 
   const handleDelete = async (rows: IBESInstance[]) => {
     try {
-      await deleteInstances(rows.map((row) => row._id)).unwrap();
+      const frns = rows.map((r) =>
+        generateFRN('bes', user?.accountId ?? '', 'instance', r.alias),
+      );
+      await deleteInstances(frns).unwrap();
     } catch (err) {
       toast.error(getErrorMessage(err));
     }

@@ -5,7 +5,7 @@ import EmailTemplatePreview from '../../../../components/email-templates/email-t
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   useDeleteEmailTemplatesMutation,
-  useGetEmailTemplateByIdQuery,
+  useReadEmailTemplateQuery,
 } from '../../../../api/email-templates';
 import { Button, buttonVariants } from '@sharedui/primitives/button';
 import { RotateCw } from 'lucide-react';
@@ -13,12 +13,21 @@ import { besPaths } from '@sharedui/constants/paths';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { toast } from 'sonner';
 import { IBESEmailTemplate } from '@sharedtypes/bes';
+import { generateFRN } from '@sharedui/utils/frn';
+import { useAuth } from '@rootui/providers/auth-provider';
 
 const EmailTemplateDetailsPage = () => {
   const { templateId } = useParams<{ templateId: string }>();
-  const { data: { template } = {}, refetch } = useGetEmailTemplateByIdQuery<{
+  const { user } = useAuth();
+  const frn = generateFRN(
+    'bes',
+    user?.accountId ?? '',
+    'template',
+    templateId ?? '',
+  );
+  const { data: { template } = {}, refetch } = useReadEmailTemplateQuery<{
     data: { template: IBESEmailTemplate };
-  }>(templateId);
+  }>(frn);
   const navigate = useNavigate();
   const [deleteEmailTemplates] = useDeleteEmailTemplatesMutation();
 
@@ -30,7 +39,7 @@ const EmailTemplateDetailsPage = () => {
     if (!template) return;
 
     try {
-      await deleteEmailTemplates([template._id]).unwrap();
+      await deleteEmailTemplates([frn]).unwrap();
       navigate(besPaths.EMAIL_TEMPLATES);
     } catch (err) {
       toast.error(getErrorMessage(err));

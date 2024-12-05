@@ -34,11 +34,10 @@ export const columns: ColumnDef<IManagedUser>[] = [
     accessorKey: 'alias',
     cell: ({ row }) => {
       const alias = row.original.alias;
-      const id = row.original._id;
 
       return (
         <Link
-          to={`${aimPaths.USER_DETAILS}/${id}`}
+          to={`${aimPaths.USER_DETAILS}/${alias}`}
           className="text-blue-600 hover:underline"
         >
           {alias}

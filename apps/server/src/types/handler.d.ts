@@ -1,8 +1,8 @@
 import { TokenPayload } from './services/auth';
 
 type ValidatorFunction<
-  TResource extends string | null,
-  TData extends Record<string, unknown> | null,
+  TResource extends string | null | string[],
+  TData extends Record<string, unknown> | null | unknown,
 > = (resource: TResource, data: TData) => boolean;
 
 interface HandlerFunctionContext {
@@ -10,7 +10,7 @@ interface HandlerFunctionContext {
 }
 
 type HandlerFunction<
-  TResource extends string | null,
+  TResource extends string | null | string[],
   TData extends Record<string, unknown> | null,
 > = (
   resource: TResource,

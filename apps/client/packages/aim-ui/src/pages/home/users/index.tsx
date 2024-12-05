@@ -12,16 +12,23 @@ import { RotateCw } from 'lucide-react';
 import { Table } from '@tanstack/react-table';
 import {
   useDeleteManagedUsersMutation,
-  useGetManagedUsersQuery,
+  useListManagedUsersQuery,
 } from '@aim-ui/api/users';
+import { useAuth } from '@rootui/providers/auth-provider';
+import { generateFRN } from '@sharedui/utils/frn';
 
 const ManagedUsersListPage = () => {
-  const { data: { users } = {}, refetch } = useGetManagedUsersQuery();
+  const { user } = useAuth();
+  const { data: { users: managedUsers } = {}, refetch } =
+    useListManagedUsersQuery(undefined);
   const [deleteUsers] = useDeleteManagedUsersMutation();
 
   const handleDelete = async (rows: IManagedUser[]) => {
     try {
-      await deleteUsers(rows.map((row) => row._id)).unwrap();
+      const frns = rows.map((row) =>
+        generateFRN('aim', user?.accountId ?? '', 'user', row.alias),
+      );
+      await deleteUsers(frns).unwrap();
       toast.success('Users deleted successfully');
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -41,14 +48,14 @@ const ManagedUsersListPage = () => {
     <div className="p-8">
       <PageSection
         title="Users"
-        description="An IAM user is an identity with long-term credentials that is used to interact with AWS in an account."
+        description="An IAM user is an identity with long-term credentials that is used to interact with FWS in an account."
       >
         <Card>
           <CardContent>
             <DataTable
               title="Users"
               columns={columns}
-              data={users || []}
+              data={managedUsers || []}
               header={TableHeader(handleDelete, handleRefetch)}
             />
           </CardContent>

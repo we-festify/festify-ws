@@ -1,61 +1,93 @@
-import {
-  AttachUsersToPolicyRequest,
-  CreatePolicyRequest,
-  CreatePolicyResponse,
-  GetPoliciesByAccountIdResponse,
-  GetPolicyByIdResponse,
-  UpdatePolicyRequest,
-  UpdatePolicyResponse,
-} from '@aim-ui/types/api/policies';
 import { api } from '@rootui/api';
+import { IPermissionPolicy } from '@sharedtypes/aim/permission-policy';
 
 const policiesApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getPolicies: builder.query<GetPoliciesByAccountIdResponse, void>({
-      query: () => '/v1/d/aim/policies',
+    listPolicies: builder.query<{ policies: IPermissionPolicy[] }, undefined>({
+      query: () => ({
+        url: `/v1/d/aim/execute/ListPolicies`,
+        method: 'POST',
+      }),
       providesTags: ['PermissionPolicy'],
     }),
-    getPolicyById: builder.query<GetPolicyByIdResponse, string>({
-      query: (policyId) => `/v1/d/aim/policies/${policyId}`,
+    readPolicy: builder.query<{ policy: IPermissionPolicy }, string>({
+      query: (frn: string) => ({
+        url: `/v1/d/aim/execute/ReadPolicy`,
+        method: 'POST',
+        body: {
+          resource: frn,
+        },
+      }),
       providesTags: ['PermissionPolicy'],
     }),
-    createPolicy: builder.mutation<CreatePolicyResponse, CreatePolicyRequest>({
-      query: (policy) => ({
-        url: '/v1/d/aim/policies',
+    createPolicy: builder.mutation<undefined, Partial<IPermissionPolicy>>({
+      query: (policy: Partial<IPermissionPolicy>) => ({
+        url: `/v1/d/aim/execute/CreatePolicy`,
         method: 'POST',
-        body: policy,
+        body: { data: { policy } },
       }),
       invalidatesTags: ['PermissionPolicy'],
     }),
-    updatePolicy: builder.mutation<UpdatePolicyResponse, UpdatePolicyRequest>({
-      query: ({ policy, policyId }) => ({
-        url: `/v1/d/aim/policies/${policyId}`,
-        method: 'PUT',
-        body: policy,
-      }),
-      invalidatesTags: ['PermissionPolicy'],
-    }),
-    deletePolicies: builder.mutation<void, string[]>({
-      query: (policyIds) => ({
-        url: '/v1/d/aim/policies',
-        method: 'DELETE',
-        body: { policyIds },
-      }),
-      invalidatesTags: ['PermissionPolicy'],
-    }),
-    attachUsersToPolicy: builder.mutation<void, AttachUsersToPolicyRequest>({
-      query: ({ policyId, userIds }) => ({
-        url: `/v1/d/aim/policies/${policyId}/users`,
+    updatePolicy: builder.mutation<
+      undefined,
+      { frn: string; policy: Partial<IPermissionPolicy> }
+    >({
+      query: ({ frn, policy }) => ({
+        url: `/v1/d/aim/execute/UpdatePolicy`,
         method: 'POST',
-        body: { userIds },
+        body: { resource: frn, data: { policy } },
+      }),
+      invalidatesTags: ['PermissionPolicy'],
+    }),
+    deletePolicies: builder.mutation<undefined, string[]>({
+      query: (frns: string[]) => ({
+        url: `/v1/d/aim/execute/DeletePolicies`,
+        method: 'POST',
+        body: { resource: frns },
+      }),
+      invalidatesTags: ['PermissionPolicy'],
+    }),
+    attachUserPolicies: builder.mutation<
+      undefined,
+      { userFrn: string; policyFrns: string[] }
+    >({
+      query: ({ userFrn, policyFrns }) => ({
+        url: `/v1/d/aim/execute/AttachUserPolicies`,
+        method: 'POST',
+        body: { resource: [userFrn, ...policyFrns] },
       }),
       invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
     }),
-    detachUsersFromPolicy: builder.mutation<void, AttachUsersToPolicyRequest>({
-      query: ({ policyId, userIds }) => ({
-        url: `/v1/d/aim/policies/${policyId}/users`,
-        method: 'DELETE',
-        body: { userIds },
+    attachUsersPolicy: builder.mutation<
+      undefined,
+      { userFrns: string[]; policyFrn: string }
+    >({
+      query: ({ userFrns, policyFrn }) => ({
+        url: `/v1/d/aim/execute/AttachUsersPolicy`,
+        method: 'POST',
+        body: { resource: [...userFrns, policyFrn] },
+      }),
+      invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
+    }),
+    detachUserPolicies: builder.mutation<
+      undefined,
+      { userFrn: string; policyFrns: string[] }
+    >({
+      query: ({ userFrn, policyFrns }) => ({
+        url: `/v1/d/aim/execute/DetachUserPolicies`,
+        method: 'POST',
+        body: { resource: [userFrn, ...policyFrns] },
+      }),
+      invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
+    }),
+    detachUsersPolicy: builder.mutation<
+      undefined,
+      { userFrns: string[]; policyFrn: string }
+    >({
+      query: ({ userFrns, policyFrn }) => ({
+        url: `/v1/d/aim/execute/DetachUsersPolicy`,
+        method: 'POST',
+        body: { resource: [...userFrns, policyFrn] },
       }),
       invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
     }),
@@ -63,11 +95,13 @@ const policiesApi = api.injectEndpoints({
 });
 
 export const {
-  useGetPoliciesQuery,
-  useGetPolicyByIdQuery,
+  useListPoliciesQuery,
+  useReadPolicyQuery,
   useCreatePolicyMutation,
   useUpdatePolicyMutation,
   useDeletePoliciesMutation,
-  useAttachUsersToPolicyMutation,
-  useDetachUsersFromPolicyMutation,
+  useAttachUserPoliciesMutation,
+  useAttachUsersPolicyMutation,
+  useDetachUserPoliciesMutation,
+  useDetachUsersPolicyMutation,
 } = policiesApi;

@@ -7,13 +7,23 @@ import { z } from 'zod';
 import { useNavigate, useParams } from 'react-router-dom';
 import { aimPaths } from '@sharedui/constants/paths';
 import {
-  useGetPolicyByIdQuery,
+  useReadPolicyQuery,
   useUpdatePolicyMutation,
 } from '@aim-ui/api/policies';
+import { generateFRN } from '@sharedui/utils/frn';
+import { useAuth } from '@rootui/providers/auth-provider';
+import { PermissionPolicyAction } from '@sharedtypes/aim/permission-policy';
 
 const UpdatePolicyPage = () => {
-  const { policyId } = useParams<{ policyId: string }>();
-  const { data: { policy } = {} } = useGetPolicyByIdQuery(policyId as string);
+  const { alias } = useParams<{ alias: string }>();
+  const { user } = useAuth();
+  const policyFrn = generateFRN(
+    'aim',
+    user?.accountId ?? '',
+    'policy',
+    alias ?? '',
+  );
+  const { data: { policy } = {} } = useReadPolicyQuery(policyFrn);
   const [updatePolicy] = useUpdatePolicyMutation();
   const navigate = useNavigate();
 
@@ -25,15 +35,14 @@ const UpdatePolicyPage = () => {
         ...values,
         rules: values.rules.map((rule) => ({
           ...rule,
-          service: undefined,
+          actions: rule.actions as PermissionPolicyAction[],
         })),
       };
-      if (!policyId) return;
-      const payload = await updatePolicy({
-        policyId,
+      await updatePolicy({
+        frn: policyFrn,
         policy: modifiedValues,
       }).unwrap();
-      toast.success(payload.message || 'Policy updated successfully');
+      toast.success('Policy updated successfully');
       navigate(aimPaths.POLICIES, { replace: true });
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -49,7 +58,6 @@ const UpdatePolicyPage = () => {
       defaultValues={{
         ...policy,
         rules: policy?.rules?.map((rule) => {
-          console.log(rule.actions[0].split(':')[0]);
           return {
             ...rule,
             service: rule.actions[0].split(':')[0],

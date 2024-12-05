@@ -1,31 +1,13 @@
 import mongoose from 'mongoose';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
-import { generateFRN, validateFRNForService } from '@/utils/frn';
 
-const userSchema = new mongoose.Schema<IManagedUser>(
+const managedUserSchema = new mongoose.Schema<IManagedUser>(
   {
-    frn: {
-      type: String,
-      required: true,
-      validate: {
-        validator: (value: string) => validateFRNForService(value, 'aim'),
-        message: (props) => `${props.value} is not a valid FRN!`,
-      },
-      default: function () {
-        return generateFRN(
-          'aim',
-          this.rootAccount as string,
-          'user',
-          this.alias,
-        );
-      },
-    },
-
     alias: {
       type: String,
       required: true,
     },
-    rootAccount: {
+    account: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Account',
     },
@@ -46,5 +28,5 @@ const userSchema = new mongoose.Schema<IManagedUser>(
   },
 );
 
-const ManagedUser = mongoose.model('ManagedUser', userSchema);
+const ManagedUser = mongoose.model('ManagedUser', managedUserSchema);
 export default ManagedUser;

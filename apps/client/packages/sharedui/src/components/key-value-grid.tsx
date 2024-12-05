@@ -1,23 +1,36 @@
+type FormatterFunctionWithRow<TData> = (
+  value: unknown,
+  row: TData,
+) => string | JSX.Element;
+
+type FormatterFunction = (value: unknown) => string | JSX.Element;
+
 export type KeyValueType =
   | string
   | {
       key: string;
       label?: string;
-      formatter?: (value: unknown) => string | JSX.Element;
+      formatter?:
+        | FormatterFunction
+        | FormatterFunctionWithRow<Record<string, unknown>>;
     };
 
 interface KeyValueProps {
   label: string;
   value: unknown;
-  formatter?: (value: unknown) => string | JSX.Element;
+  formatter?: (
+    value: unknown,
+    row: Record<string, unknown>,
+  ) => string | JSX.Element;
+  row: Record<string, unknown>;
 }
 
-function KeyValue({ label, value, formatter }: Readonly<KeyValueProps>) {
+function KeyValue({ row, label, value, formatter }: Readonly<KeyValueProps>) {
   return (
     <div className="space-y-1.5">
       <div className="text-sm text-muted-foreground">{label}</div>
       <div className="text-sm">
-        {formatter ? formatter(value) : value?.toString()}
+        {formatter ? formatter(value, row) : value?.toString()}
       </div>
     </div>
   );
@@ -51,6 +64,7 @@ function KeyValueGrid<TData extends Record<string, unknown>>({
                     key={currentKey}
                     label={currentKey}
                     value={data[currentKey]}
+                    row={data}
                   />
                 );
               } else {
@@ -60,6 +74,7 @@ function KeyValueGrid<TData extends Record<string, unknown>>({
                     label={currentKey.label ?? currentKey.key}
                     value={data[currentKey.key]}
                     formatter={currentKey.formatter}
+                    row={data}
                   />
                 );
               }

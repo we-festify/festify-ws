@@ -25,8 +25,8 @@ const CreateEmailTemplatePage = () => {
     values: z.infer<typeof createEmailTemplateSchema>,
   ) => {
     try {
-      const payload = await createEmailTemplate(values).unwrap();
-      toast.success(payload.message || 'Email template created successfully');
+      await createEmailTemplate(values).unwrap();
+      toast.success('Email template created successfully');
       form.reset();
       navigate(besPaths.EMAIL_TEMPLATES, { replace: true });
     } catch (err) {

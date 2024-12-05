@@ -1,21 +1,22 @@
 import { HandlerFunction, ValidatorFunction } from '@/types/handler';
-import { TokenPayload } from '@/types/services/auth';
-import { validateFRNForService } from '@/utils/frn';
+import { parseFRN, validateFRNForServiceAndResourceType } from '@/utils/frn';
 import BESInstance from '@bes/models/bes-instance';
 import { IBESInstance } from '@sharedtypes/bes';
 import { Model } from 'mongoose';
 
 export const validator: ValidatorFunction<string, null> = (resource) => {
-  return validateFRNForService(resource, 'bes');
+  return validateFRNForServiceAndResourceType(resource, 'bes', 'instance');
 };
 
 const handlerWithoutDeps =
   (instanceModel: Model<IBESInstance>): HandlerFunction<string, null> =>
   async (resource, _data, context) => {
-    const { accountId } = context.user as TokenPayload;
+    const { accountId } = context.user;
+    const { resourceId: alias } = parseFRN(resource);
+
     const instance = await instanceModel.findOne({
       account: accountId,
-      frn: resource,
+      alias,
     });
     return { instance };
   };

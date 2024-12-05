@@ -9,16 +9,25 @@ import { Form } from '@sharedui/primitives/form';
 import { Button } from '@sharedui/primitives/button';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  useGetEmailTemplateByIdQuery,
+  useReadEmailTemplateQuery,
   useUpdateEmailTemplateMutation,
 } from '../../../../api/email-templates';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { besPaths } from '@sharedui/constants/paths';
+import { useAuth } from '@rootui/providers/auth-provider';
+import { generateFRN } from '@sharedui/utils/frn';
 
 const UpdateEmailTemplatePage = () => {
   const { templateId } = useParams<{ templateId: string }>();
-  const { data: { template } = {} } = useGetEmailTemplateByIdQuery(templateId);
+  const { user } = useAuth();
+  const frn = generateFRN(
+    'bes',
+    user?.accountId ?? '',
+    'template',
+    templateId ?? '',
+  );
+  const { data: { template } = {} } = useReadEmailTemplateQuery(frn);
   const form = useForm<z.infer<typeof updateEmailTemplateSchema>>({
     defaultValues: template,
     resolver: zodResolver(updateEmailTemplateSchema),
@@ -32,11 +41,11 @@ const UpdateEmailTemplatePage = () => {
     if (!template) return;
 
     try {
-      const payload = await updateEmailTemplate({
-        templateId: template._id,
+      await updateEmailTemplate({
+        frn,
         template: values,
       }).unwrap();
-      toast.success(payload.message || 'Email template updated successfully');
+      toast.success('Email template updated successfully');
       navigate(`${besPaths.EMAIL_TEMPLATE_DETAILS}/${template._id}`);
     } catch (err) {
       toast.error(getErrorMessage(err));

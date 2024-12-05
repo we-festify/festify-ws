@@ -10,18 +10,24 @@ import { RotateCw } from 'lucide-react';
 import { Table } from '@tanstack/react-table';
 import {
   useDeletePoliciesMutation,
-  useGetPoliciesQuery,
+  useListPoliciesQuery,
 } from '@aim-ui/api/policies';
 import { IPermissionPolicy } from '@sharedtypes/aim/permission-policy';
 import { columns } from '@aim-ui/components/policies/policies-table/columns';
+import { generateFRN } from '@sharedui/utils/frn';
+import { useAuth } from '@rootui/providers/auth-provider';
 
 const PermissionPoliciesPage = () => {
-  const { data: { policies } = {}, refetch } = useGetPoliciesQuery();
+  const { data: { policies } = {}, refetch } = useListPoliciesQuery(undefined);
   const [deletePolicies] = useDeletePoliciesMutation();
+  const { user } = useAuth();
 
   const handleDelete = async (rows: IPermissionPolicy[]) => {
     try {
-      await deletePolicies(rows.map((row) => row._id)).unwrap();
+      const frns = rows.map((row) =>
+        generateFRN('aim', user?.accountId ?? '', 'policy', row.alias),
+      );
+      await deletePolicies(frns).unwrap();
       toast.success('Policies deleted successfully');
     } catch (err) {
       toast.error(getErrorMessage(err));

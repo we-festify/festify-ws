@@ -1,4 +1,4 @@
-import { useCreateBESInstanceMutation } from '../../../../api/instances';
+import { useCreateInstanceMutation } from '../../../../api/instances';
 import MultiStepForm from '@sharedui/components/multi-step-form';
 import { createInstanceSchema, defaultValues } from './schema';
 import { stepsForCreatingInstance } from './steps';
@@ -9,15 +9,15 @@ import { useNavigate } from 'react-router-dom';
 import { besPaths } from '@sharedui/constants/paths';
 
 const CreateInstancePage = () => {
-  const [createInstance] = useCreateBESInstanceMutation();
+  const [createInstance] = useCreateInstanceMutation();
   const navigate = useNavigate();
 
   const handleCreateInstance = async (
     values: z.infer<typeof createInstanceSchema>,
   ) => {
     try {
-      const payload = await createInstance(values).unwrap();
-      toast.success(payload.message || 'Instance created successfully');
+      await createInstance(values).unwrap();
+      toast.success('Instance created successfully');
       navigate(besPaths.INSTANCES, { replace: true });
     } catch (err) {
       toast.error(getErrorMessage(err));

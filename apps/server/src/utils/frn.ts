@@ -31,3 +31,15 @@ export const validateFRNForService = (frn: string, service: string) => {
   const { service: frnService } = parseFRN(frn);
   return frnService === service;
 };
+
+export const validateFRNForServiceAndResourceType = (
+  frn: string,
+  service: string,
+  resourceType: string,
+) => {
+  if (!validateFRN(frn)) {
+    return false;
+  }
+  const { service: frnService, resourceType: frnResourceType } = parseFRN(frn);
+  return frnService === service && frnResourceType === resourceType;
+};
