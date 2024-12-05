@@ -47,6 +47,14 @@ const usersApi = api.injectEndpoints({
       }),
       invalidatesTags: ['ManagedUser'],
     }),
+    listPolicyAttachedUsers: builder.query<{ users: IManagedUser[] }, string>({
+      query: (frn: string) => ({
+        url: `/v1/d/aim/execute/ListPolicyAttachedUsers`,
+        method: 'POST',
+        body: { resource: frn },
+      }),
+      providesTags: ['ManagedUser'],
+    }),
   }),
 });
 
@@ -56,4 +64,5 @@ export const {
   useCreateManagedUserMutation,
   useUpdateManagedUserMutation,
   useDeleteManagedUsersMutation,
+  useListPolicyAttachedUsersQuery,
 } = usersApi;

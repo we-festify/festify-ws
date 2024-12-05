@@ -3,7 +3,10 @@ import {
   useDeletePoliciesMutation,
   useAttachUsersPolicyMutation,
 } from '@aim-ui/api/policies';
-import { useListManagedUsersQuery } from '@aim-ui/api/users';
+import {
+  useListManagedUsersQuery,
+  useListPolicyAttachedUsersQuery,
+} from '@aim-ui/api/users';
 import { columns as policyColumns } from '@aim-ui/components/policies/policy-rules-table-columns';
 import { columns as userColumns } from '@aim-ui/components/users/users-table/columns';
 import { useAuth } from '@rootui/providers/auth-provider';
@@ -43,7 +46,7 @@ const PermissionPolicyDetailsPage = () => {
   const [deletePermissionPolicys] = useDeletePoliciesMutation();
   const { data: { users } = {} } = useListManagedUsersQuery(undefined);
   const { data: { users: attachedUsers } = {}, refetch: refetchAttachedUsers } =
-    useListManagedUsersQuery(undefined);
+    useListPolicyAttachedUsersQuery(policyFrn);
   const nonAttachedUsers = users?.filter(
     (user) =>
       !attachedUsers?.find((attachedUser) => attachedUser._id === user._id),
@@ -69,7 +72,8 @@ const PermissionPolicyDetailsPage = () => {
   ) => {
     e.preventDefault();
     try {
-      await refetchPolicy();
+      await refetchPolicy().unwrap();
+      await refetchAttachedUsers().unwrap();
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
@@ -97,7 +101,7 @@ const PermissionPolicyDetailsPage = () => {
   ) => {
     e.preventDefault();
     try {
-      await refetchAttachedUsers();
+      await refetchAttachedUsers().unwrap();
     } catch (err) {
       toast.error(getErrorMessage(err));
     }

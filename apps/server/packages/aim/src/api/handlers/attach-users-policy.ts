@@ -35,7 +35,7 @@ const handlerWithoutDeps =
     const policyAlias = parseFRN(policyFrn).resourceId;
 
     const users = await managedUserModel.find({
-      accountId,
+      account: accountId,
       alias: { $in: userAliases },
     });
     if (users.length !== userAliases.length) {
@@ -47,7 +47,7 @@ const handlerWithoutDeps =
     }
 
     const policy = await permissionPolicyModel.findOne({
-      accountId,
+      account: accountId,
       alias: policyAlias,
     });
     if (!policy) {
@@ -59,7 +59,7 @@ const handlerWithoutDeps =
     }
 
     await managedUserModel.updateMany(
-      { accountId, alias: { $in: userAliases } },
+      { account: accountId, alias: { $in: userAliases } },
       { $addToSet: { policies: policy._id } },
     );
   };

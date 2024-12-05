@@ -56,7 +56,7 @@ const policiesApi = api.injectEndpoints({
         method: 'POST',
         body: { resource: [userFrn, ...policyFrns] },
       }),
-      invalidatesTags: ['PermissionPolicy'],
+      invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
     }),
     attachUsersPolicy: builder.mutation<
       undefined,
@@ -67,7 +67,7 @@ const policiesApi = api.injectEndpoints({
         method: 'POST',
         body: { resource: [...userFrns, policyFrn] },
       }),
-      invalidatesTags: ['PermissionPolicy'],
+      invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
     }),
   }),
 });

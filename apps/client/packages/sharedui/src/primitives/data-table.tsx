@@ -195,7 +195,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns.length + (expandedComponent ? 1 : 0)}
                   className="min-h-24 text-center"
                 >
                   {isDataLoading && (
