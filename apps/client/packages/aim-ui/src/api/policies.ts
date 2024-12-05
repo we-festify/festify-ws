@@ -69,6 +69,28 @@ const policiesApi = api.injectEndpoints({
       }),
       invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
     }),
+    detachUserPolicies: builder.mutation<
+      undefined,
+      { userFrn: string; policyFrns: string[] }
+    >({
+      query: ({ userFrn, policyFrns }) => ({
+        url: `/v1/d/aim/execute/DetachUserPolicies`,
+        method: 'POST',
+        body: { resource: [userFrn, ...policyFrns] },
+      }),
+      invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
+    }),
+    detachUsersPolicy: builder.mutation<
+      undefined,
+      { userFrns: string[]; policyFrn: string }
+    >({
+      query: ({ userFrns, policyFrn }) => ({
+        url: `/v1/d/aim/execute/DetachUsersPolicy`,
+        method: 'POST',
+        body: { resource: [...userFrns, policyFrn] },
+      }),
+      invalidatesTags: ['PermissionPolicy', 'ManagedUser'],
+    }),
   }),
 });
 
@@ -80,4 +102,6 @@ export const {
   useDeletePoliciesMutation,
   useAttachUserPoliciesMutation,
   useAttachUsersPolicyMutation,
+  useDetachUserPoliciesMutation,
+  useDetachUsersPolicyMutation,
 } = policiesApi;

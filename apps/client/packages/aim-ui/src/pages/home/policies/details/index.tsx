@@ -2,6 +2,7 @@ import {
   useReadPolicyQuery,
   useDeletePoliciesMutation,
   useAttachUsersPolicyMutation,
+  useDetachUsersPolicyMutation,
 } from '@aim-ui/api/policies';
 import {
   useListManagedUsersQuery,
@@ -51,7 +52,8 @@ const PermissionPolicyDetailsPage = () => {
     (user) =>
       !attachedUsers?.find((attachedUser) => attachedUser._id === user._id),
   );
-  const [attachUsersPolicy] = useAttachUsersPolicyMutation();
+  const [attachUsersToPolicy] = useAttachUsersPolicyMutation();
+  const [detachUsersFromPolicy] = useDetachUsersPolicyMutation();
 
   const handleDeletePolicy = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -89,8 +91,25 @@ const PermissionPolicyDetailsPage = () => {
       const userFrns = users.map((u) =>
         generateFRN('aim', user?.accountId ?? '', 'user', u.alias),
       );
-      await attachUsersPolicy({ userFrns, policyFrn }).unwrap();
+      await attachUsersToPolicy({ userFrns, policyFrn }).unwrap();
       toast.success('Users attached successfully');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    }
+  };
+
+  const handleDetachUsers = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    users: IManagedUser[],
+  ) => {
+    e.preventDefault();
+    if (!alias) return;
+    try {
+      const userFrns = users.map((u) =>
+        generateFRN('aim', user?.accountId ?? '', 'user', u.alias),
+      );
+      await detachUsersFromPolicy({ userFrns, policyFrn }).unwrap();
+      toast.success('Users detached successfully');
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
@@ -207,20 +226,16 @@ const PermissionPolicyDetailsPage = () => {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader variant="muted">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-medium">
-                  Users attached to this policy
-                </h2>
-                <div className="flex items-center justify-end gap-4">
-                  <Button size="sm" variant="outline">
-                    <RotateCw size={16} className="text-muted-foreground" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
             <CardContent>
-              <DataTable columns={userColumns} data={attachedUsers || []} />
+              <DataTable
+                title="Users attached to this policy"
+                columns={userColumns}
+                data={attachedUsers || []}
+                header={AttachedUsersTableHeader(
+                  handleDetachUsers,
+                  handleRefreshAttachedUsers,
+                )}
+              />
             </CardContent>
           </Card>
           <Card>
@@ -245,6 +260,36 @@ const PermissionPolicyDetailsPage = () => {
 interface TableHeaderProps {
   table: Table<IManagedUser>;
 }
+
+const AttachedUsersTableHeader =
+  (
+    handleDetachUsers: (
+      e: React.MouseEvent<HTMLButtonElement>,
+      users: IManagedUser[],
+    ) => void,
+    handleRefreshAttachedUsers: (
+      e: React.MouseEvent<HTMLButtonElement>,
+    ) => void,
+  ) =>
+  ({ table: _ }: TableHeaderProps) => (
+    <div className="flex items-center justify-end gap-4">
+      <Button
+        size="sm"
+        variant="destructive-outline"
+        onClick={(e) =>
+          handleDetachUsers(
+            e,
+            _.getSelectedRowModel().rows.map((r) => r.original),
+          )
+        }
+      >
+        Detach
+      </Button>
+      <Button size="sm" variant="outline" onClick={handleRefreshAttachedUsers}>
+        <RotateCw size={16} className="text-muted-foreground" />
+      </Button>
+    </div>
+  );
 
 const NonAttachedUsersTableHeader =
   (
