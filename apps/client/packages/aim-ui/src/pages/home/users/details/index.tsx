@@ -1,7 +1,9 @@
 import {
   useDeleteManagedUsersMutation,
-  useGetManagedUserByIdQuery,
+  useReadManagedUserQuery,
 } from '@aim-ui/api/users';
+import { useAuth } from '@rootui/providers/auth-provider';
+import { IManagedUser } from '@sharedtypes/aim/managed-user';
 import CopyIcon from '@sharedui/components/copy-icon';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import PageSection from '@sharedui/components/page-section';
@@ -9,7 +11,7 @@ import { aimPaths } from '@sharedui/constants/paths';
 import { Button, buttonVariants } from '@sharedui/primitives/button';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { getErrorMessage } from '@sharedui/utils/error';
-import { readableFRN } from '@sharedui/utils/frn';
+import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import { formatTimeFromNow } from '@sharedui/utils/time';
 import { cn } from '@sharedui/utils/tw';
 import { RotateCw } from 'lucide-react';
@@ -17,20 +19,21 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const ManagedUserDetailsPage = () => {
-  const { userId } = useParams<{ userId: string }>();
-  const { data: { user } = {}, refetch } = useGetManagedUserByIdQuery(
-    userId as string,
-  );
+  const { alias } = useParams<{ alias: string }>();
+  const { user } = useAuth();
+  const frn = generateFRN('aim', user?.accountId ?? '', 'user', alias ?? '');
+  const { data: { user: managedUser } = {}, refetch } =
+    useReadManagedUserQuery(frn);
   const navigate = useNavigate();
   const [deleteManagedUsers] = useDeleteManagedUsersMutation();
 
   const handleDeleteUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!user) return;
+    if (!managedUser) return;
 
     try {
-      await deleteManagedUsers([user._id]).unwrap();
+      await deleteManagedUsers([frn]).unwrap();
       toast.success('User deleted successfully');
       navigate(aimPaths.USERS);
     } catch (err) {
@@ -47,13 +50,13 @@ const ManagedUserDetailsPage = () => {
     }
   };
 
-  if (!user) return null;
+  if (!managedUser) return null;
 
   return (
     <div className="p-8">
       <PageSection
-        title={user.alias}
-        description={`Created ${formatTimeFromNow(user.createdAt.toString())}`}
+        title={managedUser.alias}
+        description={`Created ${formatTimeFromNow(managedUser.createdAt.toString())}`}
         header={
           <div className="flex items-center justify-end gap-4">
             <Button
@@ -89,9 +92,9 @@ const ManagedUserDetailsPage = () => {
               <CardHeader variant="muted">
                 <div className="flex justify-between items-center">
                   <h2 className="text-lg font-medium">{step.title}</h2>
-                  {user && (
+                  {managedUser && (
                     <Link
-                      to={`${aimPaths.UPDATE_USER}/${user._id}`}
+                      to={`${aimPaths.UPDATE_USER}/${managedUser.alias}`}
                       className={cn(
                         buttonVariants({
                           size: 'sm',
@@ -106,9 +109,9 @@ const ManagedUserDetailsPage = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                {user ? (
+                {managedUser ? (
                   <KeyValueGrid
-                    data={user}
+                    data={managedUser}
                     keys={step.keys}
                     colsCount={step.cols}
                   />
@@ -132,12 +135,16 @@ const grids = [
       {
         key: 'frn',
         label: 'Festify Resource Name (FRN)',
-        formatter: (value: unknown) => (
-          <span className="flex items-center">
-            {readableFRN(value as string)}
-            <CopyIcon value={value as string} className="h-7 p-1 ml-2" />
-          </span>
-        ),
+        formatter: (_: unknown, row: unknown) => {
+          const { alias } = row as IManagedUser;
+          const value = generateFRN('aim', '', 'user', alias);
+          return (
+            <div className="flex items-center gap-2">
+              <span>{readableFRN(value as string)}</span>
+              <CopyIcon value={value as string} />
+            </div>
+          );
+        },
       },
       {
         key: 'createdAt',

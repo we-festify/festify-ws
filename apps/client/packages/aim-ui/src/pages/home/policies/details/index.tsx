@@ -3,7 +3,7 @@ import {
   useDeletePoliciesMutation,
   useAttachUsersToPolicyMutation,
 } from '@aim-ui/api/policies';
-import { useGetManagedUsersQuery } from '@aim-ui/api/users';
+import { useListManagedUsersQuery } from '@aim-ui/api/users';
 import { columns as policyColumns } from '@aim-ui/components/policies/policy-rules-table-columns';
 import { columns as userColumns } from '@aim-ui/components/users/users-table/columns';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
@@ -30,11 +30,9 @@ const PermissionPolicyDetailsPage = () => {
     useGetPolicyByIdQuery(policyId as string);
   const navigate = useNavigate();
   const [deletePermissionPolicys] = useDeletePoliciesMutation();
-  const { data: { users } = {} } = useGetManagedUsersQuery();
+  const { data: { users } = {} } = useListManagedUsersQuery(undefined);
   const { data: { users: attachedUsers } = {}, refetch: refetchAttachedUsers } =
-    useGetManagedUsersQuery({
-      policy: policyId,
-    });
+    useListManagedUsersQuery(undefined);
   const nonAttachedUsers = users?.filter(
     (user) =>
       !attachedUsers?.find((attachedUser) => attachedUser._id === user._id),

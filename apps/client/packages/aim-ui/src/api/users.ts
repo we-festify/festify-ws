@@ -1,87 +1,59 @@
-import {
-  CreateManagedUserRequest,
-  CreateManagedUserResponse,
-  GetManagedUserByIdResponse,
-  GetManagedUsersResponse,
-  UpdateManagedUserRequest,
-  UpdateManagedUserResponse,
-  AttachPoliciesToUserRequest,
-  DetachPoliciesFromUserRequest,
-} from '@aim-ui/types/api/users';
 import { api } from '@rootui/api';
+import { IManagedUser } from '@sharedtypes/aim/managed-user';
 
 const usersApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getManagedUsers: builder.query<
-      GetManagedUsersResponse,
-      { policy?: string } | void
-    >({
-      query: ({ policy } = {}) =>
-        '/v1/d/aim/users' + (policy ? `?policy=${policy}` : ''),
-      providesTags: ['ManagedUser'],
-    }),
-    getManagedUserById: builder.query<GetManagedUserByIdResponse, string>({
-      query: (userId) => `/v1/d/aim/users/${userId}`,
-      providesTags: ['ManagedUser'],
-    }),
-    createManagedUser: builder.mutation<
-      CreateManagedUserResponse,
-      CreateManagedUserRequest
-    >({
-      query: (body) => ({
-        url: '/v1/d/aim/users',
+    listManagedUsers: builder.query<{ users: IManagedUser[] }, undefined>({
+      query: () => ({
+        url: `/v1/d/aim/execute/ListManagedUsers`,
         method: 'POST',
-        body,
+      }),
+      providesTags: ['ManagedUser'],
+    }),
+    readManagedUser: builder.query<{ user: IManagedUser }, string>({
+      query: (frn: string) => ({
+        url: `/v1/d/aim/execute/ReadManagedUser`,
+        method: 'POST',
+        body: {
+          resource: frn,
+        },
+      }),
+      providesTags: ['ManagedUser'],
+    }),
+    createManagedUser: builder.mutation<undefined, Partial<IManagedUser>>({
+      query: (user: Partial<IManagedUser>) => ({
+        url: `/v1/d/aim/execute/CreateManagedUser`,
+        method: 'POST',
+        body: { data: { user } },
       }),
       invalidatesTags: ['ManagedUser'],
     }),
     updateManagedUser: builder.mutation<
-      UpdateManagedUserResponse,
-      UpdateManagedUserRequest
+      undefined,
+      { frn: string; user: Partial<IManagedUser> }
     >({
-      query: ({ user, userId }) => ({
-        url: `/v1/d/aim/users/${userId}`,
-        method: 'PUT',
-        body: user,
-      }),
-      invalidatesTags: ['ManagedUser'],
-    }),
-    deleteManagedUsers: builder.mutation<void, string[]>({
-      query: (userIds) => ({
-        url: '/v1/d/aim/users',
-        method: 'DELETE',
-        body: { userIds },
-      }),
-      invalidatesTags: ['ManagedUser'],
-    }),
-    attachPoliciesToUser: builder.mutation<void, AttachPoliciesToUserRequest>({
-      query: ({ userId, policyIds }) => ({
-        url: `/v1/d/aim/users/${userId}/policies`,
+      query: ({ frn, user }) => ({
+        url: `/v1/d/aim/execute/UpdateManagedUser`,
         method: 'POST',
-        body: { policyIds },
+        body: { resource: frn, data: { user } },
       }),
-      invalidatesTags: ['ManagedUser', 'PermissionPolicy'],
+      invalidatesTags: ['ManagedUser'],
     }),
-    detachPoliciesFromUser: builder.mutation<
-      void,
-      DetachPoliciesFromUserRequest
-    >({
-      query: ({ userId, policyIds }) => ({
-        url: `/v1/d/aim/users/${userId}/policies`,
-        method: 'DELETE',
-        body: { policyIds },
+    deleteManagedUsers: builder.mutation<undefined, string[]>({
+      query: (frns: string[]) => ({
+        url: `/v1/d/aim/execute/DeleteManagedUsers`,
+        method: 'POST',
+        body: { resource: frns },
       }),
-      invalidatesTags: ['ManagedUser', 'PermissionPolicy'],
+      invalidatesTags: ['ManagedUser'],
     }),
   }),
 });
 
 export const {
-  useGetManagedUsersQuery,
-  useGetManagedUserByIdQuery,
+  useListManagedUsersQuery,
+  useReadManagedUserQuery,
   useCreateManagedUserMutation,
   useUpdateManagedUserMutation,
   useDeleteManagedUsersMutation,
-  useAttachPoliciesToUserMutation,
-  useDetachPoliciesFromUserMutation,
 } = usersApi;

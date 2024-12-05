@@ -37,11 +37,8 @@ const AIMHome = () => {
           <Route path="users/*">
             <Route path="" element={<ManagedUsersListPage />} />
             <Route path="create" element={<CreateUserPage />} />
-            <Route path="update/:userId" element={<UpdateUserPage />} />
-            <Route
-              path="details/:userId"
-              element={<ManagedUserDetailsPage />}
-            />
+            <Route path="update/:alias" element={<UpdateUserPage />} />
+            <Route path="details/:alias" element={<ManagedUserDetailsPage />} />
           </Route>
           <Route path="policies/*">
             <Route path="" element={<PermissionPoliciesPage />} />
