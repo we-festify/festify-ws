@@ -4,8 +4,9 @@ export type PermissionPolicyEffect = 'allow' | 'deny';
 export type PermissionPolicyAction = `${string}:${string}`; // service:action
 export type PermissionPolicyResource = string; // FRN
 
-export interface IPermissionPolicyRule {
+export interface IPermissionPolicyRule extends Record<string, unknown> {
   effect: PermissionPolicyEffect;
+  service: string;
   actions: PermissionPolicyAction[];
   resources: PermissionPolicyResource[];
 }

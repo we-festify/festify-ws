@@ -43,9 +43,9 @@ const AIMHome = () => {
           <Route path="policies/*">
             <Route path="" element={<PermissionPoliciesPage />} />
             <Route path="create" element={<CreatePolicyPage />} />
-            <Route path="update/:policyId" element={<UpdatePolicyPage />} />
+            <Route path="update/:alias" element={<UpdatePolicyPage />} />
             <Route
-              path="details/:policyId"
+              path="details/:alias"
               element={<PermissionPolicyDetailsPage />}
             />
           </Route>

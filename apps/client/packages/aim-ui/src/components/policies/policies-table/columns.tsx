@@ -33,11 +33,10 @@ export const columns: ColumnDef<IPermissionPolicy>[] = [
     accessorKey: 'alias',
     cell: ({ row }) => {
       const alias = row.original.alias;
-      const id = row.original._id;
 
       return (
         <Link
-          to={`${aimPaths.POLICY_DETAILS}/${id}`}
+          to={`${aimPaths.POLICY_DETAILS}/${alias}`}
           className="text-blue-600 hover:underline"
         >
           {alias}

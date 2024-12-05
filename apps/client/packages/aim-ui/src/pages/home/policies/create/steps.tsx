@@ -3,7 +3,7 @@ import ReviewAndCreate from '@aim-ui/components/policies/policy-form-steps/revie
 import SpecifyPermissions from '@aim-ui/components/policies/policy-form-steps/specify-permissions';
 import { MultiStepFormStep } from '@sharedui/components/multi-step-form';
 
-export const stepsForCreatingPolicy: MultiStepFormStep[] = [
+export const createPolicySteps: MultiStepFormStep[] = [
   {
     title: 'Policy details',
     component: <PolicyDetails />,

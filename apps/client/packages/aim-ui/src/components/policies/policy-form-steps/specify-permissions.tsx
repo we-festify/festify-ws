@@ -89,6 +89,7 @@ const RulesInput = () => {
       [
         ...rules,
         {
+          service: '',
           effect: 'allow',
           actions: [] as PermissionPolicyAction[],
           resources: [] as PermissionPolicyResource[],

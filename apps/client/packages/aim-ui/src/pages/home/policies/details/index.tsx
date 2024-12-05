@@ -1,13 +1,17 @@
 import {
-  useGetPolicyByIdQuery,
+  useReadPolicyQuery,
   useDeletePoliciesMutation,
-  useAttachUsersToPolicyMutation,
+  useAttachUsersPolicyMutation,
 } from '@aim-ui/api/policies';
 import { useListManagedUsersQuery } from '@aim-ui/api/users';
 import { columns as policyColumns } from '@aim-ui/components/policies/policy-rules-table-columns';
 import { columns as userColumns } from '@aim-ui/components/users/users-table/columns';
+import { useAuth } from '@rootui/providers/auth-provider';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
-import { IPermissionPolicyRule } from '@sharedtypes/aim/permission-policy';
+import {
+  IPermissionPolicy,
+  IPermissionPolicyRule,
+} from '@sharedtypes/aim/permission-policy';
 import CopyIcon from '@sharedui/components/copy-icon';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import PageSection from '@sharedui/components/page-section';
@@ -16,7 +20,7 @@ import { Button, buttonVariants } from '@sharedui/primitives/button';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { DataTable } from '@sharedui/primitives/data-table';
 import { getErrorMessage } from '@sharedui/utils/error';
-import { readableFRN } from '@sharedui/utils/frn';
+import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import { formatTimeFromNow } from '@sharedui/utils/time';
 import { cn } from '@sharedui/utils/tw';
 import { Row, Table } from '@tanstack/react-table';
@@ -25,9 +29,16 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const PermissionPolicyDetailsPage = () => {
-  const { policyId } = useParams<{ policyId: string }>();
+  const { alias } = useParams<{ alias: string }>();
+  const { user } = useAuth();
+  const policyFrn = generateFRN(
+    'aim',
+    user?.accountId ?? '',
+    'policy',
+    alias ?? '',
+  );
   const { data: { policy } = {}, refetch: refetchPolicy } =
-    useGetPolicyByIdQuery(policyId as string);
+    useReadPolicyQuery(policyFrn);
   const navigate = useNavigate();
   const [deletePermissionPolicys] = useDeletePoliciesMutation();
   const { data: { users } = {} } = useListManagedUsersQuery(undefined);
@@ -37,7 +48,7 @@ const PermissionPolicyDetailsPage = () => {
     (user) =>
       !attachedUsers?.find((attachedUser) => attachedUser._id === user._id),
   );
-  const [attachUsersToPolicy] = useAttachUsersToPolicyMutation();
+  const [attachUsersPolicy] = useAttachUsersPolicyMutation();
 
   const handleDeletePolicy = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -45,7 +56,7 @@ const PermissionPolicyDetailsPage = () => {
     if (!policy) return;
 
     try {
-      await deletePermissionPolicys([policy._id]).unwrap();
+      await deletePermissionPolicys([policyFrn]).unwrap();
       toast.success('Policy deleted successfully');
       navigate(aimPaths.POLICIES);
     } catch (err) {
@@ -66,12 +77,15 @@ const PermissionPolicyDetailsPage = () => {
 
   const handleAttachUsers = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    userIds: string[],
+    users: IManagedUser[],
   ) => {
     e.preventDefault();
-    if (!policyId) return;
+    if (!alias) return;
     try {
-      await attachUsersToPolicy({ policyId, userIds }).unwrap();
+      const userFrns = users.map((u) =>
+        generateFRN('aim', user?.accountId ?? '', 'user', u.alias),
+      );
+      await attachUsersPolicy({ userFrns, policyFrn }).unwrap();
       toast.success('Users attached successfully');
     } catch (err) {
       toast.error(getErrorMessage(err));
@@ -133,7 +147,7 @@ const PermissionPolicyDetailsPage = () => {
                   <h2 className="text-lg font-medium">{step.title}</h2>
                   {policy && (
                     <Link
-                      to={`${aimPaths.UPDATE_POLICY}/${policy._id}`}
+                      to={`${aimPaths.UPDATE_POLICY}/${policy.alias}`}
                       className={cn(
                         buttonVariants({
                           size: 'sm',
@@ -166,7 +180,7 @@ const PermissionPolicyDetailsPage = () => {
                 </h2>
                 {policy && (
                   <Link
-                    to={`${aimPaths.UPDATE_POLICY}/${policy._id}`}
+                    to={`${aimPaths.UPDATE_POLICY}/${policy.alias}`}
                     className={cn(
                       buttonVariants({
                         size: 'sm',
@@ -232,7 +246,7 @@ const NonAttachedUsersTableHeader =
   (
     handleAttachUsers: (
       e: React.MouseEvent<HTMLButtonElement>,
-      userIds: string[],
+      users: IManagedUser[],
     ) => void,
     handleRefreshAttachedUsers: (
       e: React.MouseEvent<HTMLButtonElement>,
@@ -246,7 +260,7 @@ const NonAttachedUsersTableHeader =
         onClick={(e) =>
           handleAttachUsers(
             e,
-            table.getSelectedRowModel().rows.map((r) => r.original._id),
+            table.getSelectedRowModel().rows.map((r) => r.original),
           )
         }
       >
@@ -268,12 +282,16 @@ const grids = [
       {
         key: 'frn',
         label: 'Festify Resource Name (FRN)',
-        formatter: (value: unknown) => (
-          <span className="flex items-center">
-            {readableFRN(value as string)}
-            <CopyIcon value={value as string} className="h-7 p-1 ml-2" />
-          </span>
-        ),
+        formatter: (_: unknown, row: unknown) => {
+          const { alias } = row as IPermissionPolicy;
+          const value = generateFRN('aim', '', 'user', alias);
+          return (
+            <div className="flex items-center gap-2">
+              <span>{readableFRN(value as string)}</span>
+              <CopyIcon value={value as string} />
+            </div>
+          );
+        },
       },
       {
         key: 'createdAt',

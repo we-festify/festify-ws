@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
-import { IPermissionPolicy } from '@sharedtypes/aim/permission-policy';
-import { generateFRN, validateFRNForService } from '@/utils/frn';
+import {
+  IPermissionPolicy,
+  IPermissionPolicyRule,
+} from '@sharedtypes/aim/permission-policy';
 
-const permissionPolicyRuleSchema = new mongoose.Schema(
+const permissionPolicyRuleSchema = new mongoose.Schema<IPermissionPolicyRule>(
   {
     effect: {
       type: String,
       required: true,
       enum: ['allow', 'deny'],
+    },
+    service: {
+      type: String,
+      required: true,
     },
     actions: {
       type: [String],
@@ -25,18 +31,6 @@ const permissionPolicyRuleSchema = new mongoose.Schema(
 
 const permissionPolicySchema = new mongoose.Schema<IPermissionPolicy>(
   {
-    frn: {
-      type: String,
-      required: true,
-      validate: {
-        validator: (value: string) => validateFRNForService(value, 'aim'),
-        message: (props) => `${props.value} is not a valid FRN!`,
-      },
-      default: function () {
-        return generateFRN('aim', this.account as string, 'policy', this.alias);
-      },
-    },
-
     account: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Account',
