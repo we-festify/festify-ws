@@ -117,10 +117,19 @@ export class AuthController {
   ) {
     try {
       const { user: userData } = req.body;
+      const { useragent } = req;
+      const deviceInfo: IDeviceInfo = {
+        browser: useragent?.browser ?? 'unknown',
+        os: useragent?.os ?? 'unknown',
+        platform: useragent?.platform ?? 'unknown',
+        source: useragent?.source ?? 'unknown',
+      };
 
       if (userData.type === 'fws-user') {
         const { type, ...user } = userData;
-        const response = await this.authService.loginManagedUser(user);
+        const response = await this.authService.loginManagedUser(user, {
+          deviceInfo,
+        });
 
         const { accessToken, refreshToken } = response;
 
@@ -133,14 +142,6 @@ export class AuthController {
           )
           .json({ token: accessToken });
       }
-
-      const { useragent } = req;
-      const deviceInfo: IDeviceInfo = {
-        browser: useragent?.browser ?? 'unknown',
-        os: useragent?.os ?? 'unknown',
-        platform: useragent?.platform ?? 'unknown',
-        source: useragent?.source ?? 'unknown',
-      };
 
       const response = await this.authService.loginRootWithEmailAndPassword(
         userData,

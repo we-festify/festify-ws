@@ -16,11 +16,15 @@ import {
 } from '@aim-ui/api/users';
 import { useAuth } from '@rootui/providers/auth-provider';
 import { generateFRN } from '@sharedui/utils/frn';
+import ErrorBoundary from '@sharedui/components/error-boundary';
 
 const ManagedUsersListPage = () => {
   const { user } = useAuth();
-  const { data: { users: managedUsers } = {}, refetch } =
-    useListManagedUsersQuery(undefined);
+  const {
+    data: { users: managedUsers } = {},
+    refetch,
+    error,
+  } = useListManagedUsersQuery(undefined);
   const [deleteUsers] = useDeleteManagedUsersMutation();
 
   const handleDelete = async (rows: IManagedUser[]) => {
@@ -57,6 +61,11 @@ const ManagedUsersListPage = () => {
               columns={columns}
               data={managedUsers || []}
               header={TableHeader(handleDelete, handleRefetch)}
+              noResultsComponent={
+                error ? (
+                  <ErrorBoundary error={getErrorMessage(error)} show={true} />
+                ) : undefined
+              }
             />
           </CardContent>
         </Card>

@@ -16,11 +16,15 @@ import { getErrorMessage } from '@sharedui/utils/error';
 import { Table } from '@tanstack/react-table';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
+import ErrorBoundary from '@sharedui/components/error-boundary';
 
 const Instances = () => {
   const { user } = useAuth();
-  const { data: { instances = [] } = {}, refetch } =
-    useListInstancesQuery(undefined);
+  const {
+    data: { instances = [] } = {},
+    refetch,
+    error,
+  } = useListInstancesQuery(undefined);
   const [deleteInstances] = useDeleteInstancesMutation();
 
   const handleDelete = async (rows: IBESInstance[]) => {
@@ -56,6 +60,11 @@ const Instances = () => {
               columns={columns}
               data={instances}
               header={TableHeader(handleDelete, handleRefetch)}
+              noResultsComponent={
+                error ? (
+                  <ErrorBoundary error={getErrorMessage(error)} show={true} />
+                ) : undefined
+              }
             />
           </CardContent>
         </Card>

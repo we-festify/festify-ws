@@ -16,9 +16,14 @@ import { IPermissionPolicy } from '@sharedtypes/aim/permission-policy';
 import { columns } from '@aim-ui/components/policies/policies-table/columns';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
+import ErrorBoundary from '@sharedui/components/error-boundary';
 
 const PermissionPoliciesPage = () => {
-  const { data: { policies } = {}, refetch } = useListPoliciesQuery(undefined);
+  const {
+    data: { policies } = {},
+    refetch,
+    error,
+  } = useListPoliciesQuery(undefined);
   const [deletePolicies] = useDeletePoliciesMutation();
   const { user } = useAuth();
 
@@ -56,6 +61,11 @@ const PermissionPoliciesPage = () => {
               columns={columns}
               data={policies || []}
               header={TableHeader(handleDelete, handleRefetch)}
+              noResultsComponent={
+                error ? (
+                  <ErrorBoundary error={getErrorMessage(error)} show={true} />
+                ) : undefined
+              }
             />
           </CardContent>
         </Card>
