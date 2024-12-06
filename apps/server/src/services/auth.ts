@@ -79,7 +79,7 @@ export class AuthService {
       user,
       account,
     }: {
-      type: string;
+      type: 'fws-root' | 'fws-user';
       user: Partial<IManagedUser>;
       account: Partial<IAccount>;
     },
@@ -96,6 +96,7 @@ export class AuthService {
           alias: user.alias,
           accountId: account._id,
           type: 'fws-user',
+          mfaVerified,
         } as ManagedUserTokenPayload);
   }
 
@@ -541,8 +542,9 @@ export class AuthService {
     const existingRefreshToken = await this.refreshTokenModel.findOne({
       account: foundAccount._id,
       deviceInfo: config.deviceInfo,
+      userType: 'fws-root',
     });
-    let payload = await this.generatePayload({
+    const payload = await this.generatePayload({
       type: 'fws-root',
       user: {},
       account: foundAccount,
@@ -599,6 +601,7 @@ export class AuthService {
 
   public async loginManagedUser(
     userDTO: ManagedUserLoginDTO,
+    config: RootUserLoginConfig,
   ): Promise<ManagedUserLoginResponse> {
     const foundAccount = await this.accountModel.findById(userDTO.accountId);
     if (!foundAccount) {
@@ -638,6 +641,27 @@ export class AuthService {
       user: managedUser,
       account: foundAccount,
     });
+    // Filter expired refresh tokens
+    await this.refreshTokenModel.deleteMany({
+      expires: { $lt: new Date() },
+    });
+    // Check if device already present
+    const existingRefreshToken = await this.refreshTokenModel.findOne({
+      account: foundAccount._id,
+      alias: managedUser.alias,
+      deviceInfo: config.deviceInfo,
+    });
+    if (existingRefreshToken) {
+      const accessToken = await this.generateAccessToken(payload);
+      const encodedRefreshToken =
+        await this.encodeRefreshToken(existingRefreshToken);
+
+      return {
+        type: 'fws-user',
+        accessToken,
+        refreshToken: encodedRefreshToken,
+      };
+    }
 
     const accessToken = await this.generateAccessToken(payload);
     const refreshToken = await this.generateRefreshToken(payload);
@@ -647,6 +671,7 @@ export class AuthService {
       userType: 'fws-user',
       account: foundAccount._id,
       alias: managedUser.alias,
+      deviceInfo: config.deviceInfo,
     });
 
     const encodedRefreshToken = await this.encodeRefreshToken(refreshToken);
@@ -713,9 +738,11 @@ export class AuthService {
     await this.refreshTokenModel.deleteMany({
       expires: { $lt: new Date() },
     });
-    const foundRefreshToken = await this.refreshTokenModel.findOne({
-      token: decodedRefreshToken.token,
-    });
+    const foundRefreshToken = await this.refreshTokenModel
+      .findOne({
+        token: decodedRefreshToken.token,
+      })
+      .select('+deviceInfo');
     if (!foundRefreshToken) {
       throw new AppError(
         CommonErrors.Unauthorized.name,
@@ -724,10 +751,10 @@ export class AuthService {
       );
     }
 
-    const existingAccount = await this.accountModel.findById(
+    const foundAccount = await this.accountModel.findById(
       foundRefreshToken.account,
     );
-    if (!existingAccount) {
+    if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
@@ -749,7 +776,7 @@ export class AuthService {
 
       // Publish events for force logout
       this.publisher.auth.publishRootUserForceLoggedOutEvent({
-        account: { alias: existingAccount.alias, email: existingAccount.email },
+        account: { alias: foundAccount.alias, email: foundAccount.email },
         deviceInfo,
         ipInfo,
       });
@@ -765,7 +792,6 @@ export class AuthService {
         account: foundRefreshToken.account,
         alias: foundRefreshToken.alias,
       });
-
       throw new AppError(
         CommonErrors.Unauthorized.name,
         CommonErrors.Unauthorized.statusCode,
@@ -776,12 +802,12 @@ export class AuthService {
     let payload = await this.generatePayload({
       type: foundRefreshToken.userType,
       user: {},
-      account: existingAccount,
+      account: foundAccount,
     });
 
     if (foundRefreshToken.userType === 'fws-user') {
       const managedUser = await this.managedUserModel.findOne({
-        account: existingAccount._id,
+        account: foundAccount._id,
         alias: foundRefreshToken.alias,
       });
       if (!managedUser) {
@@ -795,7 +821,7 @@ export class AuthService {
       payload = await this.generatePayload({
         type: 'fws-user',
         user: managedUser,
-        account: existingAccount,
+        account: foundAccount,
       });
     }
 
