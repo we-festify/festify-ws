@@ -16,10 +16,14 @@ import { toast } from 'sonner';
 import { Table } from '@tanstack/react-table';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
+import ErrorBoundary from '@sharedui/components/error-boundary';
 
 const EmailTemplates = () => {
-  const { data: { templates = [] } = {}, refetch } =
-    useListEmailTemplatesQuery(undefined);
+  const {
+    data: { templates = [] } = {},
+    refetch,
+    error,
+  } = useListEmailTemplatesQuery(undefined);
   const [deleteEmailTemplates] = useDeleteEmailTemplatesMutation();
   const { user } = useAuth();
 
@@ -62,6 +66,11 @@ const EmailTemplates = () => {
                   handleRefetch={handleRefetch}
                 />
               )}
+              noResultsComponent={
+                error ? (
+                  <ErrorBoundary error={getErrorMessage(error)} show={true} />
+                ) : undefined
+              }
             />
           </CardContent>
         </Card>

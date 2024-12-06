@@ -24,15 +24,19 @@ export class AuthZMiddleware {
 
   public canExecuteActionOnResource(action: PermissionPolicyAction) {
     return async (req: e.Request, _res: e.Response, next: e.NextFunction) => {
+      const forbiddenError = new AppError(
+        CommonErrors.Forbidden.name,
+        CommonErrors.Forbidden.statusCode,
+        `Forbidden: You don't have permission to execute the action **${action}**` +
+          (req.body.resource
+            ? ` on the resource **${req.body.resource}**`
+            : '') +
+          '. Please contact your administrator.',
+      );
+
       const user = req.user;
       if (!user) {
-        return next(
-          new AppError(
-            CommonErrors.Forbidden.name,
-            CommonErrors.Forbidden.statusCode,
-            'Forbidden',
-          ),
-        );
+        return next(forbiddenError);
       }
 
       let { resource } = req.body as {
@@ -49,13 +53,7 @@ export class AuthZMiddleware {
       for (const res of resource) {
         const { accountId: requestedAccountId } = parseFRN(res);
         if (requestedAccountId !== accountId && requestedAccountId !== '') {
-          return next(
-            new AppError(
-              CommonErrors.Forbidden.name,
-              CommonErrors.Forbidden.statusCode,
-              'Forbidden',
-            ),
-          );
+          return next(forbiddenError);
         }
       }
 
@@ -69,13 +67,7 @@ export class AuthZMiddleware {
         })
         .select('policies');
       if (!managedUser) {
-        return next(
-          new AppError(
-            CommonErrors.Forbidden.name,
-            CommonErrors.Forbidden.statusCode,
-            'Forbidden',
-          ),
-        );
+        return next(forbiddenError);
       }
 
       const policies = await this.permissionPolicyModel
@@ -91,13 +83,7 @@ export class AuthZMiddleware {
       );
 
       if (!canExecute) {
-        return next(
-          new AppError(
-            CommonErrors.Forbidden.name,
-            CommonErrors.Forbidden.statusCode,
-            'Forbidden',
-          ),
-        );
+        return next(forbiddenError);
       }
 
       return next();
