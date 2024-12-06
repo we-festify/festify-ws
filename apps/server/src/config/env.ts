@@ -41,8 +41,8 @@ export default {
       parseInt(
         process.env.JWT_ACCESS_TOKEN_EXPIRES_IN_SECONDS ?? `${15 * 60}`,
       ) ?? 15 * 60,
-    accountChooserCookieName:
-      process.env.AUTH_ACCOUNT_CHOOSER_COOKIE_NAME ?? 'fws_ac',
+    refreshTokenCookieName:
+      process.env.AUTH_REFRESH_TOKEN_COOKIE_NAME ?? 'fws_rt',
     refreshTokenExpiresInSeconds:
       parseInt(
         process.env.JWT_REFRESH_TOKEN_EXPIRES_IN_SECONDS ??

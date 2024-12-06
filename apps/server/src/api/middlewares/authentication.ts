@@ -3,12 +3,13 @@ import { AppError, CommonErrors } from '../../utils/errors';
 import { AuthService } from '../../services/auth';
 import Account from '../../models/account';
 import { publisher } from '../../events';
+import ManagedUser from '@aim/models/managed-user';
 
 export class AuthMiddleware {
   private readonly authService: AuthService;
 
   constructor() {
-    this.authService = new AuthService(Account, publisher);
+    this.authService = new AuthService(Account, ManagedUser, publisher);
   }
 
   public async requireAuthenticated(

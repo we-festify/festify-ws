@@ -12,7 +12,6 @@ import { env, meta } from '../config';
 import crypto from 'crypto';
 import { EventsPublisher } from '../events';
 import {
-  AccountChooser,
   Disable2FAConfig,
   Disable2FADTO,
   Enable2FAConfig,
@@ -45,10 +44,16 @@ import {
 
 export class AuthService {
   private readonly accountModel: Model<IAccount>;
+  private readonly managedUserModel: Model<IManagedUser>;
   private readonly publisher: EventsPublisher;
 
-  constructor(accountModel: Model<IAccount>, publisher: EventsPublisher) {
+  constructor(
+    accountModel: Model<IAccount>,
+    managedUserModel: Model<IManagedUser>,
+    publisher: EventsPublisher,
+  ) {
     this.accountModel = accountModel;
+    this.managedUserModel = managedUserModel;
     this.publisher = publisher;
   }
 
@@ -816,72 +821,6 @@ export class AuthService {
       deviceInfo: config.deviceInfo,
       ipInfo: config.ipInfo,
     });
-  }
-
-  public async generateAccountChooser(
-    newRefreshToken: string,
-    existingAccountChooser: AccountChooser,
-    existingRefreshTokensMapping: Record<string, string>,
-  ): Promise<{
-    refreshTokenCookieName: string;
-    accountChooser: AccountChooser;
-  }> {
-    const decodedRefreshToken = await this.decodeRefreshToken(newRefreshToken);
-    const decodedExistingRefreshTokens = await Promise.all(
-      Object.values(existingRefreshTokensMapping).map(this.decodeRefreshToken),
-    );
-    const existingRefreshToken = decodedExistingRefreshTokens.find(
-      (rt: IRefreshToken) => rt.token === decodedRefreshToken.token,
-    );
-    const existingRefreshTokenCookieName = Object.keys(
-      existingRefreshTokensMapping,
-    ).find((key) => existingRefreshTokensMapping[key] === newRefreshToken);
-
-    if (existingRefreshToken && existingRefreshTokenCookieName) {
-      return {
-        refreshTokenCookieName: existingRefreshTokenCookieName,
-        accountChooser: existingAccountChooser,
-      };
-    }
-
-    const refreshTokenCookieName = `rt_${crypto.randomBytes(8).toString('hex')}`;
-    const accountChooser = {
-      current: refreshTokenCookieName,
-      accounts: [
-        ...new Set([
-          ...existingAccountChooser.accounts, // existing keys
-          refreshTokenCookieName,
-        ]),
-      ],
-    };
-    return { refreshTokenCookieName, accountChooser };
-  }
-
-  public async removeAccountFromAccountChooser(
-    refreshToken: string,
-    accountChooser: AccountChooser,
-    refreshTokenMapping: Record<string, string>,
-  ): Promise<AccountChooser> {
-    const decodedRefreshToken = await this.decodeRefreshToken(refreshToken);
-    const decodedRefreshTokens = await Promise.all(
-      Object.values(refreshTokenMapping).map(this.decodeRefreshToken),
-    );
-    const existingRefreshToken = decodedRefreshTokens.find(
-      (rt: IRefreshToken) => rt.token === decodedRefreshToken.token,
-    );
-    const refreshTokenCookieName = Object.keys(refreshTokenMapping).find(
-      (key) => refreshTokenMapping[key] === refreshToken,
-    );
-
-    if (!existingRefreshToken || !refreshTokenCookieName) {
-      return accountChooser;
-    }
-
-    const updatedAccounts = accountChooser.accounts.filter(
-      (account) => account !== refreshTokenCookieName,
-    );
-
-    return { ...accountChooser, accounts: updatedAccounts };
   }
 
   public async enable2FAForRoot(

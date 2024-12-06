@@ -40,7 +40,7 @@ export interface RootUserLoginConfig {
 
 export interface ManagedUserLoginDTO {
   alias: string;
-  rootAccountId: string;
+  accountId: string;
   password: string;
 }
 
@@ -91,11 +91,6 @@ export interface ResetPasswordDTO {
 export interface ResetPasswordConfig {
   deviceInfo: IDeviceInfo;
   ipInfo?: IUserIPInfo;
-}
-
-export interface AccountChooser {
-  current: string; // the current account refresh token cookie name
-  accounts: string[]; // list of cookie names which contain the account refresh token
 }
 
 export interface Enable2FADTO {
