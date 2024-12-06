@@ -5,14 +5,13 @@ import { AuthService } from '../../services/auth';
 import { publisher } from '../../events';
 import { env } from '../../config';
 import { AppError, CommonErrors } from '../../utils/errors';
-import { decryptCookieValue, encryptCookieValue } from '../../utils/cookie';
-import { AccountChooser } from '../../types/services/auth';
+import ManagedUser from '@aim/models/managed-user';
 
 export class AuthController {
   private readonly authService: AuthService;
 
   constructor() {
-    this.authService = new AuthService(Account, publisher);
+    this.authService = new AuthService(Account, ManagedUser, publisher);
   }
 
   private generateAuthCookieOptions(): e.CookieOptions {
@@ -22,58 +21,6 @@ export class AuthController {
       sameSite: 'strict',
       path: '/api/v1/auth',
     };
-  }
-
-  private async getAccountChooserCookieValue(
-    accountChooserCookie: string,
-  ): Promise<AccountChooser> {
-    try {
-      const decryptedAccountChooserCookie =
-        await decryptCookieValue(accountChooserCookie);
-      const accountChooserCookieData = JSON.parse(
-        decryptedAccountChooserCookie,
-      ) as AccountChooser;
-      return accountChooserCookieData;
-    } catch (_err) {
-      return {
-        current: '',
-        accounts: [],
-      };
-    }
-  }
-
-  private async getAllRefreshTokensMapping(
-    req: e.Request,
-  ): Promise<Record<string, string>> {
-    const { [env.auth.accountChooserCookieName]: accountChooserCookie } =
-      req.cookies;
-    const accountChooser =
-      await this.getAccountChooserCookieValue(accountChooserCookie);
-
-    const refreshTokens = accountChooser.accounts.map((account: string) => {
-      const { [account]: refreshToken } = req.cookies;
-      if (refreshToken) {
-        return [account, refreshToken];
-      }
-      return null;
-    });
-
-    const refreshTokensMapping = Object.fromEntries(
-      refreshTokens.filter((refreshToken) => refreshToken !== null),
-    );
-    return refreshTokensMapping;
-  }
-
-  private async extractCurrentRefreshToken(
-    req: e.Request,
-  ): Promise<[string, string]> {
-    const { [env.auth.accountChooserCookieName]: accountChooserCookie } =
-      req.cookies;
-    const accountChooser =
-      await this.getAccountChooserCookieValue(accountChooserCookie);
-    const refreshTokenCookieName = accountChooser.current;
-    const { [refreshTokenCookieName]: refreshToken } = req.cookies;
-    return [refreshTokenCookieName, refreshToken];
   }
 
   public async getMe(req: e.Request, res: e.Response, next: e.NextFunction) {
@@ -157,7 +104,7 @@ export class AuthController {
     }
   }
 
-  public async loginWithEmailAndPassword(
+  public async loginRootWithEmailAndPassword(
     req: e.Request,
     res: e.Response,
     next: e.NextFunction,
@@ -185,34 +132,11 @@ export class AuthController {
       }
 
       const { account, accessToken, refreshToken } = response;
-      const {
-        [env.auth.accountChooserCookieName]: existingAccountChooserCookie,
-      } = req.cookies;
-
-      const existingAccountChooser = await this.getAccountChooserCookieValue(
-        existingAccountChooserCookie,
-      );
-      const refreshTokensMapping = await this.getAllRefreshTokensMapping(req);
-
-      const { refreshTokenCookieName, accountChooser } =
-        await this.authService.generateAccountChooser(
-          refreshToken,
-          existingAccountChooser,
-          refreshTokensMapping,
-        );
-      const accountChooserCookieValue = await encryptCookieValue(
-        JSON.stringify(accountChooser),
-      );
 
       return res
         .status(200)
         .cookie(
-          env.auth.accountChooserCookieName,
-          accountChooserCookieValue,
-          this.generateAuthCookieOptions(),
-        )
-        .cookie(
-          refreshTokenCookieName,
+          env.auth.refreshTokenCookieName,
           refreshToken,
           this.generateAuthCookieOptions(),
         )
@@ -224,8 +148,7 @@ export class AuthController {
 
   public async logout(req: e.Request, res: e.Response, next: e.NextFunction) {
     try {
-      const [refreshTokenCookieName, refreshToken] =
-        await this.extractCurrentRefreshToken(req);
+      const { [env.auth.refreshTokenCookieName]: refreshToken } = req.cookies;
       if (!refreshToken) {
         throw new AppError(
           CommonErrors.Unauthorized.name,
@@ -235,32 +158,13 @@ export class AuthController {
       }
 
       await this.authService.logout(refreshToken);
-      const {
-        [env.auth.accountChooserCookieName]: existingAccountChooserCookie,
-      } = req.cookies;
-
-      const existingAccountChooser = await this.getAccountChooserCookieValue(
-        existingAccountChooserCookie,
-      );
-      const refreshTokensMapping = await this.getAllRefreshTokensMapping(req);
-      const accountChooser =
-        await this.authService.removeAccountFromAccountChooser(
-          refreshToken,
-          existingAccountChooser,
-          refreshTokensMapping,
-        );
-      const accountChooserCookieValue = await encryptCookieValue(
-        JSON.stringify(accountChooser),
-      );
 
       return res
         .status(200)
-        .cookie(
-          env.auth.accountChooserCookieName,
-          accountChooserCookieValue,
+        .clearCookie(
+          env.auth.refreshTokenCookieName,
           this.generateAuthCookieOptions(),
         )
-        .clearCookie(refreshTokenCookieName, this.generateAuthCookieOptions())
         .json({ message: 'Logged out successfully' });
     } catch (err) {
       next(err);
@@ -273,13 +177,7 @@ export class AuthController {
     next: e.NextFunction,
   ) {
     try {
-      const { [env.auth.accountChooserCookieName]: accountChooserCookie } =
-        req.cookies;
-      const accountChooser =
-        await this.getAccountChooserCookieValue(accountChooserCookie);
-      const refreshTokenCookieName = accountChooser.current;
-
-      const { [refreshTokenCookieName]: refreshToken } = req.cookies;
+      const { [env.auth.refreshTokenCookieName]: refreshToken } = req.cookies;
       if (!refreshToken) {
         throw new AppError(
           CommonErrors.Unauthorized.name,
@@ -300,7 +198,7 @@ export class AuthController {
       return res
         .status(200)
         .cookie(
-          refreshTokenCookieName,
+          env.auth.refreshTokenCookieName,
           newRefreshToken,
           this.generateAuthCookieOptions(),
         )
@@ -444,33 +342,10 @@ export class AuthController {
           { deviceInfo },
         );
 
-      // Account Chooser
-      const { [env.auth.accountChooserCookieName]: accountChooserCookie } =
-        req.cookies;
-      const accountChooser =
-        await this.getAccountChooserCookieValue(accountChooserCookie);
-
-      const refreshTokensMapping = await this.getAllRefreshTokensMapping(req);
-
-      const { refreshTokenCookieName, accountChooser: newAccountChooser } =
-        await this.authService.generateAccountChooser(
-          refreshToken,
-          accountChooser,
-          refreshTokensMapping,
-        );
-      const accountChooserCookieValue = await encryptCookieValue(
-        JSON.stringify(newAccountChooser),
-      );
-
       return res
         .status(200)
         .cookie(
-          env.auth.accountChooserCookieName,
-          accountChooserCookieValue,
-          this.generateAuthCookieOptions(),
-        )
-        .cookie(
-          refreshTokenCookieName,
+          env.auth.refreshTokenCookieName,
           refreshToken,
           this.generateAuthCookieOptions(),
         )
@@ -587,33 +462,10 @@ export class AuthController {
           { deviceInfo },
         );
 
-      // Account Chooser
-      const { [env.auth.accountChooserCookieName]: accountChooserCookie } =
-        req.cookies;
-      const accountChooser =
-        await this.getAccountChooserCookieValue(accountChooserCookie);
-
-      const refreshTokensMapping = await this.getAllRefreshTokensMapping(req);
-
-      const { refreshTokenCookieName, accountChooser: newAccountChooser } =
-        await this.authService.generateAccountChooser(
-          refreshToken,
-          accountChooser,
-          refreshTokensMapping,
-        );
-      const accountChooserCookieValue = await encryptCookieValue(
-        JSON.stringify(newAccountChooser),
-      );
-
       return res
         .status(200)
         .cookie(
-          env.auth.accountChooserCookieName,
-          accountChooserCookieValue,
-          this.generateAuthCookieOptions(),
-        )
-        .cookie(
-          refreshTokenCookieName,
+          env.auth.refreshTokenCookieName,
           refreshToken,
           this.generateAuthCookieOptions(),
         )
@@ -689,33 +541,10 @@ export class AuthController {
           { deviceInfo },
         );
 
-      // Account Chooser
-      const { [env.auth.accountChooserCookieName]: accountChooserCookie } =
-        req.cookies;
-      const accountChooser =
-        await this.getAccountChooserCookieValue(accountChooserCookie);
-
-      const refreshTokensMapping = await this.getAllRefreshTokensMapping(req);
-
-      const { refreshTokenCookieName, accountChooser: newAccountChooser } =
-        await this.authService.generateAccountChooser(
-          refreshToken,
-          accountChooser,
-          refreshTokensMapping,
-        );
-      const accountChooserCookieValue = await encryptCookieValue(
-        JSON.stringify(newAccountChooser),
-      );
-
       return res
         .status(200)
         .cookie(
-          env.auth.accountChooserCookieName,
-          accountChooserCookieValue,
-          this.generateAuthCookieOptions(),
-        )
-        .cookie(
-          refreshTokenCookieName,
+          env.auth.refreshTokenCookieName,
           refreshToken,
           this.generateAuthCookieOptions(),
         )
