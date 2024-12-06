@@ -6,12 +6,18 @@ import { publisher } from '../../events';
 import { env } from '../../config';
 import { AppError, CommonErrors } from '../../utils/errors';
 import ManagedUser from '@aim/models/managed-user';
+import RefreshTokenModel from '@/models/refresh-token';
 
 export class AuthController {
   private readonly authService: AuthService;
 
   constructor() {
-    this.authService = new AuthService(Account, ManagedUser, publisher);
+    this.authService = new AuthService(
+      Account,
+      ManagedUser,
+      RefreshTokenModel,
+      publisher,
+    );
   }
 
   private generateAuthCookieOptions(): e.CookieOptions {
@@ -47,7 +53,7 @@ export class AuthController {
         return res.status(200).json({
           user: {
             alias: user.alias,
-            accountId: user.rootAccount,
+            accountId: user.account,
             type: 'fws-user',
             rootAccountAlias: account.alias,
           },
@@ -104,13 +110,30 @@ export class AuthController {
     }
   }
 
-  public async loginRootWithEmailAndPassword(
+  public async loginUser(
     req: e.Request,
     res: e.Response,
     next: e.NextFunction,
   ) {
     try {
       const { user: userData } = req.body;
+
+      if (userData.type === 'fws-user') {
+        const { type, ...user } = userData;
+        const response = await this.authService.loginManagedUser(user);
+
+        const { accessToken, refreshToken } = response;
+
+        return res
+          .status(200)
+          .cookie(
+            env.auth.refreshTokenCookieName,
+            refreshToken,
+            this.generateAuthCookieOptions(),
+          )
+          .json({ token: accessToken });
+      }
+
       const { useragent } = req;
       const deviceInfo: IDeviceInfo = {
         browser: useragent?.browser ?? 'unknown',
@@ -131,7 +154,7 @@ export class AuthController {
           .json({ requires2FA, token });
       }
 
-      const { account, accessToken, refreshToken } = response;
+      const { accessToken, refreshToken } = response;
 
       return res
         .status(200)
@@ -140,7 +163,7 @@ export class AuthController {
           refreshToken,
           this.generateAuthCookieOptions(),
         )
-        .json({ account, token: accessToken });
+        .json({ token: accessToken });
     } catch (err) {
       next(err);
     }
@@ -186,14 +209,11 @@ export class AuthController {
         );
       }
       const { deviceInfo, ipInfo } = req;
-      const {
-        account,
-        accessToken,
-        refreshToken: newRefreshToken,
-      } = await this.authService.refreshTokens(refreshToken, {
-        deviceInfo,
-        ipInfo,
-      });
+      const { accessToken, refreshToken: newRefreshToken } =
+        await this.authService.refreshTokens(refreshToken, {
+          deviceInfo,
+          ipInfo,
+        });
 
       return res
         .status(200)
@@ -202,7 +222,7 @@ export class AuthController {
           newRefreshToken,
           this.generateAuthCookieOptions(),
         )
-        .json({ account, token: accessToken });
+        .json({ token: accessToken });
     } catch (err) {
       next(err);
     }

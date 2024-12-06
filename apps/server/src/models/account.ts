@@ -1,24 +1,9 @@
 import mongoose from 'mongoose';
 import {
   IAccount,
-  IRefreshToken,
   ITwoFactorAuth,
   IRecoveryDetails,
 } from '@sharedtypes/auth/account';
-
-const refreshTokenSchema = new mongoose.Schema<IRefreshToken>(
-  {
-    token: { type: String, required: true },
-    expires: { type: Date, required: true },
-    deviceInfo: {
-      browser: String,
-      os: String,
-      platform: String,
-      source: String,
-    },
-  },
-  { _id: false },
-);
 
 const twoFactorAuthSchema = new mongoose.Schema<ITwoFactorAuth>(
   {
@@ -74,13 +59,6 @@ const userSchema = new mongoose.Schema<IAccount>(
     isEmailVerified: { type: Boolean, default: false },
     resetPasswordToken: { type: String, select: false },
     resetPasswordTokenExpires: { type: Date, select: false },
-
-    refreshTokens: {
-      type: [refreshTokenSchema],
-      default: [],
-      index: true,
-      select: false,
-    },
 
     twoFactorAuth: {
       type: twoFactorAuthSchema,

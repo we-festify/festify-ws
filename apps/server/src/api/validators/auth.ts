@@ -41,10 +41,22 @@ export class AuthValidators {
     }),
   });
 
-  public validateLoginWithEmailPasswordData = celebrate({
+  public validateLoginData = celebrate({
     [Segments.BODY]: Joi.object().keys({
       user: Joi.object().keys({
-        email: Joi.string().email().required(),
+        type: Joi.string().valid('fws-root', 'fws-user').required(),
+        email: Joi.string().email().when('type', {
+          is: 'fws-root',
+          then: Joi.required(),
+        }),
+        accountId: Joi.string().when('type', {
+          is: 'fws-user',
+          then: Joi.required(),
+        }),
+        alias: Joi.string().when('type', {
+          is: 'fws-user',
+          then: Joi.required(),
+        }),
         password: Joi.string().required(),
       }),
     }),

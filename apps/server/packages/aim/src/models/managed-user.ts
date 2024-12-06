@@ -11,6 +11,7 @@ const managedUserSchema = new mongoose.Schema<IManagedUser>(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Account',
     },
+
     passwordHash: {
       type: String,
       required: true,

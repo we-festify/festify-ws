@@ -33,6 +33,8 @@ import {
   RootUserRegisterResponse,
   RootAccountTokenPayload,
   ManagedUserTokenPayload,
+  ManagedUserLoginDTO,
+  ManagedUserLoginResponse,
 } from '../types/services/auth.d';
 import { authenticator } from 'otplib';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
@@ -45,15 +47,18 @@ import {
 export class AuthService {
   private readonly accountModel: Model<IAccount>;
   private readonly managedUserModel: Model<IManagedUser>;
+  private readonly refreshTokenModel: Model<IRefreshToken>;
   private readonly publisher: EventsPublisher;
 
   constructor(
     accountModel: Model<IAccount>,
     managedUserModel: Model<IManagedUser>,
+    refreshTokenModel: Model<IRefreshToken>,
     publisher: EventsPublisher,
   ) {
     this.accountModel = accountModel;
     this.managedUserModel = managedUserModel;
+    this.refreshTokenModel = refreshTokenModel;
     this.publisher = publisher;
   }
 
@@ -100,13 +105,9 @@ export class AuthService {
     });
   }
 
-  private async generateRefreshToken(
-    payload: TokenPayload,
-    deviceInfo: IDeviceInfo,
-  ): Promise<{
+  private async generateRefreshToken(payload: TokenPayload): Promise<{
     token: string;
     expires: Date;
-    deviceInfo?: IDeviceInfo;
   }> {
     const uniquePayloadString = JSON.stringify(payload) + Date.now();
     const token = crypto
@@ -117,7 +118,7 @@ export class AuthService {
       Date.now() + env.auth.refreshTokenExpiresInSeconds * 1000,
     );
 
-    return { token, expires, deviceInfo };
+    return { token, expires };
   }
 
   private async generateRandomOTP(length = 6): Promise<string> {
@@ -147,7 +148,6 @@ export class AuthService {
     delete account.emailVerificationTokenExpires;
     delete account.resetPasswordToken;
     delete account.resetPasswordTokenExpires;
-    delete account.refreshTokens;
 
     // 2FA sensitive fields
     if (account.twoFactorAuth?.otp) {
@@ -168,15 +168,24 @@ export class AuthService {
     return account;
   }
 
-  private async encodeRefreshToken(
-    refreshToken: IRefreshToken,
-  ): Promise<string> {
+  private async encodeRefreshToken(refreshToken: {
+    token: string;
+    expires: Date;
+  }): Promise<string> {
     // Encode the refresh token just to make it easy to store
     // No need to encrypt as it won't add any more security
-    return Buffer.from(JSON.stringify(refreshToken)).toString('base64');
+    return Buffer.from(
+      JSON.stringify({
+        token: refreshToken.token,
+        expires: refreshToken.expires,
+      }),
+    ).toString('base64');
   }
 
-  private async decodeRefreshToken(token: string): Promise<IRefreshToken> {
+  private async decodeRefreshToken(token: string): Promise<{
+    token: string;
+    expires: Date;
+  }> {
     return JSON.parse(Buffer.from(token, 'base64').toString());
   }
 
@@ -331,11 +340,23 @@ export class AuthService {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
-        'account not found',
+        'Account not found',
       );
     }
 
-    return {}; // return managed user details
+    const managedUser = await this.managedUserModel.findOne({
+      account: accountId,
+      alias,
+    });
+    if (!managedUser) {
+      throw new AppError(
+        CommonErrors.NotFound.name,
+        CommonErrors.NotFound.statusCode,
+        'Managed user not found',
+      );
+    }
+
+    return managedUser.toObject();
   }
 
   public async register(
@@ -481,20 +502,20 @@ export class AuthService {
     userDTO: RootUserLoginDTO,
     config: RootUserLoginConfig,
   ): Promise<RootUserLoginResponse> {
-    const existingAccount = await this.accountModel
+    const foundAccount = await this.accountModel
       .findOne({ email: userDTO.email })
-      .select('+passwordHash +refreshTokens +twoFactorAuth');
-    if (!existingAccount) {
+      .select('+passwordHash +twoFactorAuth');
+    if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
-        'account not found',
+        'Account not found',
       );
     }
 
     const passwordsMatch = await this.comparePasswords(
       userDTO.password,
-      existingAccount.passwordHash || '',
+      foundAccount.passwordHash || '',
     );
     if (!passwordsMatch) {
       throw new AppError(
@@ -504,7 +525,7 @@ export class AuthService {
       );
     }
 
-    if (!existingAccount.isEmailVerified) {
+    if (!foundAccount.isEmailVerified) {
       throw new AppError(
         CommonErrors.BadRequest.name,
         CommonErrors.BadRequest.statusCode,
@@ -513,29 +534,26 @@ export class AuthService {
     }
 
     // Filter expired refresh tokens
-    existingAccount.refreshTokens = await this.filterExpiredRefreshTokens(
-      existingAccount.refreshTokens || [],
-    );
+    await this.refreshTokenModel.deleteMany({
+      expires: { $lt: new Date() },
+    });
     // Check if device already present
-    const existingRefreshToken = existingAccount.refreshTokens?.find(
-      (rt: IRefreshToken) => this.checkSameDevice(config.deviceInfo, rt),
-    );
+    const existingRefreshToken = await this.refreshTokenModel.findOne({
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
+    let payload = await this.generatePayload({
+      type: 'fws-root',
+      user: {},
+      account: foundAccount,
+    });
     if (existingRefreshToken) {
-      const payload = await this.generatePayload({
-        type: 'fws-root',
-        user: {},
-        account: existingAccount,
-      });
       const accessToken = await this.generateAccessToken(payload);
       const encodedRefreshToken =
         await this.encodeRefreshToken(existingRefreshToken);
 
-      const accountObject = this.excludeAccountSensitiveFields(
-        existingAccount.toObject(),
-      );
       return {
         type: 'fws-root',
-        account: accountObject,
         accessToken,
         refreshToken: encodedRefreshToken,
       };
@@ -543,32 +561,23 @@ export class AuthService {
 
     // if 2FA is enabled
     // send a short access token to be used for getting account's details
-    if (existingAccount.twoFactorAuth?.enabled) {
-      const payload = await this.generatePayload({
-        type: 'fws-root',
-        user: {},
-        account: existingAccount,
-      });
+    if (foundAccount.twoFactorAuth?.enabled) {
       const token = await this.generate2FAAccessToken(payload);
       return { requires2FA: true, token };
     }
 
-    const payload = await this.generatePayload({
-      type: 'fws-root',
-      user: {},
-      account: existingAccount,
-    });
     const accessToken = await this.generateAccessToken(payload);
-    const refreshToken = await this.generateRefreshToken(
-      payload,
-      config.deviceInfo,
-    );
+    const refreshToken = await this.generateRefreshToken(payload);
 
-    existingAccount.refreshTokens.push(refreshToken);
-    await existingAccount.save();
+    await this.refreshTokenModel.create({
+      ...refreshToken,
+      userType: 'fws-root',
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
 
     const accountObject = this.excludeAccountSensitiveFields(
-      existingAccount.toObject(),
+      foundAccount.toObject(),
     );
 
     // Publish events
@@ -583,7 +592,67 @@ export class AuthService {
     const encodedRefreshToken = await this.encodeRefreshToken(refreshToken);
     return {
       type: 'fws-root',
-      account: accountObject,
+      accessToken,
+      refreshToken: encodedRefreshToken,
+    };
+  }
+
+  public async loginManagedUser(
+    userDTO: ManagedUserLoginDTO,
+  ): Promise<ManagedUserLoginResponse> {
+    const foundAccount = await this.accountModel.findById(userDTO.accountId);
+    if (!foundAccount) {
+      throw new AppError(
+        CommonErrors.NotFound.name,
+        CommonErrors.NotFound.statusCode,
+        'Account not found',
+      );
+    }
+
+    const managedUser = await this.managedUserModel.findOne({
+      account: userDTO.accountId,
+      alias: userDTO.alias,
+    });
+    if (!managedUser) {
+      throw new AppError(
+        CommonErrors.NotFound.name,
+        CommonErrors.NotFound.statusCode,
+        'Managed user not found',
+      );
+    }
+
+    const passwordsMatch = await this.comparePasswords(
+      userDTO.password,
+      managedUser.passwordHash ?? '',
+    );
+    if (!passwordsMatch) {
+      throw new AppError(
+        CommonErrors.Unauthorized.name,
+        CommonErrors.Unauthorized.statusCode,
+        'Incorrect alias or password',
+      );
+    }
+
+    const payload = await this.generatePayload({
+      type: 'fws-user',
+      user: managedUser,
+      account: foundAccount,
+    });
+
+    const accessToken = await this.generateAccessToken(payload);
+    const refreshToken = await this.generateRefreshToken(payload);
+
+    await this.refreshTokenModel.create({
+      ...refreshToken,
+      userType: 'fws-user',
+      account: foundAccount._id,
+      alias: managedUser.alias,
+    });
+
+    const encodedRefreshToken = await this.encodeRefreshToken(refreshToken);
+
+    return {
+      type: 'fws-user',
       accessToken,
       refreshToken: encodedRefreshToken,
     };
@@ -599,10 +668,9 @@ export class AuthService {
       return;
     }
 
-    existingAccount.refreshTokens = existingAccount.refreshTokens?.filter(
-      (rt) => rt.token !== decodedRefreshToken.token,
-    );
-    await existingAccount.save();
+    await this.refreshTokenModel.deleteOne({
+      token: decodedRefreshToken.token,
+    });
   }
 
   public async logoutAllDevices(email: string): Promise<void> {
@@ -614,8 +682,9 @@ export class AuthService {
       return;
     }
 
-    existingAccount.refreshTokens = [];
-    await existingAccount.save();
+    await this.refreshTokenModel.deleteMany({
+      account: existingAccount._id,
+    });
   }
 
   public async verifyAccessToken(accessToken: string): Promise<TokenPayload> {
@@ -635,49 +704,48 @@ export class AuthService {
     refreshToken: string,
     { deviceInfo, ipInfo }: UserRefreshTokensConfig,
   ): Promise<{
-    account: Partial<IAccount>;
     accessToken: string;
     refreshToken: string;
   }> {
     const decodedRefreshToken = await this.decodeRefreshToken(refreshToken);
-    const existingAccount = await this.accountModel
-      .findOne({
-        refreshTokens: { $elemMatch: { token: decodedRefreshToken.token } },
-      })
-      .select('+refreshTokens');
+
+    // Filter expired refresh tokens
+    await this.refreshTokenModel.deleteMany({
+      expires: { $lt: new Date() },
+    });
+    const foundRefreshToken = await this.refreshTokenModel.findOne({
+      token: decodedRefreshToken.token,
+    });
+    if (!foundRefreshToken) {
+      throw new AppError(
+        CommonErrors.Unauthorized.name,
+        CommonErrors.Unauthorized.statusCode,
+        'Invalid or expired refresh token. Please login again.',
+      );
+    }
+
+    const existingAccount = await this.accountModel.findById(
+      foundRefreshToken.account,
+    );
     if (!existingAccount) {
       throw new AppError(
-        CommonErrors.Unauthorized.name,
-        CommonErrors.Unauthorized.statusCode,
-        'Invalid refresh token',
+        CommonErrors.NotFound.name,
+        CommonErrors.NotFound.statusCode,
+        'Account not found',
       );
     }
 
-    const refreshTokenIndex = existingAccount.refreshTokens?.findIndex(
-      (rt) => rt.token === decodedRefreshToken.token,
+    const isAuthenticatedDevice = this.checkSameDevice(
+      deviceInfo,
+      foundRefreshToken,
     );
-    if (refreshTokenIndex === undefined || refreshTokenIndex === -1) {
-      throw new AppError(
-        CommonErrors.Unauthorized.name,
-        CommonErrors.Unauthorized.statusCode,
-        'Invalid refresh token',
-      );
-    }
 
-    const refreshTokenObject =
-      existingAccount.refreshTokens?.[refreshTokenIndex];
-    if (!refreshTokenObject || refreshTokenObject.expires < new Date()) {
-      throw new AppError(
-        CommonErrors.Unauthorized.name,
-        CommonErrors.Unauthorized.statusCode,
-        'Refresh token expired',
-      );
-    }
-
-    if (!this.checkSameDevice(deviceInfo, refreshTokenObject)) {
-      // Sign out from all devices
-      existingAccount.refreshTokens = [];
-      await existingAccount.save();
+    if (!isAuthenticatedDevice && foundRefreshToken.userType === 'fws-root') {
+      // Sign out from all devices for root users
+      await this.refreshTokenModel.deleteMany({
+        account: foundRefreshToken.account,
+        alias: foundRefreshToken.alias,
+      });
 
       // Publish events for force logout
       this.publisher.auth.publishRootUserForceLoggedOutEvent({
@@ -691,67 +759,96 @@ export class AuthService {
         CommonErrors.Unauthorized.statusCode,
         'Device mismatch. Logged out from all devices.',
       );
+    } else if (!isAuthenticatedDevice) {
+      // Sign out from all devices for managed users
+      await this.refreshTokenModel.deleteMany({
+        account: foundRefreshToken.account,
+        alias: foundRefreshToken.alias,
+      });
+
+      throw new AppError(
+        CommonErrors.Unauthorized.name,
+        CommonErrors.Unauthorized.statusCode,
+        'Device mismatch. Logged out from all devices.',
+      );
     }
 
-    const payload = await this.generatePayload({
-      type: 'fws-root',
+    let payload = await this.generatePayload({
+      type: foundRefreshToken.userType,
       user: {},
       account: existingAccount,
     });
+
+    if (foundRefreshToken.userType === 'fws-user') {
+      const managedUser = await this.managedUserModel.findOne({
+        account: existingAccount._id,
+        alias: foundRefreshToken.alias,
+      });
+      if (!managedUser) {
+        throw new AppError(
+          CommonErrors.NotFound.name,
+          CommonErrors.NotFound.statusCode,
+          'Managed user not found',
+        );
+      }
+
+      payload = await this.generatePayload({
+        type: 'fws-user',
+        user: managedUser,
+        account: existingAccount,
+      });
+    }
+
     const accessToken = await this.generateAccessToken(payload);
-    const newRefreshToken = await this.generateRefreshToken(
-      payload,
-      deviceInfo,
-    );
+    const newRefreshToken = await this.generateRefreshToken(payload);
 
-    existingAccount.refreshTokens?.splice(refreshTokenIndex, 1);
-    existingAccount.refreshTokens?.push(newRefreshToken);
-    await existingAccount.save();
-
-    const accountObject = this.excludeAccountSensitiveFields(
-      existingAccount.toObject(),
-    );
+    // Update refresh token
+    foundRefreshToken.token = newRefreshToken.token;
+    foundRefreshToken.expires = newRefreshToken.expires;
+    foundRefreshToken.deviceInfo = deviceInfo;
+    await foundRefreshToken.save();
 
     const encodedRefreshToken = await this.encodeRefreshToken(newRefreshToken);
     return {
-      account: accountObject,
       accessToken,
       refreshToken: encodedRefreshToken,
     };
   }
 
   public async requestPasswordReset(data: RequestPasswordResetDTO) {
-    const existingAccount = await this.accountModel
+    const foundAccount = await this.accountModel
       .findOne({
         email: data.email,
       })
       .select('+refreshTokens +resetPasswordToken +resetPasswordTokenExpires');
-    if (!existingAccount) {
+    if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
-        'account not found',
+        'Account not found',
       );
     }
 
     const payload = await this.generatePayload({
       type: 'fws-root',
       user: {},
-      account: existingAccount,
+      account: foundAccount,
     });
     const resetPasswordToken = this.generateResetPasswordToken(payload);
-    existingAccount.resetPasswordToken = resetPasswordToken;
-    existingAccount.resetPasswordTokenExpires = new Date(
+    foundAccount.resetPasswordToken = resetPasswordToken;
+    foundAccount.resetPasswordTokenExpires = new Date(
       Date.now() + env.auth.resetPasswordTokenExpiresInSeconds * 1000,
     );
     if (data.logoutAllDevices) {
-      existingAccount.refreshTokens = [];
+      await this.refreshTokenModel.deleteMany({
+        account: foundAccount._id,
+      });
     }
-    await existingAccount.save();
+    await foundAccount.save();
 
     // Publish events
     this.publisher.auth.publishRootUserPasswordChangeRequestedEvent({
-      account: { alias: existingAccount.alias, email: existingAccount.email },
+      account: { alias: foundAccount.alias, email: foundAccount.email },
       resetPasswordToken,
     });
   }
@@ -760,10 +857,10 @@ export class AuthService {
     data: ResetPasswordDTO,
     config: ResetPasswordConfig,
   ): Promise<void> {
-    const existingAccount = await this.accountModel
+    const foundAccount = await this.accountModel
       .findOne({ email: data.user.email })
       .select('+passwordHash +resetPasswordToken +resetPasswordTokenExpires');
-    if (!existingAccount) {
+    if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
@@ -773,14 +870,14 @@ export class AuthService {
 
     // will be true if token is valid and not expired
     let isTokenValid =
-      existingAccount.resetPasswordToken === data.user.currentPasswordOrToken &&
-      existingAccount.resetPasswordTokenExpires &&
-      existingAccount.resetPasswordTokenExpires > new Date();
+      foundAccount.resetPasswordToken === data.user.currentPasswordOrToken &&
+      foundAccount.resetPasswordTokenExpires &&
+      foundAccount.resetPasswordTokenExpires > new Date();
 
     // check if it's the current password
     const passwordsMatch = await this.comparePasswords(
       data.user.currentPasswordOrToken,
-      existingAccount.passwordHash || '',
+      foundAccount.passwordHash || '',
     );
 
     if (!isTokenValid && !passwordsMatch) {
@@ -795,7 +892,7 @@ export class AuthService {
     if (
       await this.comparePasswords(
         data.user.newPassword,
-        existingAccount.passwordHash || '',
+        foundAccount.passwordHash || '',
       )
     ) {
       throw new AppError(
@@ -806,18 +903,20 @@ export class AuthService {
     }
 
     const hashedPassword = await this.hashPassword(data.user.newPassword);
-    existingAccount.passwordHash = hashedPassword;
+    foundAccount.passwordHash = hashedPassword;
     // logout all devices if requested
     if (data.logoutAllDevices) {
-      existingAccount.refreshTokens = [];
+      await this.refreshTokenModel.deleteMany({
+        account: foundAccount._id,
+      });
     }
-    existingAccount.resetPasswordToken = undefined;
-    existingAccount.resetPasswordTokenExpires = undefined;
-    await existingAccount.save();
+    foundAccount.resetPasswordToken = undefined;
+    foundAccount.resetPasswordTokenExpires = undefined;
+    await foundAccount.save();
 
     // Publish events
     this.publisher.auth.publishRootUserPasswordChangedEvent({
-      account: { alias: existingAccount.alias, email: existingAccount.email },
+      account: { alias: foundAccount.alias, email: foundAccount.email },
       deviceInfo: config.deviceInfo,
       ipInfo: config.ipInfo,
     });
@@ -988,20 +1087,20 @@ export class AuthService {
       token,
     )) as RootAccountTokenPayload;
 
-    const existingAccount = await this.accountModel
+    const foundAccount = await this.accountModel
       .findOne({ email: twoFactorAuthPayload.email })
-      .select('+twoFactorAuth +refreshTokens');
-    if (!existingAccount) {
+      .select('+twoFactorAuth');
+    if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
-        'account not found',
+        'Account not found',
       );
     }
 
     if (
-      !existingAccount.twoFactorAuth?.enabled ||
-      !existingAccount.twoFactorAuth.otp.enabled
+      !foundAccount.twoFactorAuth?.enabled ||
+      !foundAccount.twoFactorAuth.otp.enabled
     ) {
       throw new AppError(
         CommonErrors.BadRequest.name,
@@ -1011,8 +1110,8 @@ export class AuthService {
     }
 
     if (
-      !existingAccount.twoFactorAuth.otp.hash ||
-      !existingAccount.twoFactorAuth.otp.expires
+      !foundAccount.twoFactorAuth.otp.hash ||
+      !foundAccount.twoFactorAuth.otp.expires
     ) {
       throw new AppError(
         CommonErrors.BadRequest.name,
@@ -1023,7 +1122,7 @@ export class AuthService {
 
     const otpMatch = await this.comparePasswords(
       userDTO.otp,
-      existingAccount.twoFactorAuth.otp.hash || '',
+      foundAccount.twoFactorAuth.otp.hash || '',
     );
     if (!otpMatch) {
       throw new AppError(
@@ -1034,12 +1133,12 @@ export class AuthService {
     }
 
     if (
-      existingAccount.twoFactorAuth.otp.expires &&
-      existingAccount.twoFactorAuth.otp.expires < new Date()
+      foundAccount.twoFactorAuth.otp.expires &&
+      foundAccount.twoFactorAuth.otp.expires < new Date()
     ) {
-      existingAccount.twoFactorAuth.otp.hash = undefined;
-      existingAccount.twoFactorAuth.otp.expires = undefined;
-      await existingAccount.save();
+      foundAccount.twoFactorAuth.otp.hash = undefined;
+      foundAccount.twoFactorAuth.otp.expires = undefined;
+      await foundAccount.save();
 
       throw new AppError(
         CommonErrors.Unauthorized.name,
@@ -1049,28 +1148,29 @@ export class AuthService {
     }
 
     // Filter expired refresh tokens
-    existingAccount.refreshTokens = await this.filterExpiredRefreshTokens(
-      existingAccount.refreshTokens || [],
-    );
+    await this.refreshTokenModel.deleteMany({
+      expires: { $lt: new Date() },
+    });
     // Check if device already present
-    const existingRefreshToken = existingAccount.refreshTokens?.find(
-      (rt: IRefreshToken) => this.checkSameDevice(config.deviceInfo, rt),
+    const existingRefreshToken = await this.refreshTokenModel.findOne({
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
+    const payload = await this.generatePayload(
+      {
+        type: 'fws-root',
+        user: {},
+        account: foundAccount,
+      },
+      true,
     );
     if (existingRefreshToken) {
-      const payload = await this.generatePayload(
-        {
-          type: 'fws-root',
-          user: {},
-          account: existingAccount,
-        },
-        true,
-      );
       const accessToken = await this.generateAccessToken(payload);
       const encodedRefreshToken =
         await this.encodeRefreshToken(existingRefreshToken);
 
       const accountObject = this.excludeAccountSensitiveFields(
-        existingAccount.toObject(),
+        foundAccount.toObject(),
       );
       return {
         account: accountObject,
@@ -1079,28 +1179,22 @@ export class AuthService {
       };
     }
 
-    const payload = await this.generatePayload(
-      {
-        type: 'fws-root',
-        user: {},
-        account: existingAccount,
-      },
-      true,
-    );
     const accessToken = await this.generateAccessToken(payload);
-    const refreshToken = await this.generateRefreshToken(
-      payload,
-      config.deviceInfo,
-    );
+    const refreshToken = await this.generateRefreshToken(payload);
 
-    existingAccount.refreshTokens.push(refreshToken);
-    existingAccount.twoFactorAuth.otp.hash = undefined;
-    existingAccount.twoFactorAuth.otp.expires = undefined;
-    existingAccount.isEmailVerified = true; // Email verified on OTP login
-    await existingAccount.save();
+    await this.refreshTokenModel.create({
+      ...refreshToken,
+      userType: 'fws-root',
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
+    foundAccount.twoFactorAuth.otp.hash = undefined;
+    foundAccount.twoFactorAuth.otp.expires = undefined;
+    foundAccount.isEmailVerified = true; // Email verified on OTP login
+    await foundAccount.save();
 
     const accountObject = this.excludeAccountSensitiveFields(
-      existingAccount.toObject(),
+      foundAccount.toObject(),
     );
 
     // Publish events
@@ -1429,20 +1523,20 @@ export class AuthService {
       token,
     )) as RootAccountTokenPayload;
 
-    const existingAccount = await this.accountModel
+    const foundAccount = await this.accountModel
       .findOne({ email: twoFactorAuthPayload.email })
-      .select('+twoFactorAuth +refreshTokens');
-    if (!existingAccount) {
+      .select('+twoFactorAuth');
+    if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
-        'account not found',
+        'Account not found',
       );
     }
 
     if (
-      !existingAccount.twoFactorAuth?.enabled ||
-      !existingAccount.twoFactorAuth.totp.enabled
+      !foundAccount.twoFactorAuth?.enabled ||
+      !foundAccount.twoFactorAuth.totp.enabled
     ) {
       throw new AppError(
         CommonErrors.BadRequest.name,
@@ -1452,8 +1546,8 @@ export class AuthService {
     }
 
     if (
-      !existingAccount.twoFactorAuth.totp.secret ||
-      !existingAccount.twoFactorAuth.totp.enabled
+      !foundAccount.twoFactorAuth.totp.secret ||
+      !foundAccount.twoFactorAuth.totp.enabled
     ) {
       throw new AppError(
         CommonErrors.BadRequest.name,
@@ -1463,7 +1557,7 @@ export class AuthService {
     }
 
     const secret = await this.decrypt2FATOTPSecret(
-      existingAccount.twoFactorAuth.totp.secret,
+      foundAccount.twoFactorAuth.totp.secret,
     );
     const otpMatch = authenticator.verify({ token: otp, secret });
     if (!otpMatch) {
@@ -1475,28 +1569,29 @@ export class AuthService {
     }
 
     // Filter expired refresh tokens
-    existingAccount.refreshTokens = await this.filterExpiredRefreshTokens(
-      existingAccount.refreshTokens || [],
-    );
+    await this.refreshTokenModel.deleteMany({
+      expires: { $lt: new Date() },
+    });
     // Check if device already present
-    const existingRefreshToken = existingAccount.refreshTokens?.find(
-      (rt: IRefreshToken) => this.checkSameDevice(config.deviceInfo, rt),
+    const existingRefreshToken = await this.refreshTokenModel.findOne({
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
+    const payload = await this.generatePayload(
+      {
+        type: 'fws-root',
+        user: {},
+        account: foundAccount,
+      },
+      true,
     );
     if (existingRefreshToken) {
-      const payload = await this.generatePayload(
-        {
-          type: 'fws-root',
-          user: {},
-          account: existingAccount,
-        },
-        true,
-      );
       const accessToken = await this.generateAccessToken(payload);
       const encodedRefreshToken =
         await this.encodeRefreshToken(existingRefreshToken);
 
       const accountObject = this.excludeAccountSensitiveFields(
-        existingAccount.toObject(),
+        foundAccount.toObject(),
       );
       return {
         account: accountObject,
@@ -1505,25 +1600,18 @@ export class AuthService {
       };
     }
 
-    const payload = await this.generatePayload(
-      {
-        type: 'fws-root',
-        user: {},
-        account: existingAccount,
-      },
-      true,
-    );
     const accessToken = await this.generateAccessToken(payload);
-    const refreshToken = await this.generateRefreshToken(
-      payload,
-      config.deviceInfo,
-    );
+    const refreshToken = await this.generateRefreshToken(payload);
 
-    existingAccount.refreshTokens.push(refreshToken);
-    existingAccount.save();
+    await this.refreshTokenModel.create({
+      ...refreshToken,
+      userType: 'fws-root',
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
 
     const accountObject = this.excludeAccountSensitiveFields(
-      existingAccount.toObject(),
+      foundAccount.toObject(),
     );
 
     // Publish events
@@ -1679,20 +1767,20 @@ export class AuthService {
       token,
     )) as RootAccountTokenPayload;
 
-    const existingAccount = await this.accountModel
+    const foundAccount = await this.accountModel
       .findOne({ email: payload.email })
-      .select('+recoveryDetails +refreshTokens');
-    if (!existingAccount) {
+      .select('+recoveryDetails');
+    if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
         CommonErrors.NotFound.statusCode,
-        'account not found',
+        'Account not found',
       );
     }
 
     if (
-      !existingAccount.recoveryDetails?.emailVerified ||
-      !existingAccount.recoveryDetails.backupCodes
+      !foundAccount.recoveryDetails?.emailVerified ||
+      !foundAccount.recoveryDetails.backupCodes
     ) {
       throw new AppError(
         CommonErrors.BadRequest.name,
@@ -1702,7 +1790,7 @@ export class AuthService {
     }
 
     const decryptedBackupCodes = await Promise.all(
-      existingAccount.recoveryDetails.backupCodes.map((bc: IBackupCode) =>
+      foundAccount.recoveryDetails.backupCodes.map((bc: IBackupCode) =>
         this.decryptBackupCode(bc.code),
       ),
     );
@@ -1718,23 +1806,24 @@ export class AuthService {
     }
 
     // mark the recovery code as used with a timestamp
-    existingAccount.recoveryDetails.backupCodes[backupCodeIndex].usedAt =
+    foundAccount.recoveryDetails.backupCodes[backupCodeIndex].usedAt =
       new Date();
 
     // Filter expired refresh tokens
-    existingAccount.refreshTokens = await this.filterExpiredRefreshTokens(
-      existingAccount.refreshTokens || [],
-    );
+    await this.refreshTokenModel.deleteMany({
+      expires: { $lt: new Date() },
+    });
     // Check if device already present
-    const existingRefreshToken = existingAccount.refreshTokens?.find(
-      (rt: IRefreshToken) => this.checkSameDevice(config.deviceInfo, rt),
-    );
+    const existingRefreshToken = await this.refreshTokenModel.findOne({
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
     if (existingRefreshToken) {
       const payload = await this.generatePayload(
         {
           type: 'fws-root',
           user: {},
-          account: existingAccount,
+          account: foundAccount,
         },
         true,
       );
@@ -1743,7 +1832,7 @@ export class AuthService {
         await this.encodeRefreshToken(existingRefreshToken);
 
       const accountObject = this.excludeAccountSensitiveFields(
-        existingAccount.toObject(),
+        foundAccount.toObject(),
       );
       return {
         account: accountObject,
@@ -1752,16 +1841,17 @@ export class AuthService {
       };
     }
 
-    const newRefreshToken = await this.generateRefreshToken(
-      payload,
-      config.deviceInfo,
-    );
+    const newRefreshToken = await this.generateRefreshToken(payload);
 
-    existingAccount.refreshTokens.push(newRefreshToken);
-    await existingAccount.save();
+    await this.refreshTokenModel.create({
+      ...newRefreshToken,
+      userType: 'fws-root',
+      account: foundAccount._id,
+      deviceInfo: config.deviceInfo,
+    });
 
     const accountObject = this.excludeAccountSensitiveFields(
-      existingAccount.toObject(),
+      foundAccount.toObject(),
     );
 
     // Publish events

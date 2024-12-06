@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCredentials, selectIsLoggedIn } from '@rootui/store/auth';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../utils/tw';
+import { useGetServicesMetadataQuery } from '@rootui/api/meta';
 
 const Profile = () => {
   const { data: { user } = {} } = useGetMeQuery();
@@ -20,10 +21,17 @@ const Profile = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const location = useLocation();
-  // home routes
+  const { data: { services } = {} } = useGetServicesMetadataQuery();
+  const serviceAliases = services?.map((service) => service.alias) || [];
+  // console routes
   // /home
   // /service-id/home
-  const isHomeRoute = location.pathname.split('/').includes('home');
+  const currentServiceId = serviceAliases.find((alias) =>
+    location.pathname.includes(alias),
+  );
+  const isConsoleRoute =
+    location.pathname === '/home' ||
+    location.pathname.includes(`${currentServiceId}/home`);
 
   const handleLogOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -94,9 +102,9 @@ const Profile = () => {
           </div>
         </PopoverContent>
       </Popover>
-      {isLoggedIn && !isHomeRoute && (
+      {isLoggedIn && !isConsoleRoute && (
         <Link
-          to="/"
+          to={currentServiceId ? `/${currentServiceId}/home` : '/home'}
           className={cn(
             buttonVariants({
               variant: 'outline',
@@ -105,7 +113,7 @@ const Profile = () => {
             'h-8 text-slate-900 bg-white hover:bg-white/90 hover:text-slate-900',
           )}
         >
-          Go to home
+          Go to console
         </Link>
       )}
     </>

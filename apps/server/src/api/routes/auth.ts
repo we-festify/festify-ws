@@ -40,8 +40,8 @@ router.post(
 router.post(
   '/login',
   rateLimiterMiddleware.limiter,
-  authValidators.validateLoginWithEmailPasswordData.bind(authValidators),
-  authController.loginRootWithEmailAndPassword.bind(authController),
+  authValidators.validateLoginData.bind(authValidators),
+  authController.loginUser.bind(authController),
 );
 router.post(
   '/logout',

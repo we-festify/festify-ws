@@ -4,12 +4,18 @@ import { AuthService } from '../../services/auth';
 import Account from '../../models/account';
 import { publisher } from '../../events';
 import ManagedUser from '@aim/models/managed-user';
+import RefreshTokenModel from '@/models/refresh-token';
 
 export class AuthMiddleware {
   private readonly authService: AuthService;
 
   constructor() {
-    this.authService = new AuthService(Account, ManagedUser, publisher);
+    this.authService = new AuthService(
+      Account,
+      ManagedUser,
+      RefreshTokenModel,
+      publisher,
+    );
   }
 
   public async requireAuthenticated(

@@ -1,222 +1,80 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@sharedui/primitives/button';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from '@sharedui/primitives/card';
-import { Form, FormField, FormFieldItem } from '@sharedui/primitives/form';
-import { Input } from '@sharedui/primitives/input';
 import { Label } from '@sharedui/primitives/label';
 import { RadioGroup, RadioGroupItem } from '@sharedui/primitives/radio-group';
-import { getErrorMessage } from '@sharedui/utils/error';
 import { cn } from '@sharedui/utils/tw';
-import { useLoginMutation } from '@rootui/api/auth';
-import { setAccessToken } from '@rootui/store/auth';
-import { toast } from 'sonner';
-import { useDispatch } from 'react-redux';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { rootUserLoginSchema, aimUserLoginSchema } from './schemas/login';
+
+import RootUserLoginForm from './root-user-login-form';
+import ManagedUserLoginForm from './managed-user-login-form';
 
 export function LoginForm() {
-  const [type, setType] = useState<'root' | 'aim'>('root');
-  const [login, { isLoading }] = useLoginMutation();
-  const dispatch = useDispatch();
-
-  const rootUserForm = useForm<z.infer<typeof rootUserLoginSchema>>({
-    resolver: zodResolver(rootUserLoginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-  const aimUserForm = useForm<z.infer<typeof aimUserLoginSchema>>({
-    resolver: zodResolver(aimUserLoginSchema),
-    defaultValues: {
-      accountId: '',
-      alias: '',
-      password: '',
-    },
-  });
-
-  const handleLoginFormSubmit = async (
-    values:
-      | z.infer<typeof rootUserLoginSchema>
-      | z.infer<typeof aimUserLoginSchema>,
-  ) => {
-    try {
-      console.log(values);
-      if ('email' in values) {
-        const payload = {
-          user: {
-            email: values.email,
-            password: values.password,
-          },
-        };
-        const response = await login(payload).unwrap();
-        const { token } = response;
-        dispatch(setAccessToken(token));
-      } else {
-        toast.error('AIM user login is not yet implemented');
-      }
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err));
-    }
-  };
+  const [type, setType] = useState<'fws-root' | 'fws-user'>('fws-root');
 
   return (
     <Card className="mx-auto min-w-64">
       <CardHeader>
         <CardTitle className="text-xl">
-          Login as {type === 'root' ? 'root' : 'AIM'} user
+          Login as {type === 'fws-root' ? 'root' : 'AIM'} user
         </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         <RadioGroup
-          defaultValue="root"
-          onValueChange={(value) => setType(value as 'root' | 'aim')}
+          defaultValue="fws-root"
+          onValueChange={(value) => setType(value as 'fws-root' | 'fws-user')}
           className="flex w-full"
         >
           <div
             className={cn(
               'flex-1 max-w-48 flex space-x-2 p-2',
-              type === 'root' ? 'rounded-md ring-1 ring-muted-foreground' : '',
+              type === 'fws-root'
+                ? 'rounded-md ring-1 ring-muted-foreground'
+                : '',
             )}
           >
             <RadioGroupItem
-              value="root"
-              id="login-root"
+              value="fws-root"
+              id="login-fws-root"
               className="flex-shrink-0"
             />
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="login-root">Root User</Label>
-              <p className="text-xs text-muted-foreground">
-                Root user with full access to the account
-              </p>
-            </div>
+            <label htmlFor="login-fws-root">
+              <div className="flex flex-col gap-2">
+                <Label>Root User</Label>
+                <p className="text-xs text-muted-foreground">
+                  Root user with full access to the account
+                </p>
+              </div>
+            </label>
           </div>
           <div
             className={cn(
               'flex-1 max-w-48 flex space-x-2 p-2',
-              type === 'aim' ? 'rounded-md ring-1 ring-muted-foreground' : '',
+              type === 'fws-user'
+                ? 'rounded-md ring-1 ring-muted-foreground'
+                : '',
             )}
           >
             <RadioGroupItem
-              value="aim"
-              id="login-aim"
+              value="fws-user"
+              id="login-fws-user"
               className="flex-shrink-0"
             />
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="login-aim">AIM User</Label>
-              <p className="text-xs text-muted-foreground">
-                Users within an account with limited access
-              </p>
-            </div>
+            <label htmlFor="login-fws-user">
+              <div className="flex flex-col gap-2">
+                <Label>AIM User</Label>
+                <p className="text-xs text-muted-foreground">
+                  Users within an account with limited access
+                </p>
+              </div>
+            </label>
           </div>
         </RadioGroup>
-        {type === 'root' ? (
-          <Form {...rootUserForm}>
-            <form
-              className="grid gap-4"
-              onSubmit={rootUserForm.handleSubmit(handleLoginFormSubmit)}
-            >
-              <FormField
-                control={rootUserForm.control}
-                name="email"
-                render={({ field }) => (
-                  <FormFieldItem label="Root user email address">
-                    <Input
-                      key="root-email"
-                      placeholder="username@example.com"
-                      autoComplete="email"
-                      type="email"
-                      {...field}
-                    />
-                  </FormFieldItem>
-                )}
-              />
-              <FormField
-                control={rootUserForm.control}
-                name="password"
-                render={({ field }) => (
-                  <FormFieldItem label="Password">
-                    <Input
-                      key="root-password"
-                      type="password"
-                      placeholder="••••••••"
-                      autoComplete="current-password"
-                      {...field}
-                    />
-                  </FormFieldItem>
-                )}
-              />
-              <Link to="/a/forgot-password" className="text-sm text-right">
-                Forgot password?
-              </Link>
-              <Button type="submit" className="mt-4" disabled={isLoading}>
-                Login
-              </Button>
-            </form>
-          </Form>
-        ) : (
-          <Form {...aimUserForm}>
-            <form
-              onSubmit={aimUserForm.handleSubmit(handleLoginFormSubmit)}
-              className="grid gap-4"
-            >
-              <FormField
-                control={aimUserForm.control}
-                name="accountId"
-                render={({ field }) => (
-                  <FormFieldItem label="Account ID">
-                    <Input
-                      key="aim-account-id"
-                      placeholder="24-character account id"
-                      autoComplete="account-id"
-                      {...field}
-                    />
-                  </FormFieldItem>
-                )}
-              />
-              <FormField
-                control={aimUserForm.control}
-                name="password"
-                render={({ field }) => (
-                  <FormFieldItem label="Password">
-                    <Input
-                      key="aim-password"
-                      type="password"
-                      placeholder="••••••••"
-                      autoComplete="current-password"
-                      {...field}
-                    />
-                  </FormFieldItem>
-                )}
-              />
-              <FormField
-                control={aimUserForm.control}
-                name="alias"
-                render={({ field }) => (
-                  <FormFieldItem label="FWS account alias">
-                    <Input
-                      key="aim-alias"
-                      placeholder="username"
-                      autoComplete="username"
-                      {...field}
-                    />
-                  </FormFieldItem>
-                )}
-              />
-              <Button type="submit" className="mt-4" disabled={isLoading}>
-                Login
-              </Button>
-            </form>
-          </Form>
-        )}
+        {type === 'fws-root' ? <RootUserLoginForm /> : <ManagedUserLoginForm />}
         <div className="mt-4 text-center text-sm">
           Don't have an account?{' '}
           <Link to="/a/register" className="underline">
