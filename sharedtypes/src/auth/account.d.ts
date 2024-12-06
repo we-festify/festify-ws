@@ -3,8 +3,11 @@ import { IDeviceInfo } from './user-agent';
 export type IUserRole = 'user' | 'admin';
 
 export type IRefreshToken = {
+  userType: 'fws-root' | 'fws-user';
   token: string;
   expires: Date;
+  account: string | IAccount;
+  alias?: string;
   deviceInfo?: IDeviceInfo;
 };
 
@@ -48,7 +51,6 @@ export interface IAccount {
   emailVerificationTokenExpires?: Date;
   resetPasswordToken?: string;
   resetPasswordTokenExpires?: Date;
-  refreshTokens: IRefreshToken[];
 
   // 2FA
   twoFactorAuth: ITwoFactorAuth;

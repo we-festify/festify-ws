@@ -32,10 +32,18 @@ export type RegisterResponse = {
 };
 
 export interface LoginDTO {
-  user: {
-    email: string;
-    password: string;
-  };
+  user:
+    | {
+        type: 'fws-root';
+        email: string;
+        password: string;
+      }
+    | {
+        type: 'fws-user';
+        accountId: string;
+        alias: string;
+        password: string;
+      };
 }
 
 export type LoginResponse =

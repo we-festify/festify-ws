@@ -1,4 +1,3 @@
-import { IManagedUser } from '@sharedtypes/auth/user';
 import { IDeviceInfo, IUserIPInfo } from '@sharedtypes/auth/user-agent';
 import { IAccount } from '@sharedtypes/auth/account';
 
@@ -25,7 +24,6 @@ export interface RootUserLoginDTO {
 export type RootUserLoginResponse =
   | {
       type: 'fws-root';
-      account: Partial<IAccount>;
       accessToken: string;
       refreshToken: string;
     }
@@ -46,7 +44,6 @@ export interface ManagedUserLoginDTO {
 
 export interface ManagedUserLoginResponse {
   type: 'fws-user';
-  user: Partial<IManagedUser>;
   accessToken: string;
   refreshToken: string;
 }
