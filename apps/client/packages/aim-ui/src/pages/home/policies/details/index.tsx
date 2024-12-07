@@ -24,7 +24,7 @@ import { aimPaths } from '@sharedui/constants/paths';
 import { Button, buttonVariants } from '@sharedui/primitives/button';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { DataTable } from '@sharedui/primitives/data-table';
-import { getErrorMessage, getErrorName } from '@sharedui/utils/error';
+import { getErrorMessage } from '@sharedui/utils/error';
 import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import { formatTimeFromNow } from '@sharedui/utils/time';
 import { cn } from '@sharedui/utils/tw';
