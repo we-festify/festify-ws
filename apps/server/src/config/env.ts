@@ -106,4 +106,8 @@ export default {
   bes: {
     sender_password_secret: process.env.BES_PASSWORD_SECRET,
   },
+  aim: {
+    access_key_secret_encryption_key:
+      process.env.AIM_ACCESS_KEY_SECRET_ENCRYPTION_KEY,
+  },
 } as const;

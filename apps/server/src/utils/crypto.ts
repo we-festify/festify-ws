@@ -36,3 +36,7 @@ export const decryptUsingAES = (text: string, secret: string) => {
   decrypted += decipher.final('utf8');
   return decrypted;
 };
+
+export const generateRandomString = (length = 32): string => {
+  return crypto.randomBytes(length).toString('hex');
+};

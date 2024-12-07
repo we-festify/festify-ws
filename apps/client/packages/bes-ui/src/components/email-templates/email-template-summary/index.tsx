@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { IBESEmailTemplate } from '@sharedtypes/bes';
 import { buttonVariants } from '@sharedui/primitives/button';
 import { cn } from '@sharedui/utils/tw';
-import { formatTimeFromNow } from '@sharedui/utils/time';
+import { formatTimeAgoFromNow } from '@sharedui/utils/time';
 import { besPaths } from '@sharedui/constants/paths';
 import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import CopyIcon from '@sharedui/components/copy-icon';
@@ -68,12 +68,12 @@ const EmailTemplateSummary = ({
                 {
                   key: 'createdAt',
                   label: 'Created at',
-                  formatter: formatTimeFromNow,
+                  formatter: formatTimeAgoFromNow,
                 },
                 {
                   key: 'updatedAt',
                   label: 'Updated at',
-                  formatter: formatTimeFromNow,
+                  formatter: formatTimeAgoFromNow,
                 },
               ] as KeyValueType[]
             }

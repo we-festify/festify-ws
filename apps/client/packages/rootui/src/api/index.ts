@@ -63,5 +63,6 @@ export const api = createApi({
     // AIM
     'ManagedUser',
     'PermissionPolicy',
+    'AimAccessKey',
   ],
 });

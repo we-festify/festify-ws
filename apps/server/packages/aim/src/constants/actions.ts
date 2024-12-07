@@ -65,6 +65,22 @@ export const aimActions: {
     alias: 'aim:ListPolicyAttachedUsers',
     description: 'Grants permission to list users attached to a policy',
   },
+  {
+    alias: 'aim:CreateAccessKey',
+    description: 'Grants permission to create an access key for a user',
+  },
+  {
+    alias: 'aim:ReadAccessKey',
+    description: 'Grants permission to read an access key details for a user',
+  },
+  {
+    alias: 'aim:RotateAccessKey',
+    description: 'Grants permission to rotate an access key for a user',
+  },
+  {
+    alias: 'aim:DeleteAccessKey',
+    description: 'Grants permission to delete an access key for a user',
+  },
 ];
 
 export const ACTIONS: {

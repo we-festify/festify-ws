@@ -43,6 +43,7 @@ import {
   decryptUsingAES,
   encryptUsingAES,
 } from '@/utils/crypto';
+import * as e from 'express';
 
 export class AuthService {
   private readonly accountModel: Model<IAccount>;
@@ -1895,5 +1896,30 @@ export class AuthService {
       accessToken: '',
       refreshToken: encodedRefreshToken,
     };
+  }
+
+  public async verifyRequestSignature(
+    secret: string,
+    signature: string,
+    req: e.Request,
+  ): Promise<boolean> {
+    const payload = {
+      method: req.method,
+      body: req.body,
+      query: req.query,
+      params: req.params,
+      host: req.hostname,
+      url: req.originalUrl,
+    };
+    const computedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(JSON.stringify(payload))
+      .digest('hex');
+
+    if (computedSignature !== signature) {
+      return false;
+    }
+
+    return true;
   }
 }

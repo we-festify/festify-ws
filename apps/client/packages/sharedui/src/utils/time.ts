@@ -1,4 +1,4 @@
-export const formatTimeFromNow = (time: string): string => {
+export const formatTimeAgoFromNow = (time: string): string => {
   try {
     if (!time) return '';
 

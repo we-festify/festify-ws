@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { IBESEmailTemplate } from '@sharedtypes/bes/emailTemplate';
-import { formatTimeFromNow } from '@sharedui/utils/time';
+import { formatTimeAgoFromNow } from '@sharedui/utils/time';
 import { Link } from 'react-router-dom';
 import { besPaths } from '@sharedui/constants/paths';
 import { Checkbox } from '@sharedui/primitives/checkbox';
@@ -54,7 +54,7 @@ export const columns: ColumnDef<IBESEmailTemplate>[] = [
     accessorKey: 'createdAt',
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
-      return formatTimeFromNow(date.toISOString());
+      return formatTimeAgoFromNow(date.toISOString());
     },
   },
 ];

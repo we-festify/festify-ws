@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { Button, buttonVariants } from '@sharedui/primitives/button';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import { BESInstanceStatus, IBESInstance } from '@sharedtypes/bes';
-import { formatTimeFromNow } from '@sharedui/utils/time';
+import { formatTimeAgoFromNow } from '@sharedui/utils/time';
 import {
   instanceStatusIcons,
   instanceStatusMapping,
@@ -171,13 +171,13 @@ const grids = [
         key: 'createdAt',
         label: 'Created at',
         formatter: (value: unknown) =>
-          formatTimeFromNow((value as Date).toString()),
+          formatTimeAgoFromNow((value as Date).toString()),
       },
       {
         key: 'updatedAt',
         label: 'Updated at',
         formatter: (value: unknown) =>
-          formatTimeFromNow((value as Date).toString()),
+          formatTimeAgoFromNow((value as Date).toString()),
       },
     ],
   },

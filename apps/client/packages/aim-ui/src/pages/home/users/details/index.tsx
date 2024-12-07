@@ -1,4 +1,10 @@
 import {
+  useCreateAccessKeyMutation,
+  useDeleteAccessKeyMutation,
+  useReadAccessKeyQuery,
+  useRotateAccessKeyMutation,
+} from '@aim-ui/api/access-key';
+import {
   useDeleteManagedUsersMutation,
   useReadManagedUserQuery,
 } from '@aim-ui/api/users';
@@ -9,13 +15,24 @@ import ErrorBox from '@sharedui/components/error-box';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import PageSection from '@sharedui/components/page-section';
 import { aimPaths } from '@sharedui/constants/paths';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@sharedui/primitives/alert-dialog';
 import { Button, buttonVariants } from '@sharedui/primitives/button';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { generateFRN, readableFRN } from '@sharedui/utils/frn';
-import { formatTimeFromNow } from '@sharedui/utils/time';
+import { formatDateTime, formatTimeAgoFromNow } from '@sharedui/utils/time';
 import { cn } from '@sharedui/utils/tw';
 import { RotateCw } from 'lucide-react';
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -60,7 +77,7 @@ const ManagedUserDetailsPage = () => {
         title={managedUser?.alias}
         description={
           managedUser
-            ? `Created ${formatTimeFromNow(managedUser.createdAt.toString())}`
+            ? `Created ${formatTimeAgoFromNow(managedUser.createdAt.toString())}`
             : ''
         }
         header={
@@ -115,17 +132,19 @@ const ManagedUserDetailsPage = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <ErrorBox error={readManagedUserError} />
-                {managedUser ? (
-                  <KeyValueGrid
-                    data={managedUser}
-                    keys={step.keys}
-                    colsCount={step.cols}
-                  />
-                ) : null}
+                <ErrorBox error={readManagedUserError}>
+                  {managedUser ? (
+                    <KeyValueGrid
+                      data={managedUser}
+                      keys={step.keys}
+                      colsCount={step.cols}
+                    />
+                  ) : null}
+                </ErrorBox>
               </CardContent>
             </Card>
           ))}
+          <AccessKeyDetails userFrn={frn} />
         </div>
       </PageSection>
     </div>
@@ -157,16 +176,172 @@ const grids = [
         key: 'createdAt',
         label: 'Created at',
         formatter: (value: unknown) =>
-          formatTimeFromNow((value as Date).toString()),
+          formatTimeAgoFromNow((value as Date).toString()),
       },
       {
         key: 'updatedAt',
         label: 'Updated at',
         formatter: (value: unknown) =>
-          formatTimeFromNow((value as Date).toString()),
+          formatTimeAgoFromNow((value as Date).toString()),
       },
     ],
   },
 ];
+
+const AccessKeyDetails = ({ userFrn }: { userFrn: string }) => {
+  const {
+    data: { accessKey } = {},
+    error: readAccessKeyError,
+    refetch,
+  } = useReadAccessKeyQuery(userFrn);
+  const [rotateAccessKey] = useRotateAccessKeyMutation();
+  const [createAccessKey] = useCreateAccessKeyMutation();
+  const [deleteAccessKey] = useDeleteAccessKeyMutation();
+  // this is the key secret to be displayed
+  // only when access key is created/rotated
+  const [secret, setSecret] = useState<string | null>(null);
+
+  const handleCreateAccessKey = async () => {
+    try {
+      const { secret } = await createAccessKey(userFrn).unwrap();
+      setSecret(secret);
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    }
+  };
+
+  const handleRotateAccessKey = async () => {
+    try {
+      const { secret } = await rotateAccessKey(userFrn).unwrap();
+      setSecret(secret);
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    }
+  };
+
+  const handleDeleteAccessKey = async () => {
+    try {
+      await deleteAccessKey(userFrn).unwrap();
+      toast.success('Access key deleted successfully');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    }
+  };
+
+  return (
+    <>
+      <Card>
+        <CardHeader variant="muted">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-medium">Access key details</h2>
+            <div className="flex items-center gap-4">
+              {!readAccessKeyError ? (
+                <>
+                  <Button size="sm" variant="outline" onClick={refetch}>
+                    <RotateCw size={16} className="text-muted-foreground" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleRotateAccessKey}
+                  >
+                    Rotate
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive-outline"
+                    onClick={handleDeleteAccessKey}
+                  >
+                    Delete
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleCreateAccessKey}
+                  >
+                    Create access key
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ErrorBox error={readAccessKeyError}>
+            {accessKey ? (
+              <KeyValueGrid
+                data={accessKey}
+                keys={[
+                  { key: '_id', label: 'Access key ID' },
+                  {
+                    key: 'expiresAt',
+                    label: 'Expires at',
+                    formatter: (value: unknown) => {
+                      return value
+                        ? formatDateTime((value as Date).toString())
+                        : '';
+                    },
+                  },
+                  {
+                    key: 'lastUsedAt',
+                    label: 'Last used at',
+                    formatter: (value: unknown) => {
+                      return value
+                        ? formatDateTime((value as Date).toString())
+                        : 'Never';
+                    },
+                  },
+                  {
+                    key: 'updatedAt',
+                    label: 'Last updated at',
+                    formatter: (value: unknown) => {
+                      return value
+                        ? formatDateTime((value as Date).toString())
+                        : '';
+                    },
+                  },
+                ]}
+                colsCount={4}
+              />
+            ) : null}
+          </ErrorBox>
+        </CardContent>
+      </Card>
+      <AlertDialog open={!!secret}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Access key secret generated successfully
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <div className="flex flex-col gap-4">
+                <p>
+                  Please copy the secret below and store it securely. You will
+                  not be able to see this secret again. However, you can rotate
+                  the access key to generate a new secret at any time.
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="break-all">{secret}</span>
+                  <CopyIcon value={secret ?? ''} />
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSecret(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => setSecret(null)}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
 
 export default ManagedUserDetailsPage;
