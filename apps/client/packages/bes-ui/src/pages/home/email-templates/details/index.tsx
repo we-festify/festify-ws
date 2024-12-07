@@ -1,4 +1,4 @@
-import { formatTimeFromNow } from '@sharedui/utils/time';
+import { formatTimeAgoFromNow } from '@sharedui/utils/time';
 import PageSection from '@sharedui/components/page-section';
 import EmailTemplateSummary from '../../../../components/email-templates/email-template-summary';
 import EmailTemplatePreview from '../../../../components/email-templates/email-templates-preview';
@@ -64,7 +64,7 @@ const EmailTemplateDetailsPage = () => {
         title={template?.name}
         description={
           template
-            ? `Created ${formatTimeFromNow(template.createdAt.toString())}`
+            ? `Created ${formatTimeAgoFromNow(template.createdAt.toString())}`
             : ''
         }
         header={

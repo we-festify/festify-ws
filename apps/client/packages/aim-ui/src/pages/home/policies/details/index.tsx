@@ -26,7 +26,7 @@ import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { DataTable } from '@sharedui/primitives/data-table';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { generateFRN, readableFRN } from '@sharedui/utils/frn';
-import { formatTimeFromNow } from '@sharedui/utils/time';
+import { formatTimeAgoFromNow } from '@sharedui/utils/time';
 import { cn } from '@sharedui/utils/tw';
 import { Row, Table } from '@tanstack/react-table';
 import { RotateCw } from 'lucide-react';
@@ -139,7 +139,7 @@ const PermissionPolicyDetailsPage = () => {
         title={policy?.alias}
         description={
           policy
-            ? `Created ${formatTimeFromNow(policy.createdAt.toString())}`
+            ? `Created ${formatTimeAgoFromNow(policy.createdAt.toString())}`
             : ''
         }
         header={
@@ -359,13 +359,13 @@ const grids = [
         key: 'createdAt',
         label: 'Created at',
         formatter: (value: unknown) =>
-          formatTimeFromNow((value as Date).toString()),
+          formatTimeAgoFromNow((value as Date).toString()),
       },
       {
         key: 'updatedAt',
         label: 'Updated at',
         formatter: (value: unknown) =>
-          formatTimeFromNow((value as Date).toString()),
+          formatTimeAgoFromNow((value as Date).toString()),
       },
     ],
   },

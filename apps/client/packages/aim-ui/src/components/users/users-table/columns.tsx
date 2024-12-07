@@ -4,7 +4,7 @@ import { IManagedUser } from '@sharedtypes/aim/managed-user';
 import { Checkbox } from '@sharedui/primitives/checkbox';
 import { aimPaths } from '@sharedui/constants/paths';
 import { Link } from 'react-router-dom';
-import { formatTimeFromNow } from '@sharedui/utils/time';
+import { formatTimeAgoFromNow } from '@sharedui/utils/time';
 
 export const columns: ColumnDef<IManagedUser>[] = [
   {
@@ -50,7 +50,7 @@ export const columns: ColumnDef<IManagedUser>[] = [
     accessorKey: 'createdAt',
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
-      return formatTimeFromNow(date.toISOString());
+      return formatTimeAgoFromNow(date.toISOString());
     },
   },
 ];

@@ -8,11 +8,12 @@ import { getErrorMessage, getErrorName } from '@sharedui/utils/error';
 const ErrorBox = ({
   error,
   className,
+  children,
 }: PropsWithChildren<{
   error?: unknown;
   className?: string;
 }>) => {
-  if (!error) return null;
+  if (!error) return <>{children}</>;
 
   const name = getErrorName(error);
   const message = getErrorMessage(error);
