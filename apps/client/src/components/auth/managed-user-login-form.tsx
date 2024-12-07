@@ -56,7 +56,21 @@ const ManagedUserLoginForm = () => {
               <Input
                 key="fws-user-account-id"
                 placeholder="24-character account id"
-                autoComplete="account-id"
+                autoComplete="fws-user-account-id"
+                {...field}
+              />
+            </FormFieldItem>
+          )}
+        />
+        <FormField
+          control={managedUserForm.control}
+          name="alias"
+          render={({ field }) => (
+            <FormFieldItem label="Account alias">
+              <Input
+                key="fws-user-alias"
+                placeholder="username"
+                autoComplete="username"
                 {...field}
               />
             </FormFieldItem>
@@ -72,20 +86,6 @@ const ManagedUserLoginForm = () => {
                 type="password"
                 placeholder="••••••••"
                 autoComplete="current-password"
-                {...field}
-              />
-            </FormFieldItem>
-          )}
-        />
-        <FormField
-          control={managedUserForm.control}
-          name="alias"
-          render={({ field }) => (
-            <FormFieldItem label="Account alias">
-              <Input
-                key="fws-user-alias"
-                placeholder="username"
-                autoComplete="username"
                 {...field}
               />
             </FormFieldItem>

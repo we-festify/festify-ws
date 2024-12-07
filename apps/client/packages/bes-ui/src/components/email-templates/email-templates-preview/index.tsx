@@ -4,14 +4,19 @@ import { useState } from 'react';
 import { Button } from '@sharedui/primitives/button';
 import { Monitor, Smartphone } from 'lucide-react';
 import { cn } from '@sharedui/utils/tw';
+import ErrorBox from '@sharedui/components/error-box';
 
 interface EmailTemplatePreviewProps {
-  template: IBESEmailTemplate;
+  template?: IBESEmailTemplate;
+  error?: unknown;
 }
 
 type Platform = 'web' | 'mobile';
 
-const EmailTemplatePreview = ({ template }: EmailTemplatePreviewProps) => {
+const EmailTemplatePreview = ({
+  template,
+  error,
+}: EmailTemplatePreviewProps) => {
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('web');
 
   return (
@@ -43,33 +48,39 @@ const EmailTemplatePreview = ({ template }: EmailTemplatePreviewProps) => {
         </div>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-4">
-        <div className="w-full flex gap-4 justify-between">
-          <h3 className="text-sm font-semibold text-muted-foreground">
-            Subject: <span className="text-primary">{template.subject}</span>
-          </h3>
-        </div>
-        <div
-          className={cn(
-            'bg-border rounded-3xl p-5',
-            selectedPlatform === 'web'
-              ? 'w-full aspect-video max-w-[728px]'
-              : 'w-80 aspect-[9/16]',
-          )}
-        >
-          <div className="rounded-xl overflow-hidden bg-background w-full h-full relative">
-            <iframe
-              title="Email template preview"
-              srcDoc={getPreviewTemplate(template)}
-              className="w-full h-full bg-white pt-2"
-            />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-border rounded-br-md rounded-bl-md z-10" />
-          </div>
-        </div>
-        <div className="text-xs text-muted-foreground">
-          This is a preview of how the email will look like when sent to the
-          user. The actual email may look different depending on the email
-          client used by the recipient.
-        </div>
+        <ErrorBox error={error} />
+        {template && (
+          <>
+            <div className="w-full flex gap-4 justify-between">
+              <h3 className="text-sm font-semibold text-muted-foreground">
+                Subject:{' '}
+                <span className="text-primary">{template?.subject}</span>
+              </h3>
+            </div>
+            <div
+              className={cn(
+                'bg-border rounded-3xl p-5',
+                selectedPlatform === 'web'
+                  ? 'w-full aspect-video max-w-[728px]'
+                  : 'w-80 aspect-[9/16]',
+              )}
+            >
+              <div className="rounded-xl overflow-hidden bg-background w-full h-full relative">
+                <iframe
+                  title="Email template preview"
+                  srcDoc={getPreviewTemplate(template)}
+                  className="w-full h-full bg-white pt-2"
+                />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-border rounded-br-md rounded-bl-md z-10" />
+              </div>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              This is a preview of how the email will look like when sent to the
+              user. The actual email may look different depending on the email
+              client used by the recipient.
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

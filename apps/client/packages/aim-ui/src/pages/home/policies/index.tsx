@@ -16,7 +16,7 @@ import { IPermissionPolicy } from '@sharedtypes/aim/permission-policy';
 import { columns } from '@aim-ui/components/policies/policies-table/columns';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
-import ErrorBoundary from '@sharedui/components/error-boundary';
+import ErrorBox from '@sharedui/components/error-box';
 
 const PermissionPoliciesPage = () => {
   const {
@@ -61,11 +61,7 @@ const PermissionPoliciesPage = () => {
               columns={columns}
               data={policies || []}
               header={TableHeader(handleDelete, handleRefetch)}
-              noResultsComponent={
-                error ? (
-                  <ErrorBoundary error={getErrorMessage(error)} show={true} />
-                ) : undefined
-              }
+              noResultsComponent={<ErrorBox error={error} />}
             />
           </CardContent>
         </Card>

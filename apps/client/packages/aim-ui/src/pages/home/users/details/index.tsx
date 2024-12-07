@@ -5,6 +5,7 @@ import {
 import { useAuth } from '@rootui/providers/auth-provider';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
 import CopyIcon from '@sharedui/components/copy-icon';
+import ErrorBox from '@sharedui/components/error-box';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import PageSection from '@sharedui/components/page-section';
 import { aimPaths } from '@sharedui/constants/paths';
@@ -22,8 +23,11 @@ const ManagedUserDetailsPage = () => {
   const { alias } = useParams<{ alias: string }>();
   const { user } = useAuth();
   const frn = generateFRN('aim', user?.accountId ?? '', 'user', alias ?? '');
-  const { data: { user: managedUser } = {}, refetch } =
-    useReadManagedUserQuery(frn);
+  const {
+    data: { user: managedUser } = {},
+    refetch,
+    error: readManagedUserError,
+  } = useReadManagedUserQuery(frn);
   const navigate = useNavigate();
   const [deleteManagedUsers] = useDeleteManagedUsersMutation();
 
@@ -50,13 +54,15 @@ const ManagedUserDetailsPage = () => {
     }
   };
 
-  if (!managedUser) return null;
-
   return (
     <div className="p-8">
       <PageSection
-        title={managedUser.alias}
-        description={`Created ${formatTimeFromNow(managedUser.createdAt.toString())}`}
+        title={managedUser?.alias}
+        description={
+          managedUser
+            ? `Created ${formatTimeFromNow(managedUser.createdAt.toString())}`
+            : ''
+        }
         header={
           <div className="flex items-center justify-end gap-4">
             <Button
@@ -109,6 +115,7 @@ const ManagedUserDetailsPage = () => {
                 </div>
               </CardHeader>
               <CardContent>
+                <ErrorBox error={readManagedUserError} />
                 {managedUser ? (
                   <KeyValueGrid
                     data={managedUser}

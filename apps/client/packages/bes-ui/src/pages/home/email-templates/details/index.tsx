@@ -12,7 +12,6 @@ import { RotateCw } from 'lucide-react';
 import { besPaths } from '@sharedui/constants/paths';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { toast } from 'sonner';
-import { IBESEmailTemplate } from '@sharedtypes/bes';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
 
@@ -25,9 +24,11 @@ const EmailTemplateDetailsPage = () => {
     'template',
     templateId ?? '',
   );
-  const { data: { template } = {}, refetch } = useReadEmailTemplateQuery<{
-    data: { template: IBESEmailTemplate };
-  }>(frn);
+  const {
+    data: { template } = {},
+    refetch,
+    error: readEmailTemplateError,
+  } = useReadEmailTemplateQuery(frn);
   const navigate = useNavigate();
   const [deleteEmailTemplates] = useDeleteEmailTemplatesMutation();
 
@@ -57,15 +58,15 @@ const EmailTemplateDetailsPage = () => {
     }
   };
 
-  if (!template) return null;
-
   return (
     <div className="p-8">
       <PageSection
-        title={template.name}
-        description={`Created ${formatTimeFromNow(
-          template.createdAt.toString(),
-        )}`}
+        title={template?.name}
+        description={
+          template
+            ? `Created ${formatTimeFromNow(template.createdAt.toString())}`
+            : ''
+        }
         header={
           <div className="flex items-center justify-end gap-4">
             <Button
@@ -96,8 +97,14 @@ const EmailTemplateDetailsPage = () => {
         }
       >
         <div className="flex flex-col gap-8">
-          <EmailTemplateSummary template={template} />
-          <EmailTemplatePreview template={template} />
+          <EmailTemplateSummary
+            template={template}
+            error={readEmailTemplateError}
+          />
+          <EmailTemplatePreview
+            template={template}
+            error={readEmailTemplateError}
+          />
         </div>
       </PageSection>
     </div>

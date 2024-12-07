@@ -1,6 +1,6 @@
 import { AppError, CommonErrors } from '@/utils/errors';
 import { parseFRN } from '@/utils/frn';
-import { executePermissionPolicyRule } from '@aim/utils/policy';
+import { executeRules, readableResource } from '@aim/utils/policy';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
 import {
   IPermissionPolicy,
@@ -27,9 +27,9 @@ export class AuthZMiddleware {
       const forbiddenError = new AppError(
         CommonErrors.Forbidden.name,
         CommonErrors.Forbidden.statusCode,
-        `Forbidden: You don't have permission to execute the action **${action}**` +
+        `You don't have permission to execute the action **${action}**` +
           (req.body.resource
-            ? ` on the resource **${req.body.resource}**`
+            ? ` on the resource *${readableResource(req.body.resource)}*`
             : '') +
           '. Please contact your administrator.',
       );
@@ -78,15 +78,11 @@ export class AuthZMiddleware {
         .select('rules');
       const rules = policies.flatMap((p) => p.rules?.filter(Boolean) ?? []);
 
-      const canExecute = rules.some((rule) =>
-        executePermissionPolicyRule(rule, action, resource),
-      );
+      const decision = executeRules(rules, action, resource);
 
-      if (!canExecute) {
-        return next(forbiddenError);
-      }
+      if (decision === 'allow') return next();
 
-      return next();
+      return next(forbiddenError);
     };
   }
 }
