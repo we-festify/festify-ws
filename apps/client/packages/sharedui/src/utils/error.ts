@@ -19,3 +19,25 @@ export const getErrorMessage = (error: unknown): string => {
   }
   return 'An error occurred';
 };
+
+export const getErrorName = (error: unknown): string => {
+  if (!error) {
+    return 'Error';
+  }
+  if (typeof error === 'string') {
+    return error;
+  } else if (error instanceof Error) {
+    return error.name;
+  } else if (Array.isArray(error)) {
+    return 'Error';
+  } else if (typeof error === 'object') {
+    if ('data' in error) {
+      return getErrorName(error.data);
+    } else if ('name' in error) {
+      return getErrorName(error.name);
+    } else if ('error' in error) {
+      return getErrorName(error.error);
+    }
+  }
+  return 'Error';
+};

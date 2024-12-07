@@ -21,14 +21,17 @@ import { getErrorMessage } from '@sharedui/utils/error';
 import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import CopyIcon from '@sharedui/components/copy-icon';
 import { useAuth } from '@rootui/providers/auth-provider';
+import ErrorBox from '@sharedui/components/error-box';
 
 const InstanceDetailsPage = () => {
   const { user } = useAuth();
   const { alias = '' } = useParams<{ alias: string }>();
   const frn = generateFRN('bes', user?.accountId ?? '', 'instance', alias);
-  const { data: { instance } = {}, refetch } = useReadInstanceQuery<{
-    data: { instance: IBESInstance };
-  }>(frn, {
+  const {
+    data: { instance } = {},
+    refetch,
+    error: readInstanceError,
+  } = useReadInstanceQuery(frn, {
     skip: !alias,
   });
   const navigate = useNavigate();
@@ -116,6 +119,7 @@ const InstanceDetailsPage = () => {
                 </div>
               </CardHeader>
               <CardContent>
+                <ErrorBox error={readInstanceError} />
                 {instance ? (
                   <KeyValueGrid
                     data={instance}

@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { Table } from '@tanstack/react-table';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
-import ErrorBoundary from '@sharedui/components/error-boundary';
+import ErrorBox from '@sharedui/components/error-box';
 
 const EmailTemplates = () => {
   const {
@@ -66,11 +66,7 @@ const EmailTemplates = () => {
                   handleRefetch={handleRefetch}
                 />
               )}
-              noResultsComponent={
-                error ? (
-                  <ErrorBoundary error={getErrorMessage(error)} show={true} />
-                ) : undefined
-              }
+              noResultsComponent={<ErrorBox error={error} />}
             />
           </CardContent>
         </Card>

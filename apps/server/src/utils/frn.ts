@@ -18,7 +18,7 @@ export const validateFRN = (frn: string) => {
     parts.length === 5 &&
     parts[0] === 'frn' &&
     parts[1] &&
-    parts[2] &&
+    (parts[2] || parts[2] == '') && // accountId can be empty
     parts[3] &&
     parts[4]
   );
