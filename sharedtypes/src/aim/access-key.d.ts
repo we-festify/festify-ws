@@ -1,10 +1,9 @@
-import { IAccount } from 'src/auth/account';
+import { IManagedUser } from './managed-user';
 
 export interface IAccessKey extends Record<string, unknown> {
   _id: string;
 
-  account: string | IAccount;
-  userAlias: string;
+  user: string | IManagedUser;
   token?: string;
   expiresAt: Date;
   lastUsedAt?: Date;

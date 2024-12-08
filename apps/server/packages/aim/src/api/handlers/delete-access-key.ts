@@ -32,10 +32,7 @@ const handlerWithoutDeps =
       );
     }
 
-    await accessKeyModel.deleteOne({
-      account: accountId,
-      userAlias: alias,
-    });
+    await accessKeyModel.deleteOne({ user: foundManagedUser._id });
   };
 
 const handler = handlerWithoutDeps(ManagedUser, AimAccessKey);

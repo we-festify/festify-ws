@@ -107,7 +107,12 @@ export default {
     sender_password_secret: process.env.BES_PASSWORD_SECRET,
   },
   aim: {
+    fws_access_key_header: process.env.AIM_FWS_ACCESS_KEY_HEADER ?? 'x-fws-ak',
+    fws_signature_header: process.env.AIM_FWS_SIGNATURE_HEADER ?? 'x-fws-sig',
     access_key_secret_encryption_key:
       process.env.AIM_ACCESS_KEY_SECRET_ENCRYPTION_KEY,
+    request_signature_validity_seconds:
+      parseInt(process.env.AIM_REQUEST_SIGNATURE_VALIDITY_SECONDS ?? '300') ??
+      300,
   },
 } as const;

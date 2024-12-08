@@ -3,12 +3,9 @@ import { IAccessKey } from '@sharedtypes/aim/access-key';
 
 const accessKeySchema = new mongoose.Schema<IAccessKey>(
   {
-    account: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
-    },
-    userAlias: {
-      type: String,
+      ref: 'ManagedUser',
       required: true,
     },
     token: {
@@ -28,8 +25,6 @@ const accessKeySchema = new mongoose.Schema<IAccessKey>(
     timestamps: true,
   },
 );
-
-accessKeySchema.index({ account: 1, userAlias: 1 }, { unique: true });
 
 const AimAccessKey = mongoose.model('AimAccessKey', accessKeySchema);
 export default AimAccessKey;
