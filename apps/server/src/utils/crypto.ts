@@ -5,18 +5,24 @@ export const convertToSHA256 = (data: string, unique = true): string => {
   return crypto.createHash('sha256').update(uniquePayloadString).digest('hex');
 };
 
+const keyCache = new Map();
+
 export const encryptUsingAES = (text: string, secret: string) => {
   if (!text) return '';
   if (!secret) {
     throw new Error('Secret must be defined');
   }
-  const derivedKey = crypto.scryptSync(secret, 'salt', 32);
+
+  const salt = crypto.randomBytes(16).toString('hex');
+  const derivedKey = crypto.scryptSync(secret, salt, 32);
+  keyCache.set(secret + ':' + salt, derivedKey);
+
   const iv = Buffer.from(crypto.randomBytes(16));
   const cipher = crypto.createCipheriv('aes-256-gcm', derivedKey, iv);
   let encrypted = cipher.update(text, 'utf8', 'hex');
   encrypted += cipher.final('hex');
   const authTag = cipher.getAuthTag();
-  return `${iv.toString('hex')}:${encrypted}:${authTag.toString('hex')}`;
+  return `${salt}:${iv.toString('hex')}:${encrypted}:${authTag.toString('hex')}`;
 };
 
 export const decryptUsingAES = (text: string, secret: string) => {
@@ -24,8 +30,16 @@ export const decryptUsingAES = (text: string, secret: string) => {
   if (!secret) {
     throw new Error('Secret must be defined');
   }
-  const derivedKey = crypto.scryptSync(secret, 'salt', 32);
-  const [iv, encryptedText, authTag] = text.split(':');
+
+  const [salt, iv, encryptedText, authTag] = text.split(':');
+  const cacheKey = secret + ':' + (salt ?? 'salt');
+  let derivedKey = keyCache.get(cacheKey);
+  if (!derivedKey) {
+    console.log('Deriving key for secret:', secret);
+    derivedKey = crypto.scryptSync(secret, salt ?? 'salt', 32);
+    keyCache.set(cacheKey, derivedKey);
+  }
+
   const decipher = crypto.createDecipheriv(
     'aes-256-gcm',
     derivedKey,
