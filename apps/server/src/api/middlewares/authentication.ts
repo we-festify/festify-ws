@@ -108,6 +108,13 @@ export class AuthMiddleware {
           );
         }
 
+        const payload = await this.authService.generatePayload({
+          type: 'fws-user',
+          account,
+          user: managedUser,
+        });
+        req.user = payload;
+
         return next();
       }
 

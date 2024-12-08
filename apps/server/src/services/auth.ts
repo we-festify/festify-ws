@@ -74,7 +74,7 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword);
   }
 
-  private async generatePayload(
+  public async generatePayload(
     {
       type,
       user,
