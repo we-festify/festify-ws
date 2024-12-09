@@ -22,6 +22,27 @@ if (!env.aim.access_key_secret_encryption_key) {
   );
 }
 
+if (!env.aim.fws_access_key_header) {
+  throw new AppError(
+    CommonErrors.InternalServerError.name,
+    CommonErrors.InternalServerError.statusCode,
+    `AIM: FWS access key header not found`,
+    true,
+  );
+}
+
+if (!env.aim.fws_signature_header) {
+  throw new AppError(
+    CommonErrors.InternalServerError.name,
+    CommonErrors.InternalServerError.statusCode,
+    `AIM: FWS signature header not found`,
+    true,
+  );
+}
+
+const FWS_ACCESS_KEY_HEADER = env.aim.fws_access_key_header;
+const FWS_SIGNATURE_HEADER = env.aim.fws_signature_header;
+
 export class AuthMiddleware {
   private readonly authService: AuthService;
   private readonly accessKeyModel: Model<IAccessKey>;
@@ -47,9 +68,9 @@ export class AuthMiddleware {
   ) {
     try {
       // AIM Access Key authentication
-      const accessKeyId = req.headers['x-fws-access-key'];
+      const accessKeyId = req.headers[FWS_ACCESS_KEY_HEADER];
       if (accessKeyId) {
-        const signature = req.headers['x-fws-signature'] as string;
+        const signature = req.headers[FWS_SIGNATURE_HEADER] as string;
         if (!signature || typeof signature !== 'string') {
           throw new AppError(
             CommonErrors.Unauthorized.name,
@@ -69,25 +90,13 @@ export class AuthMiddleware {
           );
         }
 
-        const { token, account: accountId, userAlias } = accessKey;
-        const account = await this.accountModel.findById(accountId);
-        if (!account) {
-          throw new AppError(
-            CommonErrors.Unauthorized.name,
-            CommonErrors.Unauthorized.statusCode,
-            'Invalid account',
-          );
-        }
-
-        const managedUser = await this.managedUserModel.findOne({
-          account: accountId,
-          alias: userAlias,
-        });
+        const { token, user: managedUserId } = accessKey;
+        const managedUser = await this.managedUserModel.findById(managedUserId);
         if (!managedUser) {
           throw new AppError(
             CommonErrors.Unauthorized.name,
             CommonErrors.Unauthorized.statusCode,
-            'Invalid user credentials',
+            'Invalid access key',
           );
         }
 
@@ -107,6 +116,13 @@ export class AuthMiddleware {
             'Invalid signature',
           );
         }
+
+        const payload = await this.authService.generatePayload({
+          type: 'fws-user',
+          account: { _id: managedUser.account as string },
+          user: managedUser,
+        });
+        req.user = payload;
 
         return next();
       }

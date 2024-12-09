@@ -44,8 +44,7 @@ const handlerWithoutDeps =
     }
 
     const existingAccessKey = await accessKeyModel.findOne({
-      account: accountId,
-      userAlias: alias,
+      user: foundManagedUser._id,
     });
     if (existingAccessKey) {
       throw new AppError(
@@ -63,8 +62,7 @@ const handlerWithoutDeps =
     const OneYearInMs = 1000 * 60 * 60 * 24 * 365;
 
     await accessKeyModel.create({
-      account: accountId,
-      userAlias: alias,
+      user: foundManagedUser._id,
       token: encryptedSecret,
       expiresAt: new Date(Date.now() + OneYearInMs),
     });

@@ -74,28 +74,29 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword);
   }
 
-  private async generatePayload(
-    {
-      type,
-      user,
-      account,
-    }: {
-      type: 'fws-root' | 'fws-user';
-      user: Partial<IManagedUser>;
-      account: Partial<IAccount>;
-    },
+  public async generatePayload(
+    params:
+      | {
+          type: 'fws-root';
+          account: { _id: string; email: string };
+        }
+      | {
+          type: 'fws-user';
+          user: { alias: string };
+          account: { _id: string };
+        },
     mfaVerified = false,
   ): Promise<TokenPayload> {
-    return type === 'fws-root'
+    return params.type === 'fws-root'
       ? ({
-          email: account.email,
-          accountId: account._id,
+          email: params.account.email,
+          accountId: params.account._id,
           type: 'fws-root',
           mfaVerified,
         } as RootAccountTokenPayload)
       : ({
-          alias: user.alias,
-          accountId: account._id,
+          alias: params.user.alias,
+          accountId: params.account._id,
           type: 'fws-user',
           mfaVerified,
         } as ManagedUserTokenPayload);
@@ -385,8 +386,7 @@ export class AuthService {
 
     const payload = await this.generatePayload({
       type: 'fws-root',
-      user: {},
-      account: { email: registerDTO.email },
+      account: { email: registerDTO.email, _id: createdAccount._id },
     });
     createdAccount.emailVerificationToken =
       this.generateEmailVerificationToken(payload);
@@ -476,8 +476,7 @@ export class AuthService {
 
     const payload = await this.generatePayload({
       type: 'fws-root',
-      user: {},
-      account: { email },
+      account: { email, _id: existingAccount._id },
     });
     existingAccount.emailVerificationToken =
       this.generateEmailVerificationToken(payload);
@@ -547,7 +546,6 @@ export class AuthService {
     });
     const payload = await this.generatePayload({
       type: 'fws-root',
-      user: {},
       account: foundAccount,
     });
     if (existingRefreshToken) {
@@ -802,7 +800,7 @@ export class AuthService {
 
     let payload = await this.generatePayload({
       type: foundRefreshToken.userType,
-      user: {},
+      user: { alias: foundRefreshToken.alias ?? '' },
       account: foundAccount,
     });
 
@@ -858,7 +856,6 @@ export class AuthService {
 
     const payload = await this.generatePayload({
       type: 'fws-root',
-      user: {},
       account: foundAccount,
     });
     const resetPasswordToken = this.generateResetPasswordToken(payload);
@@ -1186,7 +1183,6 @@ export class AuthService {
     const payload = await this.generatePayload(
       {
         type: 'fws-root',
-        user: {},
         account: foundAccount,
       },
       true,
@@ -1607,7 +1603,6 @@ export class AuthService {
     const payload = await this.generatePayload(
       {
         type: 'fws-root',
-        user: {},
         account: foundAccount,
       },
       true,
@@ -1694,7 +1689,6 @@ export class AuthService {
 
     const payload = await this.generatePayload({
       type: 'fws-root',
-      user: {},
       account: existingAccount,
     });
     const recoveryEmailVerificationToken =
@@ -1849,7 +1843,6 @@ export class AuthService {
       const payload = await this.generatePayload(
         {
           type: 'fws-root',
-          user: {},
           account: foundAccount,
         },
         true,
@@ -1903,6 +1896,8 @@ export class AuthService {
     signature: string,
     req: e.Request,
   ): Promise<boolean> {
+    const validityDuration = env.aim.request_signature_validity_seconds * 1000;
+    const timestamp = Math.floor(new Date().getTime() / validityDuration);
     const payload = {
       method: req.method,
       body: req.body,
@@ -1910,16 +1905,16 @@ export class AuthService {
       params: req.params,
       host: req.hostname,
       url: req.originalUrl,
+      timestamp,
     };
     const computedSignature = crypto
       .createHmac('sha256', secret)
       .update(JSON.stringify(payload))
       .digest('hex');
-
-    if (computedSignature !== signature) {
-      return false;
+    if (computedSignature === signature) {
+      return true;
     }
 
-    return true;
+    return false;
   }
 }

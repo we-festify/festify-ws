@@ -44,8 +44,7 @@ const handlerWithoutDeps =
     }
 
     const foundAccessKey = await accessKeyModel.findOne({
-      account: accountId,
-      userAlias: alias,
+      user: foundManagedUser._id,
     });
     if (!foundAccessKey) {
       throw new AppError(
