@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 
 export const validator: ValidatorFunction<null, null> = () => true;
 
-const handlerWithoutDeps =
+export const handlerWithoutDeps =
   (instanceModel: Model<IBESInstance>): HandlerFunction<null, null> =>
   async (_resource, _data, context) => {
     const { accountId } = context.user;
