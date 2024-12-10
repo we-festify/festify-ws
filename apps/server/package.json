@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.ts",
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "test": "jest --passWithNoTests --coverage",
     "start": "node dist/app.js",
     "lint": "eslint \"src/**/*.{js,ts}\" && eslint \"packages/**/*.{js,ts}\"",
     "format": "prettier --write \"src/**/*.{js,ts}\" && prettier --write \"packages/**/*.{js,ts}\"",
