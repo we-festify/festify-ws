@@ -20,7 +20,7 @@ const BESInstanceSchema = new mongoose.Schema<IBESInstance>(
     },
     status: {
       type: String,
-      enum: ['active', 'unverified', 'inactive'] as const,
+      enum: ['active', 'unverified', 'suspended'] as const,
       default: 'unverified',
       required: true,
     },

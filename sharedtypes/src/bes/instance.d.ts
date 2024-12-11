@@ -1,6 +1,6 @@
 import { IAccount } from '../auth/account';
 
-export type BESInstanceStatus = 'active' | 'unverified' | 'inactive';
+export type BESInstanceStatus = 'active' | 'unverified' | 'suspended';
 
 export interface IBESInstance extends Record<string, unknown> {
   _id: string;
