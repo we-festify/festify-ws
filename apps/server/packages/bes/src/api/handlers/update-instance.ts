@@ -1,7 +1,13 @@
+import { MailerService } from '@/services/mailer';
 import { HandlerFunction, ValidatorFunction } from '@/types/handler';
 import { AppError, CommonErrors } from '@/utils/errors';
 import { parseFRN, validateFRNForServiceAndResourceType } from '@/utils/frn';
 import BESInstance from '@bes/models/bes-instance';
+import { generateInstanceEmailVerificationToken } from '@bes/utils/instance';
+import {
+  getInstanceVerificationEmail,
+  getInstanceVerificationUrl,
+} from '@bes/utils/instance-verification';
 import { IBESInstance } from '@sharedtypes/bes';
 import Joi from 'joi';
 import { Model } from 'mongoose';
@@ -36,6 +42,7 @@ export const validator: ValidatorFunction<string, unknown> = (
 const handlerWithoutDeps =
   (
     instanceModel: Model<IBESInstance>,
+    mailerService: MailerService,
   ): HandlerFunction<
     string,
     {
@@ -59,6 +66,43 @@ const handlerWithoutDeps =
       );
     }
 
+    if (instance.alias) {
+      const existingAlias = await instanceModel.findOne({
+        account: accountId,
+        alias: instance.alias,
+      });
+      if (existingAlias) {
+        throw new AppError(
+          CommonErrors.Conflict.name,
+          CommonErrors.Conflict.statusCode,
+          'Alias already in use',
+        );
+      }
+    }
+
+    if (
+      instance.senderEmail &&
+      instance.senderEmail !== existingInstance.senderEmail
+    ) {
+      instance.status = 'unverified';
+
+      // send verification email
+      const instanceVerificationToken = generateInstanceEmailVerificationToken(
+        instance._id,
+      );
+      const instanceVerificationUrl = getInstanceVerificationUrl(
+        instanceVerificationToken,
+      );
+      const { subject, text } = getInstanceVerificationEmail(
+        instanceVerificationUrl,
+      );
+      await mailerService.sendEmail({
+        to: instance.senderEmail,
+        subject,
+        text,
+      });
+    }
+
     await instanceModel.updateOne(
       {
         account: accountId,
@@ -68,7 +112,7 @@ const handlerWithoutDeps =
     );
   };
 
-const handler = handlerWithoutDeps(BESInstance);
+const handler = handlerWithoutDeps(BESInstance, new MailerService());
 
 export const name = 'UpdateInstance';
 export default handler;

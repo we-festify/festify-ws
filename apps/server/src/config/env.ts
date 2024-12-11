@@ -105,6 +105,10 @@ export default {
   // BES
   bes: {
     sender_password_secret: process.env.BES_PASSWORD_SECRET,
+    instance_email_verification_secret:
+      process.env.BES_INSTANCE_EMAIL_VERIFICATION_SECRET,
+    instance_email_verification_expires_in:
+      process.env.BES_INSTANCE_EMAIL_VERIFICATION_EXPIRES_IN_SECONDS,
   },
   aim: {
     fws_access_key_header: process.env.AIM_FWS_ACCESS_KEY_HEADER ?? 'x-fws-ak',

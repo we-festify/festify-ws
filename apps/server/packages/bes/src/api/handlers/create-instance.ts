@@ -1,8 +1,14 @@
 import { env } from '@/config';
+import { MailerService } from '@/services/mailer';
 import { HandlerFunction, ValidatorFunction } from '@/types/handler';
 import { encryptUsingAES } from '@/utils/crypto';
 import { AppError, CommonErrors } from '@/utils/errors';
 import BESInstance from '@bes/models/bes-instance';
+import { generateInstanceEmailVerificationToken } from '@bes/utils/instance';
+import {
+  getInstanceVerificationEmail,
+  getInstanceVerificationUrl,
+} from '@bes/utils/instance-verification';
 import { IBESInstance } from '@sharedtypes/bes';
 import Joi from 'joi';
 import { Model } from 'mongoose';
@@ -38,6 +44,7 @@ export const validator: ValidatorFunction<null, unknown> = (_, data) => {
 const handlerWithoutDeps =
   (
     instanceModel: Model<IBESInstance>,
+    mailerService: MailerService,
   ): HandlerFunction<
     null,
     {
@@ -69,9 +76,25 @@ const handlerWithoutDeps =
       ...instance,
       account: accountId,
     });
+
+    // send verification email
+    const instanceVerificationToken = generateInstanceEmailVerificationToken(
+      instance._id,
+    );
+    const instanceVerificationUrl = getInstanceVerificationUrl(
+      instanceVerificationToken,
+    );
+    const { subject, text } = getInstanceVerificationEmail(
+      instanceVerificationUrl,
+    );
+    await mailerService.sendEmail({
+      to: instance.senderEmail,
+      subject,
+      text,
+    });
   };
 
-const handler = handlerWithoutDeps(BESInstance);
+const handler = handlerWithoutDeps(BESInstance, new MailerService());
 
 export const name = 'CreateInstance';
 export default handler;

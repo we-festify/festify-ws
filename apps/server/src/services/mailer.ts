@@ -10,6 +10,7 @@ import {
   EmailVerificationEmailDTO,
   TwoFactorAuthEnabledEmailDTO,
   TwoFactorAuthDisabledEmailDTO,
+  SendEmailDTO,
 } from '../types/services/mailer';
 import path from 'path';
 import { errorLogger, logger } from '../utils/logger';
@@ -55,6 +56,13 @@ export class MailerService {
     };
 
     this.transporter.use('compile', hbs(handlebarOptions));
+  }
+
+  public async sendEmail(options: SendEmailDTO) {
+    return this.transporter.sendMail({
+      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      ...options,
+    });
   }
 
   async sendEmailVerificationEmail({

@@ -10,4 +10,8 @@ router.get('/', (req, res) => {
 import handlerRoutes from './routes/handlers';
 router.use('/execute', handlerRoutes);
 
+// instance routes
+import instanceRoutes from './routes/instance';
+router.use('/instances', instanceRoutes);
+
 export default router;

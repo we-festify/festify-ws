@@ -1,6 +1,15 @@
 import { IAccount } from '@sharedtypes/auth/account';
 import { IDeviceInfo, IUserIPInfo } from '@sharedtypes/auth/user-agent';
 
+export interface SendEmailDTO {
+  to: string;
+  from?: string;
+  subject: string;
+  text?: string;
+  html?: string;
+  template?: string;
+}
+
 export interface WelcomeEmailDTO {
   to: string;
   user: Partial<IAccount>;

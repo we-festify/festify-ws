@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 
-import { IBESInstance } from '@sharedtypes/bes/instance';
+import { IBESInstance, BESInstanceStatus } from '@sharedtypes/bes/instance';
 import {
   instanceStatusIcons,
   instanceStatusMapping,
@@ -55,7 +55,7 @@ export const columns: ColumnDef<IBESInstance>[] = [
     header: 'Status',
     accessorKey: 'status',
     cell: ({ row }) => {
-      const status = row.original.status;
+      const status = row.original.status as BESInstanceStatus;
       return (
         <div className="flex gap-2 items-center">
           {instanceStatusIcons[status]}
