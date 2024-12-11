@@ -136,12 +136,6 @@ export class AuthService {
     return otp;
   }
 
-  private async filterExpiredRefreshTokens(
-    refreshTokens: IRefreshToken[],
-  ): Promise<IRefreshToken[]> {
-    return refreshTokens.filter((rt) => rt.expires > new Date());
-  }
-
   private excludeAccountSensitiveFields(
     account: Partial<IAccount>,
   ): Partial<IAccount> {

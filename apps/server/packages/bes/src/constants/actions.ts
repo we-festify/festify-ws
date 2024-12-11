@@ -46,4 +46,8 @@ export const besActions: {
     description:
       'Grants permission to delete email templates with specified frn(s)',
   },
+  {
+    alias: 'bes:SendEmail',
+    description: 'Grants permission to send an email using the instance',
+  },
 ];
