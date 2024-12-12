@@ -113,7 +113,6 @@ export function DataTable<TData, TValue>({
               });
               filters.forEach(({ key, value }) => {
                 if (!key || !value) return table.setColumnFilters([]);
-                console.log({ key, value });
                 table.getColumn(key)?.setFilterValue(value || '');
               });
             }}

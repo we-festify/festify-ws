@@ -1895,10 +1895,7 @@ export class AuthService {
     const payload = {
       method: req.method,
       body: req.body,
-      query: req.query,
-      params: req.params,
-      host: req.hostname,
-      url: req.originalUrl,
+      path: req.originalUrl,
       timestamp,
     };
     const computedSignature = crypto

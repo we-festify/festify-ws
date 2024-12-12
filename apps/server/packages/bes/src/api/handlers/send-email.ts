@@ -62,10 +62,12 @@ export const handlerWithoutDeps =
     const { toAddresses, ccAddresses, bccAddresses, subject, html, text } =
       data;
 
-    const instance = await instanceModel.findOne({
-      account: accountId,
-      alias,
-    });
+    const instance = await instanceModel
+      .findOne({
+        account: accountId,
+        alias,
+      })
+      .select('+senderPassword');
     if (!instance) {
       throw new AppError(
         CommonErrors.NotFound.name,
@@ -74,12 +76,20 @@ export const handlerWithoutDeps =
       );
     }
 
+    if (instance.status !== 'active') {
+      throw new AppError(
+        CommonErrors.Forbidden.name,
+        CommonErrors.Forbidden.statusCode,
+        `Instance is not active`,
+      );
+    }
+
     // Send email
     const senderPasswordDecrypted = decryptUsingAES(
       instance.senderPassword,
       senderPasswordEncryptionKey,
     );
-    await sendEmail({
+    const response = await sendEmail({
       to: toAddresses,
       cc: ccAddresses,
       bcc: bccAddresses,
@@ -90,7 +100,7 @@ export const handlerWithoutDeps =
       smtpConfig: {
         host: instance.smtpHost,
         port: instance.smtpPort,
-        secure: true,
+        secure: false,
         auth: {
           user: instance.senderEmail,
           pass: senderPasswordDecrypted,
@@ -98,6 +108,10 @@ export const handlerWithoutDeps =
       },
       from: instance.senderEmail,
     });
+
+    return {
+      messageId: response.messageId,
+    };
   };
 
 const handler = handlerWithoutDeps(BESInstance);

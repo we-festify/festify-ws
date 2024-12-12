@@ -35,7 +35,6 @@ export const decryptUsingAES = (text: string, secret: string) => {
   const cacheKey = secret + ':' + (salt ?? 'salt');
   let derivedKey = keyCache.get(cacheKey);
   if (!derivedKey) {
-    console.log('Deriving key for secret:', secret);
     derivedKey = crypto.scryptSync(secret, salt ?? 'salt', 32);
     keyCache.set(cacheKey, derivedKey);
   }

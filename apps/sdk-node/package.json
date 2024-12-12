@@ -1,0 +1,31 @@
+{
+  "name": "festify-ws",
+  "version": "0.0.1",
+  "description": "Node SDK for accessing the APIs of Festify Web Services",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [
+    "festify",
+    "web services",
+    "sdk",
+    "node"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/compat": "^1.2.4",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "eslint": "^9.16.0",
+    "eslint-plugin-check-file": "^2.8.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  }
+}
