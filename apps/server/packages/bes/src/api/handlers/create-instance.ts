@@ -72,14 +72,14 @@ const handlerWithoutDeps =
       senderPasswordEncryptionKey,
     );
 
-    await instanceModel.create({
+    const createdInstance = await instanceModel.create({
       ...instance,
       account: accountId,
     });
 
     // send verification email
     const instanceVerificationToken = generateInstanceEmailVerificationToken(
-      instance._id,
+      createdInstance._id,
     );
     const instanceVerificationUrl = getInstanceVerificationUrl(
       instanceVerificationToken,
@@ -94,7 +94,7 @@ const handlerWithoutDeps =
     });
   };
 
-const handler = handlerWithoutDeps(BESInstance, new MailerService());
+const handler = handlerWithoutDeps(BESInstance, new MailerService(false));
 
 export const name = 'CreateInstance';
 export default handler;
