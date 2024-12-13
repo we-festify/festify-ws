@@ -2,6 +2,8 @@ export const rootPaths = {
   DOCS: '/docs',
 
   HOME: '/',
+
+  AUTH: '/a',
 } as const;
 
 export const besPaths = {

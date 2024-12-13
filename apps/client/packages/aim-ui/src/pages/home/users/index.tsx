@@ -52,7 +52,7 @@ const ManagedUsersListPage = () => {
     <div className="p-8">
       <PageSection
         title="Users"
-        description="An IAM user is an identity with long-term credentials that is used to interact with FWS in an account."
+        description="An AIM user is an identity with long-term credentials that is used to interact with FWS in an account."
       >
         <Card>
           <CardContent>
