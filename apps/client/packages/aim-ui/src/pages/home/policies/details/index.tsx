@@ -17,6 +17,7 @@ import {
   IPermissionPolicyRule,
 } from '@sharedtypes/aim/permission-policy';
 import CopyIcon from '@sharedui/components/copy-icon';
+import DeleteButton from '@sharedui/components/delete-button';
 import ErrorBox from '@sharedui/components/error-box';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import PageSection from '@sharedui/components/page-section';
@@ -144,13 +145,14 @@ const PermissionPolicyDetailsPage = () => {
         }
         header={
           <div className="flex items-center justify-end gap-4">
-            <Button
+            <DeleteButton
               size="sm"
               variant="destructive-outline"
               onClick={handleDeletePolicy}
+              description="Are you sure you want to delete this policy?"
             >
               Delete
-            </Button>
+            </DeleteButton>
             <Button
               name="Refresh instances"
               size="sm"

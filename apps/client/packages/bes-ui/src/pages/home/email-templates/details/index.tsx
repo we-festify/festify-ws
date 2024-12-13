@@ -14,6 +14,7 @@ import { getErrorMessage } from '@sharedui/utils/error';
 import { toast } from 'sonner';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
+import DeleteButton from '@sharedui/components/delete-button';
 
 const EmailTemplateDetailsPage = () => {
   const { templateId } = useParams<{ templateId: string }>();
@@ -69,13 +70,14 @@ const EmailTemplateDetailsPage = () => {
         }
         header={
           <div className="flex items-center justify-end gap-4">
-            <Button
+            <DeleteButton
               size="sm"
               variant="destructive-outline"
               onClick={handleDeleteTemplate}
+              description="This action cannot be undone. This will permanently delete this email template."
             >
               Delete
-            </Button>
+            </DeleteButton>
             <Button
               name="Refresh instances"
               size="sm"

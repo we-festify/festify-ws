@@ -1,9 +1,5 @@
 import { Slot } from '@radix-ui/react-slot';
-import {
-  Button,
-  ButtonProps,
-  buttonVariants,
-} from '@sharedui/primitives/button';
+import { ButtonProps, buttonVariants } from '@sharedui/primitives/button';
 import { cn } from '@sharedui/utils/tw';
 import { Loader } from 'lucide-react';
 import React from 'react';
@@ -33,6 +29,6 @@ const LoadingButton = React.forwardRef<
     );
   },
 );
-Button.displayName = 'LoadingButton';
+LoadingButton.displayName = 'LoadingButton';
 
 export { LoadingButton };

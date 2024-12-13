@@ -22,6 +22,7 @@ import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import CopyIcon from '@sharedui/components/copy-icon';
 import { useAuth } from '@rootui/providers/auth-provider';
 import ErrorBox from '@sharedui/components/error-box';
+import DeleteButton from '@sharedui/components/delete-button';
 
 const InstanceDetailsPage = () => {
   const { user } = useAuth();
@@ -69,13 +70,14 @@ const InstanceDetailsPage = () => {
         title={alias}
         header={
           <div className="flex items-center justify-end gap-4">
-            <Button
+            <DeleteButton
               size="sm"
               variant="destructive-outline"
               onClick={handleDeleteInstance}
+              description="This action cannot be undone. This will permanently delete the instance."
             >
               Delete
-            </Button>
+            </DeleteButton>
             <Button
               name="Refresh instances"
               size="sm"

@@ -20,7 +20,7 @@ const RecentServicesCard = () => {
           {recentServices?.map((service) => (
             <Link
               key={service.alias}
-              to={`/${service.alias}`}
+              to={`/${service.alias}/home`}
               className="flex items-center text-sm gap-4"
             >
               <img src={service.src} alt={service.name} className="size-6" />

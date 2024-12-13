@@ -11,6 +11,7 @@ import {
 import { useAuth } from '@rootui/providers/auth-provider';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
 import CopyIcon from '@sharedui/components/copy-icon';
+import DeleteButton from '@sharedui/components/delete-button';
 import ErrorBox from '@sharedui/components/error-box';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
 import PageSection from '@sharedui/components/page-section';
@@ -82,13 +83,14 @@ const ManagedUserDetailsPage = () => {
         }
         header={
           <div className="flex items-center justify-end gap-4">
-            <Button
+            <DeleteButton
               size="sm"
               variant="destructive-outline"
               onClick={handleDeleteUser}
+              description="This action cannot be undone. This will permanently delete the user."
             >
               Delete
-            </Button>
+            </DeleteButton>
             <Button
               name="Refresh instances"
               size="sm"
@@ -247,13 +249,14 @@ const AccessKeyDetails = ({ userFrn }: { userFrn: string }) => {
                   >
                     Rotate
                   </Button>
-                  <Button
+                  <DeleteButton
                     size="sm"
                     variant="destructive-outline"
                     onClick={handleDeleteAccessKey}
+                    description="This action cannot be undone. This will permanently delete the access key."
                   >
                     Delete
-                  </Button>
+                  </DeleteButton>
                 </>
               ) : (
                 <>

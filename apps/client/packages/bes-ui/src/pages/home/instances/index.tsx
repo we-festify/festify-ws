@@ -17,6 +17,7 @@ import { Table } from '@tanstack/react-table';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
 import ErrorBox from '@sharedui/components/error-box';
+import DeleteButton from '@sharedui/components/delete-button';
 
 const Instances = () => {
   const { user } = useAuth();
@@ -80,15 +81,16 @@ const TableHeader =
   (handleDelete: DeleteFunction, handleRefetch: RefetchFunction) =>
   ({ table }: TableHeaderProps) => (
     <div className="flex items-center justify-end gap-4">
-      <Button
+      <DeleteButton
         size="sm"
         variant="destructive-outline"
         onClick={() =>
           handleDelete(table.getSelectedRowModel().rows.map((r) => r.original))
         }
+        description="This action cannot be undone. This will permanently delete the selected instances."
       >
         Delete
-      </Button>
+      </DeleteButton>
       <Button
         name="Refresh instances"
         size="sm"
