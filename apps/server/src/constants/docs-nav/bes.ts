@@ -6,17 +6,34 @@ export const besDocsNav: IDocsNav = [
     children: [
       {
         title: 'Welcome',
-        path: 'userguide/welcome',
+        path: 'user-guide/welcome',
       },
       {
         title: 'Getting Started',
-        path: 'userguide/getting-started/index',
+        path: 'user-guide/getting-started/index',
+        children: [
+          {
+            title: 'Setting up',
+            path: 'user-guide/getting-started/setting-up',
+          },
+        ],
       },
     ],
   },
   {
     title: 'API Reference',
-    path: 'api-reference',
+    path: 'api-reference/index',
+    children: [
+      {
+        title: 'Actions',
+        children: [
+          {
+            title: 'SendEmail',
+            path: 'api-reference/actions/send-email',
+          },
+        ],
+      },
+    ],
   },
   {
     title: 'FAQs',
