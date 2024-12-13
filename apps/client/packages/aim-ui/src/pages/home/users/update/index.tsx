@@ -62,7 +62,14 @@ const UpdateUserPage = () => {
               </CardContent>
             </Card>
             <div className="flex justify-end mt-4 gap-4">
-              <Button variant="ghost" size="sm">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(aimPaths.USERS, { replace: true });
+                }}
+              >
                 Cancel
               </Button>
               <LoadingButton
