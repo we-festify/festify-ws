@@ -1,7 +1,7 @@
-export type DocNavItem = {
+export type DocsNavItem = {
   title: string;
   path?: string;
-  children?: DocNavItem[];
+  children?: DocsNavItem[];
 };
 
-export type IDocsNav = DocNavItem[];
+export type IDocsNav = DocsNavItem[];
