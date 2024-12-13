@@ -30,21 +30,47 @@ The request does not use any URI parameters.
 
 The request accepts the following data in JSON format.
 
-| Name     | Type   | Required | Description                                                                         |
-| -------- | ------ | -------- | ----------------------------------------------------------------------------------- |
-| resource | string | Yes      | The resource ID of the Festify BES instance that you want to use to send the email. |
-| data     | object | Yes      | The data for the email message.                                                     |
+**resource** - The resource ID of the Festify BES instance that you want to use to send the email.
+
+- type: string
+- required: Yes
+
+**data** - The data for the email message.
+
+- type: object
+- required: Yes
 
 The `data` object contains the following fields:
 
-| Name         | Type   | Required | Description                                             |
-| ------------ | ------ | -------- | ------------------------------------------------------- |
-| toAddresses  | array  | Yes      | The email addresses of the recipients of the email.     |
-| ccAddresses  | array  | No       | The email addresses of the CC recipients of the email.  |
-| bccAddresses | array  | No       | The email addresses of the BCC recipients of the email. |
-| subject      | string | Yes      | The subject of the email.                               |
-| html         | string | No       | The HTML body of the email.                             |
-| text         | string | No       | The text body of the email.                             |
+**toAddresses** - The email addresses of the recipients of the email.
+
+- type: array[string]
+- required: Yes
+
+**ccAddresses** - The email addresses of the CC recipients of the email.
+
+- type: array[string]
+- required: No
+
+**bccAddresses** - The email addresses of the BCC recipients of the email.
+
+- type: array[string]
+- required: No
+
+**subject** - The subject of the email.
+
+- type: string
+- required: Yes
+
+**html** - The HTML body of the email.
+
+- type: string
+- required: No
+
+**text** - The text body of the email.
+
+- type: string
+- required: No
 
 ## Response Syntax
 
@@ -63,9 +89,9 @@ If the action is successful, the service sends back an HTTP 200 response.
 
 The response data contains the following fields:
 
-| Name      | Type   | Description                            |
-| --------- | ------ | -------------------------------------- |
-| messageId | string | The unique identifier for the message. |
+**messageId** - The unique identifier for the message.
+
+- type: string
 
 ## Errors
 
@@ -73,10 +99,9 @@ For information about the errors that are common to all actions, see [Common Err
 
 The following table describes the errors that this action can return.
 
-| HTTP Status Code | Error Code | Description                      |
-| ---------------- | ---------- | -------------------------------- |
-| 400              | BadRequest | The input provided is not valid. |
-| 200              | OK         | The request was successful.      |
+**400 Bad Request** - The input provided is not valid.
+
+**200 OK** - The request was successful.
 
 ## Using SDKs
 

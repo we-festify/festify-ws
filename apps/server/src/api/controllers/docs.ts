@@ -4,25 +4,26 @@ import { docsNav } from '@/constants/docs-nav';
 import { AppError, CommonErrors } from '@/utils/errors';
 
 export class DocsController {
-  public async getDocsNavForService(
+  public async getDocsNav(
     req: e.Request,
     res: e.Response,
     next: e.NextFunction,
   ) {
     try {
-      const { service } = req.params;
+      const { topic } = req.params;
 
-      if (service && !docsNav[service])
+      if (topic && !docsNav[topic])
         throw new AppError(
           CommonErrors.NotFound.name,
           CommonErrors.NotFound.statusCode,
-          'Service not found',
+          'Docs for this topic not found',
         );
 
       // get the document navigation
       res.json({
-        base_uri: env.docs.base_uri + '/' + service,
-        nav: docsNav[service],
+        base_uri: env.docs.base_uri,
+        nav: docsNav[topic].nav,
+        meta: docsNav[topic].meta,
       });
     } catch (err) {
       next(err);

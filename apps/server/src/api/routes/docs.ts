@@ -5,9 +5,6 @@ const router = express.Router();
 
 const docsController = new DocsController();
 
-router.get(
-  '/:service',
-  docsController.getDocsNavForService.bind(docsController),
-);
+router.get('/:topic', docsController.getDocsNav.bind(docsController));
 
 export default router;
