@@ -1,5 +1,5 @@
 import PageSection from '@sharedui/components/page-section';
-import AccountInformation from './account-information';
+import AccountInformationCard from '../../../../../sharedui/src/components/account-information-card';
 import ResourcesSummary from './resources-summary';
 
 const Dashboard = () => {
@@ -11,7 +11,7 @@ const Dashboard = () => {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ResourcesSummary />
-          <AccountInformation />
+          <AccountInformationCard />
         </div>
       </PageSection>
     </div>

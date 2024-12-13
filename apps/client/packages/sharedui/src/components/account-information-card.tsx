@@ -4,7 +4,7 @@ import KeyValueGrid from '@sharedui/components/key-value-grid';
 import paths from '@sharedui/constants/paths';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 
-const AccountInformation = () => {
+const AccountInformationCard = () => {
   const { user } = useAuth();
 
   return (
@@ -19,7 +19,7 @@ const AccountInformation = () => {
   );
 };
 
-export default AccountInformation;
+export default AccountInformationCard;
 
 const accountInfoKeys = [
   { key: 'alias', label: 'Alias' },
@@ -30,10 +30,10 @@ const accountInfoKeys = [
     formatter: (value: unknown) => {
       const url = `${window.location.origin}${paths.root.AUTH}/login?accountId=${value}`;
       return (
-        <div>
+        <span>
           <CopyIcon value={url} className="h-min p-0" />
           <span className="ml-2">{url}</span>
-        </div>
+        </span>
       );
     },
   },

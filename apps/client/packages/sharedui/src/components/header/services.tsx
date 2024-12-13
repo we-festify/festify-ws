@@ -1,30 +1,18 @@
-import { useNavigate } from 'react-router-dom';
-import { IServiceMeta, services } from '../../constants/services';
-import { useSelector } from 'react-redux';
-import { selectIsLoggedIn } from '@rootui/store/auth';
+import { Link } from 'react-router-dom';
+import { useGetServicesMetadataQuery } from '@rootui/api/meta';
 
 const Services = () => {
-  const navigate = useNavigate();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-
-  const handleServiceClick = (service: IServiceMeta) => {
-    if (!service.docsPath || !service.homePath) return;
-    if (isLoggedIn) {
-      navigate(service.homePath);
-    } else {
-      navigate(service.docsPath);
-    }
-  };
+  const { data: { services } = {} } = useGetServicesMetadataQuery();
 
   return (
     <div className="bg-slate-900 shadow-md text-slate-300 p-4 rounded-md w-max">
       <div className="mb-2">Services</div>
       <div className="grid grid-cols-3 gap-2">
-        {services.map((service) => (
-          <button
+        {services?.map((service) => (
+          <Link
             key={service.name}
             className="flex gap-4 p-2 rounded-md text-xs cursor-pointer hover:bg-slate-800"
-            onClick={() => handleServiceClick(service)}
+            to={'/' + service.alias}
           >
             <img src={service.src} alt={service.name} className="size-10" />
             <div className="flex flex-col text-start gap-2 max-w-48">
@@ -33,7 +21,7 @@ const Services = () => {
                 {service.description}
               </span>
             </div>
-          </button>
+          </Link>
         ))}
       </div>
     </div>
