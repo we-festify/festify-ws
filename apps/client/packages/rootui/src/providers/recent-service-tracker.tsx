@@ -33,12 +33,14 @@ const RecentServiceTrackerProvider = ({ children }: PropsWithChildren) => {
       });
       if (service) {
         setHistory((prev) => {
-          return [...new Set([service.alias, ...prev])];
+          const newHistory = prev.filter((item) => item !== service.alias);
+          newHistory.unshift(service.alias);
+          localStorage.setItem(RecentServicesKey, JSON.stringify(newHistory));
+          return newHistory;
         });
-        localStorage.setItem(RecentServicesKey, JSON.stringify(history));
       }
     }
-  }, [location, services, history]);
+  }, [location, services]);
 
   return (
     <RecentServiceTrackerContext.Provider value={{ history }}>

@@ -1,5 +1,4 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Button } from '@sharedui/primitives/button';
 import {
   Card,
   CardContent,
@@ -16,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { resetAccountPasswordSchema } from './schemas/reset-password';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 export function ResetPasswordForm() {
   const navigate = useNavigate();
@@ -112,9 +112,13 @@ export function ResetPasswordForm() {
                 </FormFieldItem>
               )}
             />
-            <Button type="submit" className="w-full mt-4" disabled={isLoading}>
-              {isLoading ? 'Reseting Password...' : 'Reset Password'}
-            </Button>
+            <LoadingButton
+              type="submit"
+              className="w-full mt-4"
+              loading={isLoading}
+            >
+              Reset Password
+            </LoadingButton>
           </form>
         </Form>
         <div className="mt-4 text-center text-sm">

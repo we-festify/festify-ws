@@ -17,6 +17,7 @@ import { getErrorMessage } from '@sharedui/utils/error';
 import { besPaths } from '@sharedui/constants/paths';
 import { useAuth } from '@rootui/providers/auth-provider';
 import { generateFRN } from '@sharedui/utils/frn';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 const UpdateEmailTemplatePage = () => {
   const { templateId } = useParams<{ templateId: string }>();
@@ -33,7 +34,7 @@ const UpdateEmailTemplatePage = () => {
     resolver: zodResolver(updateEmailTemplateSchema),
   });
   const navigate = useNavigate();
-  const [updateEmailTemplate] = useUpdateEmailTemplateMutation();
+  const [updateEmailTemplate, { isLoading }] = useUpdateEmailTemplateMutation();
 
   const handleUpdateTemplate = async (
     values: z.infer<typeof updateEmailTemplateSchema>,
@@ -69,9 +70,14 @@ const UpdateEmailTemplatePage = () => {
               <Button variant="ghost" size="sm">
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm" type="submit">
+              <LoadingButton
+                variant="secondary"
+                size="sm"
+                type="submit"
+                loading={isLoading}
+              >
                 Update email template
-              </Button>
+              </LoadingButton>
             </div>
           </PageSection>
         </form>

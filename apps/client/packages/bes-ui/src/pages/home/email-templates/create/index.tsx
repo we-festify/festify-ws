@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { besPaths } from '@sharedui/constants/paths';
 import { useNavigate } from 'react-router-dom';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 const CreateEmailTemplatePage = () => {
   const form = useForm<z.infer<typeof createEmailTemplateSchema>>({
@@ -19,7 +20,7 @@ const CreateEmailTemplatePage = () => {
     resolver: zodResolver(createEmailTemplateSchema),
   });
   const navigate = useNavigate();
-  const [createEmailTemplate] = useCreateEmailTemplateMutation();
+  const [createEmailTemplate, { isLoading }] = useCreateEmailTemplateMutation();
 
   const handleCreateTemplate = async (
     values: z.infer<typeof createEmailTemplateSchema>,
@@ -51,9 +52,14 @@ const CreateEmailTemplatePage = () => {
               <Button variant="ghost" size="sm">
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm" type="submit">
+              <LoadingButton
+                variant="secondary"
+                size="sm"
+                type="submit"
+                loading={isLoading}
+              >
                 Create email template
-              </Button>
+              </LoadingButton>
             </div>
           </PageSection>
         </form>
