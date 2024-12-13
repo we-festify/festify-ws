@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { Form, FormField, FormFieldItem } from '@sharedui/primitives/form';
 import { Input } from '@sharedui/primitives/input';
 import { Link } from 'react-router-dom';
-import { Button } from '@sharedui/primitives/button';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 const RootUserLoginForm = () => {
   const rootUserForm = useForm<z.infer<typeof rootUserLoginSchema>>({
@@ -81,9 +81,9 @@ const RootUserLoginForm = () => {
         <Link to="/a/forgot-password" className="text-sm text-right">
           Forgot password?
         </Link>
-        <Button type="submit" className="mt-4" disabled={isLoading}>
+        <LoadingButton type="submit" className="mt-4" loading={isLoading}>
           Login
-        </Button>
+        </LoadingButton>
       </form>
     </Form>
   );

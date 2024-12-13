@@ -1,12 +1,14 @@
 import { Card, CardContent } from '@sharedui/primitives/card';
 import Header from '@sharedui/components/header';
-import { services } from '@sharedui/constants/services';
 import GradientShadow from '@sharedui/components/gradient-shadow';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Footer from '@sharedui/components/footer';
+import { useGetServicesMetadataQuery } from '@rootui/api/meta';
 
 const HomePage = () => {
+  const { data: { services } = {} } = useGetServicesMetadataQuery();
+
   return (
     <>
       <Header />
@@ -40,7 +42,7 @@ const HomePage = () => {
           Explore our products
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-          {services.map((service) => (
+          {services?.map((service) => (
             <GradientShadow
               key={service.name}
               gradient="linear-gradient(120deg, #5100c4 0%, #b935fb 42%, #35cbfb 70%, #83f4ff 100%)"
@@ -49,7 +51,7 @@ const HomePage = () => {
               spread={1}
               blur={2}
             >
-              <Link to={service.homePath ?? ''} className="group">
+              <Link to={service.alias} className="group">
                 <Card key={service.name} className="rounded-2xl">
                   <CardContent className="aspect-[4/3] bg-muted flex flex-col justify-between">
                     <div>

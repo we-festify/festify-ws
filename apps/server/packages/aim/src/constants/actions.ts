@@ -81,6 +81,10 @@ export const aimActions: {
     alias: 'aim:DeleteAccessKey',
     description: 'Grants permission to delete an access key for a user',
   },
+  {
+    alias: 'aim:ReadAccountSummary',
+    description: 'Grants permission to read account summary',
+  },
 ];
 
 export const ACTIONS: {

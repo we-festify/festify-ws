@@ -17,6 +17,7 @@ import {
 } from '@aim-ui/api/users';
 import { useAuth } from '@rootui/providers/auth-provider';
 import { generateFRN } from '@sharedui/utils/frn';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 const UpdateUserPage = () => {
   const { alias } = useParams<{ alias: string }>();
@@ -28,7 +29,7 @@ const UpdateUserPage = () => {
     resolver: zodResolver(createUserSchema),
   });
   const navigate = useNavigate();
-  const [updateManagedUser] = useUpdateManagedUserMutation();
+  const [updateManagedUser, { isLoading }] = useUpdateManagedUserMutation();
 
   const handleUpdateUser = async (values: z.infer<typeof createUserSchema>) => {
     try {
@@ -61,12 +62,24 @@ const UpdateUserPage = () => {
               </CardContent>
             </Card>
             <div className="flex justify-end mt-4 gap-4">
-              <Button variant="ghost" size="sm">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(aimPaths.USERS, { replace: true });
+                }}
+              >
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm" type="submit">
+              <LoadingButton
+                variant="secondary"
+                size="sm"
+                type="submit"
+                loading={isLoading}
+              >
                 Update user
-              </Button>
+              </LoadingButton>
             </div>
           </PageSection>
         </form>

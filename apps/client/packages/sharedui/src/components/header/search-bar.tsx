@@ -1,42 +1,31 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '../../primitives/popover';
-import { IServiceMeta, services } from '../../constants/services';
-import { useSelector } from 'react-redux';
-import { selectIsLoggedIn } from '@rootui/store/auth';
+import { useGetServicesMetadataQuery } from '@rootui/api/meta';
 
 const HeaderSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [filteredServices, setFilteredServices] = useState([...services]);
-  const navigate = useNavigate();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const { data: { services } = {} } = useGetServicesMetadataQuery();
+  const [filteredServices, setFilteredServices] = useState([
+    ...(services ?? []),
+  ]);
 
   useEffect(() => {
     if (!query) {
       setOpen(false);
-      return setFilteredServices([...services]);
+      return setFilteredServices([...(services ?? [])]);
     }
-    const filtered = services.filter(({ name }) =>
-      name.toLowerCase().includes(query),
-    );
+    const filtered =
+      services?.filter(({ name }) => name.toLowerCase().includes(query)) ?? [];
     setFilteredServices(filtered);
     setOpen(filtered.length > 0);
-  }, [query]);
-
-  const handleServiceClick = (service: IServiceMeta) => {
-    if (!service.docsPath || !service.homePath) return;
-    if (isLoggedIn) {
-      navigate(service.homePath);
-    } else {
-      navigate(service.docsPath);
-    }
-  };
+  }, [query, services]);
 
   return (
     <Popover open={open}>
@@ -45,6 +34,7 @@ const HeaderSearchBar = () => {
           <Search size={14} className="absolute left-2 top-2" />
           <input
             type="text"
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for services"
             className="w-full bg-slate-800 p-2 pl-8 rounded-sm text-xs active:outline-none focus:outline-none"
@@ -55,15 +45,15 @@ const HeaderSearchBar = () => {
         <div className="bg-slate-900 shadow-md text-slate-300 p-4 rounded-md w-max">
           <div className="grid gap-2">
             {filteredServices.map((service) => (
-              <button
+              <Link
                 type="button"
                 key={service.name}
                 className="flex gap-3 p-2 items-center rounded-sm text-xs cursor-pointer hover:bg-slate-800"
-                onClick={() => handleServiceClick(service)}
+                to={'/' + service.alias}
               >
                 <img src={service.src} alt={service.name} className="size-5" />
                 <span className="text-sm">{service.name}</span>
-              </button>
+              </Link>
             ))}
           </div>
         </div>

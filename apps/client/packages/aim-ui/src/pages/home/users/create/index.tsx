@@ -12,6 +12,7 @@ import { Card, CardContent } from '@sharedui/primitives/card';
 import { Button } from '@sharedui/primitives/button';
 import UserForm from '@aim-ui/components/users/user-form';
 import { useCreateManagedUserMutation } from '@aim-ui/api/users';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 const CreateUserPage = () => {
   const form = useForm<z.infer<typeof createUserSchema>>({
@@ -19,7 +20,7 @@ const CreateUserPage = () => {
     resolver: zodResolver(createUserSchema),
   });
   const navigate = useNavigate();
-  const [createManagedUser] = useCreateManagedUserMutation();
+  const [createManagedUser, { isLoading }] = useCreateManagedUserMutation();
 
   const handleCreateUser = async (
     _values: z.infer<typeof createUserSchema>,
@@ -58,9 +59,14 @@ const CreateUserPage = () => {
               >
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm" type="submit">
+              <LoadingButton
+                variant="secondary"
+                size="sm"
+                type="submit"
+                loading={isLoading}
+              >
                 Create user
-              </Button>
+              </LoadingButton>
             </div>
           </PageSection>
         </form>

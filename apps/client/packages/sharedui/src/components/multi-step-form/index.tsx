@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { Form } from '../../primitives/form';
 import { Button } from '../../primitives/button';
 import { cn } from '../../utils/tw';
+import { LoadingButton } from '../loading-button';
 
 interface MultiStepFormContextProps {
   form: ReturnType<typeof useForm>;
@@ -49,6 +50,7 @@ interface MultiStepFormProps<TSchema extends z.ZodTypeAny> {
   className?: string;
   showSteps?: boolean;
   submitButtonText?: string;
+  loading?: boolean;
 }
 
 function MultiStepForm<TSchema extends z.ZodTypeAny>({
@@ -62,6 +64,7 @@ function MultiStepForm<TSchema extends z.ZodTypeAny>({
   className,
   showSteps = true,
   submitButtonText = 'Submit',
+  loading,
 }: Readonly<MultiStepFormProps<TSchema>>) {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -224,9 +227,14 @@ function MultiStepForm<TSchema extends z.ZodTypeAny>({
                       Next
                     </Button>
                   ) : (
-                    <Button size="sm" variant="secondary" type="submit">
+                    <LoadingButton
+                      size="sm"
+                      variant="secondary"
+                      type="submit"
+                      loading={loading || form.formState.isSubmitting}
+                    >
                       {submitButtonText}
-                    </Button>
+                    </LoadingButton>
                   )}
                 </div>
               </div>

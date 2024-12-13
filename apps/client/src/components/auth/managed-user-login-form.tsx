@@ -7,15 +7,17 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { Form, FormField, FormFieldItem } from '@sharedui/primitives/form';
 import { Input } from '@sharedui/primitives/input';
-import { Button } from '@sharedui/primitives/button';
 import { useLoginMutation } from '@rootui/api/auth';
 import { setAccessToken } from '@rootui/store/auth';
+import useSearchParam from '@sharedui/hooks/useSearchParam';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 const ManagedUserLoginForm = () => {
+  const accountId = useSearchParam('accountId');
   const managedUserForm = useForm<z.infer<typeof managedUserLoginSchema>>({
     resolver: zodResolver(managedUserLoginSchema),
     defaultValues: {
-      accountId: '',
+      accountId: accountId ?? '',
       alias: '',
       password: '',
     },
@@ -91,9 +93,9 @@ const ManagedUserLoginForm = () => {
             </FormFieldItem>
           )}
         />
-        <Button type="submit" className="mt-4" disabled={isLoading}>
+        <LoadingButton type="submit" className="mt-4" loading={isLoading}>
           Login
-        </Button>
+        </LoadingButton>
       </form>
     </Form>
   );

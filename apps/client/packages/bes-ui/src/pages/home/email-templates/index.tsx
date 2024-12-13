@@ -17,6 +17,7 @@ import { Table } from '@tanstack/react-table';
 import { generateFRN } from '@sharedui/utils/frn';
 import { useAuth } from '@rootui/providers/auth-provider';
 import ErrorBox from '@sharedui/components/error-box';
+import DeleteButton from '@sharedui/components/delete-button';
 
 const EmailTemplates = () => {
   const {
@@ -87,7 +88,7 @@ const EmailTemplatesTableHeader = ({
   handleRefetch,
 }: EmailTemplatesTableHeaderProps) => (
   <div className="flex items-center justify-end gap-4">
-    <Button
+    <DeleteButton
       size="sm"
       variant="destructive-outline"
       onClick={() =>
@@ -95,9 +96,10 @@ const EmailTemplatesTableHeader = ({
           table.getSelectedRowModel().rows.map((row) => row.original),
         )
       }
+      description="This action cannot be undone. This will permanently delete the selected email templates."
     >
       Delete
-    </Button>
+    </DeleteButton>
     <Button
       name="Refresh email templates"
       size="sm"

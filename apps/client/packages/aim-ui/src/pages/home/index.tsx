@@ -6,7 +6,7 @@ import {
 } from '@sharedui/components/page-layout';
 import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
 import { aimPaths } from '@sharedui/constants/paths';
-import HomePage from './home-page';
+import Dashboard from './dashboard';
 import ManagedUsersListPage from './users';
 import CreateUserPage from './users/create';
 import UpdateUserPage from './users/update';
@@ -33,7 +33,7 @@ const AIMHome = () => {
       />
       <PageContent>
         <Routes>
-          <Route path="" element={<HomePage />} />
+          <Route path="" element={<Dashboard />} />
           <Route path="users/*">
             <Route path="" element={<ManagedUsersListPage />} />
             <Route path="create" element={<CreateUserPage />} />
@@ -56,7 +56,7 @@ const AIMHome = () => {
 };
 
 const sideNavItems = [
-  { title: 'Home', path: aimPaths.HOME },
+  { title: 'Dashboard', path: aimPaths.HOME },
   {
     title: 'Users',
     path: aimPaths.USERS,

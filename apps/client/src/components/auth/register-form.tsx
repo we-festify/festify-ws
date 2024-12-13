@@ -1,5 +1,4 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@sharedui/primitives/button';
 import {
   Card,
   CardContent,
@@ -15,9 +14,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { rootUserRegisterSchema } from './schemas/register';
+import { LoadingButton } from '@sharedui/components/loading-button';
 
 export function RegisterForm() {
-  const [register] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof rootUserRegisterSchema>>({
@@ -133,9 +133,9 @@ export function RegisterForm() {
                 </FormFieldItem>
               )}
             />
-            <Button type="submit" className="mt-4">
+            <LoadingButton type="submit" className="mt-4" loading={isLoading}>
               Create an account
-            </Button>
+            </LoadingButton>
           </form>
         </Form>
         <div className="mt-4 text-center text-sm">
