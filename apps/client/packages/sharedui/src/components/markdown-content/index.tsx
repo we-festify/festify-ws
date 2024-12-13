@@ -37,10 +37,12 @@ const MarkdownContent = ({ source }: MarkdownProps) => {
           ),
           p: ({ children }) => <p className="mb-4">{children}</p>,
           ul: ({ children }) => (
-            <ul className="list-disc pl-6 space-y-1 mt-2">{children}</ul>
+            <ul className="list-disc pl-6 space-y-1 -mt-2 mb-4">{children}</ul>
           ),
           ol: ({ children }) => (
-            <ol className="list-decimal pl-6 space-y-1 mt-2">{children}</ol>
+            <ol className="list-decimal pl-6 space-y-1 -mt-2 mb-4">
+              {children}
+            </ol>
           ),
           a: ({ children, href }) => (
             <Link

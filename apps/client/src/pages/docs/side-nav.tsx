@@ -12,7 +12,7 @@ const DocsSideNav = () => {
     skip: !topic,
   });
   const filePath = location.pathname.split(`/docs/${topic}/`)[1];
-  const currentSection = filePath.split('/')[0];
+  const currentSection = filePath?.split('/')[0];
   const activeSection = nav?.find((section) =>
     getNearestPath(section).startsWith(currentSection),
   );

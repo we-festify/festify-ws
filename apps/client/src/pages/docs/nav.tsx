@@ -15,7 +15,7 @@ const DocsNav = () => {
   });
   const location = useLocation();
   const filePath = location.pathname.split(`/docs/${topic}/`)[1];
-  const section = filePath.split('/')[0];
+  const section = filePath?.split('/')[0];
   const navigate = useNavigate();
 
   const isSectionActive = (path: string | undefined) => {
