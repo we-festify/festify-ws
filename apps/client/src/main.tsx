@@ -10,7 +10,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import store from '@rootui/store';
 import { Toaster } from '@sharedui/primitives/sonner';
-import RecentServiceTrackerProvider from './components/recent-service-tracker';
+import RecentServiceTrackerProvider from '../packages/rootui/src/providers/recent-service-tracker';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

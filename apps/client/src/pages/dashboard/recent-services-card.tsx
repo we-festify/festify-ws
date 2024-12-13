@@ -1,4 +1,4 @@
-import { useRecentServiceTracker } from '@/components/recent-service-tracker';
+import { useRecentServiceTracker } from '@rootui/providers/recent-service-tracker';
 import { useGetServicesMetadataQuery } from '@rootui/api/meta';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { Link } from 'react-router-dom';

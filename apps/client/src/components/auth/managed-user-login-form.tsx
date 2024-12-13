@@ -10,12 +10,14 @@ import { Input } from '@sharedui/primitives/input';
 import { Button } from '@sharedui/primitives/button';
 import { useLoginMutation } from '@rootui/api/auth';
 import { setAccessToken } from '@rootui/store/auth';
+import useSearchParam from '@sharedui/hooks/useSearchParam';
 
 const ManagedUserLoginForm = () => {
+  const accountId = useSearchParam('accountId');
   const managedUserForm = useForm<z.infer<typeof managedUserLoginSchema>>({
     resolver: zodResolver(managedUserLoginSchema),
     defaultValues: {
-      accountId: '',
+      accountId: accountId ?? '',
       alias: '',
       password: '',
     },
