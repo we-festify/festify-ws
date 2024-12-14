@@ -6,7 +6,7 @@ export const aimDocsNav: IDocsNav = [
     children: [
       {
         title: 'What is AIM?',
-        path: 'user-guide/introduction',
+        path: 'aim/user-guide/introduction',
       },
     ],
   },

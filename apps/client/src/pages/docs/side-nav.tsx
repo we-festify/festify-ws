@@ -4,17 +4,19 @@ import { PageSideNav } from '@sharedui/components/page-layout';
 import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
 import paths from '@sharedui/constants/paths';
 import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const DocsSideNav = () => {
-  const { topic } = useParams<{ topic: string }>();
+  const location = useLocation();
+  const filePath = location.pathname
+    .split(paths.root.DOCS)[1]
+    .replace(/^\//, '');
+  const [topic, section] = filePath.split('/');
   const { data: { nav, meta } = {} } = useGetDocsNavQuery(topic ?? '', {
     skip: !topic,
   });
-  const filePath = location.pathname.split(`/docs/${topic}/`)[1];
-  const currentSection = filePath?.split('/')[0];
-  const activeSection = nav?.find((section) =>
-    getNearestPath(section).startsWith(currentSection),
+  const activeSection = nav?.find((sec) =>
+    getNearestPath(sec).startsWith(`${topic}/${section}`),
   );
   const navigate = useNavigate();
 
@@ -28,7 +30,7 @@ const DocsSideNav = () => {
         subTitle={activeSection?.title}
         items={activeSection?.children as ItemProps[]}
         selectedItem={(path) => filePath === path}
-        onItemClick={(path) => navigate(`${paths.root.DOCS}/${topic}/${path}`)}
+        onItemClick={(path) => navigate(`${paths.root.DOCS}/${path}`)}
       />
     </>
   );

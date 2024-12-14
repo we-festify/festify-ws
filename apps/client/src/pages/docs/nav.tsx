@@ -1,33 +1,32 @@
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useGetDocsNavQuery } from '@rootui/api/docs';
-import { IDocsNav } from '@sharedtypes/docs';
 import { cn } from '../../../packages/sharedui/src/utils/tw';
 import { getNearestPath } from '@/utils/docs';
 import { useEffect } from 'react';
 import paths from '@sharedui/constants/paths';
 
 const DocsNav = () => {
-  const { topic } = useParams();
-  const { data: { nav } = {} } = useGetDocsNavQuery<{
-    data: { nav: IDocsNav };
-  }>(topic ?? '', {
+  const location = useLocation();
+  const filePath = location.pathname
+    .split(paths.root.DOCS)[1]
+    .replace(/^\//, '');
+  const [topic, section] = filePath.split('/');
+  const { data: { nav } = {}, isLoading } = useGetDocsNavQuery(topic ?? '', {
     skip: !topic,
   });
-  const location = useLocation();
-  const filePath = location.pathname.split(`/docs/${topic}/`)[1];
-  const section = filePath?.split('/')[0];
   const navigate = useNavigate();
 
   const isSectionActive = (path: string | undefined) => {
     if (!path) return section === '';
-    return path.startsWith(section);
+    return path.startsWith(`${topic}/${section}`);
   };
 
   useEffect(() => {
+    if (isLoading) return;
     if (nav && !section) {
-      navigate(`${paths.root.DOCS}/${topic}/${getNearestPath(nav[0])}`);
+      navigate(`${paths.root.DOCS}/${getNearestPath(nav[0])}`);
     }
-  }, [nav, section, navigate, topic]);
+  }, [nav, section, navigate, topic, isLoading]);
 
   return (
     <div className="w-full h-full bg-background dark:bg-slate-900 flex items-center">
@@ -35,7 +34,7 @@ const DocsNav = () => {
         {nav?.map((item) => (
           <Link
             key={item.title}
-            to={`/docs/${topic}/${getNearestPath(item)}`}
+            to={`/docs/${getNearestPath(item)}`}
             className={cn(
               'text-xs text-muted-foreground',
               isSectionActive(getNearestPath(item))

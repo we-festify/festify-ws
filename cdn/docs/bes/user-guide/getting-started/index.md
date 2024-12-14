@@ -4,4 +4,4 @@ This chapter guides you through tasks required for initial set up of Festify BES
 
 #### Topics
 
-- [Setting up Festify BES](setting-up)
+- [Setting up Festify BES](/docs/bes/user-guide/getting-started/setting-up)
