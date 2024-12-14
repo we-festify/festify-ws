@@ -1,14 +1,18 @@
 export type BesSendEmailConfig = {
   data: {
-    toAddresses: string[];
-    ccAddresses?: string[];
-    bccAddresses?: string[];
+    destination: {
+      to: string[];
+      cc?: string[];
+      bcc?: string[];
+    };
     subject: string;
-    html?: string;
-    text?: string;
+    content: {
+      html?: string;
+      text?: string;
+    };
   };
 
-  instanceFrn: string;
+  resource: string;
 };
 
 export type BesSendEmailResponseData = {

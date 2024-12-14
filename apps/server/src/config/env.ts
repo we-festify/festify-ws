@@ -17,6 +17,13 @@ export default {
     port: process.env.DB_PORT ?? 27017,
     name: process.env.DB_NAME ?? 'something',
   },
+  redis: {
+    host: process.env.REDIS_HOST ?? 'localhost',
+    port: parseInt(process.env.REDIS_PORT ?? '6379'),
+    endpoint: process.env.REDIS_ENDPOINT,
+    user: process.env.REDIS_USER,
+    password: process.env.REDIS_PASSWORD,
+  },
   client: {
     url: process.env.CLIENT_URL ?? 'http://localhost:3000',
     resetPasswordPath:

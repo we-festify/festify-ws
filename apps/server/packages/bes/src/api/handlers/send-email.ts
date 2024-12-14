@@ -1,23 +1,12 @@
-import { env } from '@/config';
 import { HandlerFunction, ValidatorFunction } from '@/types/handler';
-import { decryptUsingAES } from '@/utils/crypto';
 import { AppError, CommonErrors } from '@/utils/errors';
 import { parseFRN, validateFRNForServiceAndResourceType } from '@/utils/frn';
 import BESInstance from '@bes/models/bes-instance';
-import { sendEmail } from '@bes/utils/mailer';
+import { pushEmailToQueue } from '@bes/queues/email';
+import { SendEmailData } from '@bes/types/handlers/send-email';
 import { IBESInstance } from '@sharedtypes/bes';
 import Joi from 'joi';
 import { Model } from 'mongoose';
-
-const senderPasswordEncryptionKey = env.bes.sender_password_secret;
-if (!senderPasswordEncryptionKey) {
-  throw new AppError(
-    CommonErrors.InternalServerError.name,
-    CommonErrors.InternalServerError.statusCode,
-    '"Sender password encryption key" not found in BES environment variables',
-    true,
-  );
-}
 
 export const validator: ValidatorFunction<string, unknown> = (
   resource,
@@ -30,12 +19,16 @@ export const validator: ValidatorFunction<string, unknown> = (
   );
 
   const dataSchema = Joi.object().keys({
-    toAddresses: Joi.array().items(Joi.string().email()).required(),
-    ccAddresses: Joi.array().items(Joi.string().email()).optional(),
-    bccAddresses: Joi.array().items(Joi.string().email()).optional(),
+    destination: Joi.object().keys({
+      to: Joi.array().items(Joi.string()).required(),
+      cc: Joi.array().items(Joi.string()).optional(),
+      bcc: Joi.array().items(Joi.string()).optional(),
+    }),
     subject: Joi.string().required(),
-    html: Joi.string().optional(),
-    text: Joi.string().optional(),
+    content: Joi.object().keys({
+      html: Joi.string().optional(),
+      text: Joi.string().optional(),
+    }),
   });
   const { error: dataError } = dataSchema.validate(data);
 
@@ -45,22 +38,10 @@ export const validator: ValidatorFunction<string, unknown> = (
 export const handlerWithoutDeps =
   (
     instanceModel: Model<IBESInstance>,
-  ): HandlerFunction<
-    string,
-    {
-      toAddresses: string[];
-      ccAddresses?: string[];
-      bccAddresses?: string[];
-      subject: string;
-      html?: string;
-      text?: string;
-    }
-  > =>
+  ): HandlerFunction<string, SendEmailData> =>
   async (resource, data, context) => {
     const { accountId } = context.user;
     const { resourceId: alias } = parseFRN(resource);
-    const { toAddresses, ccAddresses, bccAddresses, subject, html, text } =
-      data;
 
     const instance = await instanceModel
       .findOne({
@@ -84,34 +65,30 @@ export const handlerWithoutDeps =
       );
     }
 
-    // Send email
-    const senderPasswordDecrypted = decryptUsingAES(
-      instance.senderPassword,
-      senderPasswordEncryptionKey,
-    );
-    const response = await sendEmail({
-      to: toAddresses,
-      cc: ccAddresses,
-      bcc: bccAddresses,
-      subject,
-      html,
-      text,
-
-      smtpConfig: {
+    // add job to queue
+    const jobId = await pushEmailToQueue({
+      destination: {
+        to: data.destination.to,
+        cc: data.destination.cc,
+        bcc: data.destination.bcc,
+      },
+      subject: data.subject,
+      content: {
+        html: data.content.html,
+        text: data.content.text,
+      },
+      sender: {
+        email: instance.senderEmail,
+        encryptedPassword: instance.senderPassword,
+        name: instance.senderName,
+      },
+      smtp: {
         host: instance.smtpHost,
         port: instance.smtpPort,
-        secure: false,
-        auth: {
-          user: instance.senderEmail,
-          pass: senderPasswordDecrypted,
-        },
       },
-      from: instance.senderEmail,
     });
 
-    return {
-      messageId: response.messageId,
-    };
+    return { jobId };
   };
 
 const handler = handlerWithoutDeps(BESInstance);

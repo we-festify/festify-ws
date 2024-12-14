@@ -9,14 +9,14 @@ export const sendEmail = async (
   fws: FwsClient,
   config: BesSendEmailConfig,
 ): Promise<BesSendEmailResponseData> => {
-  const { instanceFrn, data } = config;
+  const { resource, data } = config;
   const endpoint = `/bes/execute/SendEmail`;
 
   const httpClient = new HttpClient(fws, {
     endpoint,
     method: 'POST',
     body: {
-      resource: instanceFrn,
+      resource,
       data,
     },
     headers: {
