@@ -11,12 +11,16 @@ Content-Type: application/json
 {
     "resource": "frn:bes::instance:instance-id",
     "data": {
-        "toAddresses": [ "email" ],
-        "ccAddresses": [ "email" ],
-        "bccAddresses": [ "email" ],
+        "destination": {
+            "to": ["string"],
+            "cc": ["string"],
+            "bcc": ["string"]
+        },
         "subject": "string",
-        "html": "string",
-        "text": "string"
+        "content": {
+            "html": "string",
+            "text": "string"
+        }
     }
 }
 
@@ -30,7 +34,7 @@ The request does not use any URI parameters.
 
 The request accepts the following data in JSON format.
 
-**resource** - The resource ID of the Festify BES instance that you want to use to send the email.
+**resource** - The FRN of the Festify BES instance that you want to use to send the email.
 
 - type: string
 - required: Yes
@@ -42,19 +46,26 @@ The request accepts the following data in JSON format.
 
 The `data` object contains the following fields:
 
-**toAddresses** - The email addresses of the recipients of the email.
+**destination** - The destination of the email.
 
-- type: array[string]
+- type: object
 - required: Yes
 
-**ccAddresses** - The email addresses of the CC recipients of the email.
+The `destination` object contains the following fields:
 
-- type: array[string]
+**to** - The email addresses of the recipients.
+
+- type: array
+- required: Yes
+
+**cc** - The email addresses of the CC recipients.
+
+- type: array
 - required: No
 
-**bccAddresses** - The email addresses of the BCC recipients of the email.
+**bcc** - The email addresses of the BCC recipients.
 
-- type: array[string]
+- type: array
 - required: No
 
 **subject** - The subject of the email.
@@ -62,12 +73,19 @@ The `data` object contains the following fields:
 - type: string
 - required: Yes
 
-**html** - The HTML body of the email.
+**content** - The content of the email.
+
+- type: object
+- required: Yes
+
+The `content` object contains the following fields:
+
+**html** - The HTML content of the email.
 
 - type: string
 - required: No
 
-**text** - The text body of the email.
+**text** - The text content of the email.
 
 - type: string
 - required: No
@@ -79,7 +97,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "messageId": "string"
+    "jobId": "string"
 }
 ```
 
@@ -89,13 +107,13 @@ If the action is successful, the service sends back an HTTP 200 response.
 
 The response data contains the following fields:
 
-**messageId** - The unique identifier for the message.
+**jobId** - The ID of the job that was created to send the email.
 
 - type: string
 
 ## Errors
 
-For information about the errors that are common to all actions, see [Common Errors](/docs/bes/api-reference/errors.md).
+For information about the errors that are common to all actions, see [Common Errors](/docs/bes/api-reference/errors).
 
 The following table describes the errors that this action can return.
 

@@ -18,7 +18,7 @@ const AppRoutes = () => {
       <Route path="home" element={<RequireLoggedIn />}>
         <Route path="" element={<Dashboard />} />
       </Route>
-      <Route path="docs/:topic/*" element={<DocsPage />} />
+      <Route path="docs/*" element={<DocsPage />} />
 
       {/* d-services */}
       <Route path="bes/*" element={<BESServiceIndex />} />
