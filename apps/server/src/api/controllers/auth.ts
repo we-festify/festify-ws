@@ -24,7 +24,6 @@ export class AuthController {
     return {
       httpOnly: true,
       secure: env.nodeEnv !== 'development',
-      sameSite: 'strict',
       path: '/api/v1/auth',
     };
   }
