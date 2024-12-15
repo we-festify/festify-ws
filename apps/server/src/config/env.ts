@@ -1,12 +1,5 @@
 import dotenv from 'dotenv';
-
-const envFound = dotenv.config();
-if (envFound.error) {
-  // This error should crash whole process
-  throw new Error(
-    "Couldn't find .env file. Please create one or check your environment.",
-  );
-}
+dotenv.config();
 
 export default {
   nodeEnv: process.env.NODE_ENV ?? 'development',
