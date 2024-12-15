@@ -1,8 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useGetServicesMetadataQuery } from '@rootui/api/meta';
+import { TriangleAlert } from 'lucide-react';
+import { getErrorMessage } from '@sharedui/utils/error';
 
 const Services = () => {
-  const { data: { services } = {} } = useGetServicesMetadataQuery();
+  const {
+    data: { services } = {},
+    error,
+    isError,
+    isFetching,
+    refetch,
+  } = useGetServicesMetadataQuery();
 
   return (
     <div className="bg-slate-900 shadow-md text-slate-300 p-4 rounded-md w-max">
@@ -23,6 +31,21 @@ const Services = () => {
             </div>
           </Link>
         ))}
+        {isFetching && <div className="text-sm my-1">Loading...</div>}
+        {isError && (
+          <div className="text-destructive flex items-center gap-2 my-1">
+            <TriangleAlert className="size-5" />
+            <span className="text-sm">
+              {getErrorMessage(error)} -{' '}
+              <span
+                className="hover:underline cursor-pointer"
+                onClick={refetch}
+              >
+                Reload
+              </span>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

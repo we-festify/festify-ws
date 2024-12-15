@@ -2,12 +2,20 @@ import { Card, CardContent } from '@sharedui/primitives/card';
 import Header from '@sharedui/components/header';
 import GradientShadow from '@sharedui/components/gradient-shadow';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, TriangleAlert } from 'lucide-react';
 import Footer from '@sharedui/components/footer';
 import { useGetServicesMetadataQuery } from '@rootui/api/meta';
+import { Skeleton } from '@sharedui/primitives/skeleton';
+import { getErrorMessage } from '@sharedui/utils/error';
 
 const HomePage = () => {
-  const { data: { services } = {} } = useGetServicesMetadataQuery();
+  const {
+    data: { services } = {},
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useGetServicesMetadataQuery();
 
   return (
     <>
@@ -42,6 +50,10 @@ const HomePage = () => {
           Explore our products
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+          {isFetching &&
+            Array.from({ length: 3 }).map(() => (
+              <Skeleton className="aspect-[4/3] w-full rounded-2xl" />
+            ))}
           {services?.map((service) => (
             <GradientShadow
               key={service.name}
@@ -69,6 +81,20 @@ const HomePage = () => {
               </Link>
             </GradientShadow>
           ))}
+          {isError && (
+            <div className="text-destructive flex items-center gap-2 my-1">
+              <TriangleAlert className="size-5" />
+              <span className="text-sm">
+                {getErrorMessage(error)} -{' '}
+                <span
+                  className="hover:underline cursor-pointer"
+                  onClick={refetch}
+                >
+                  Reload
+                </span>
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <Footer />
