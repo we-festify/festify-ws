@@ -4,6 +4,7 @@ This repository contains the code for the Festify Web Services. The **Festify We
 
 ## Services
 
+- AIM - Access and Identity Management
 - BES - Basic Email Service
 
 Please check back later for more services.
