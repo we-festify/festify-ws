@@ -8,43 +8,19 @@ Be a part of our team by showcasing your passion for open source and your willin
 
 - Node.js (v20)
 - npm
+- Redis (optional, can be run using Docker or RedisLabs)
 
 ## How to contribute
 
-1. (For Internal Teams) Clone the repository to your local machine using
+## Running locally
 
-```bash
-git clone https://github.com/we-festify/festify-ws.git
-```
+To run locally, you need to have Node.js installed on your machine. You can download Node.js from [here](https://nodejs.org/).
 
-1. (For External Contributors) Fork the repository to your GitHub account and clone it to your local machine using
+After installing Node.js, you can run the services by following the steps below:
 
-```bash
-git clone https://github.com/<your-github-user-name>/festify-ws.git
-```
+1. Follow the instructions in the [README.md](README.md) file to set up the project on your local machine.
 
-2. Create a new branch for your feature or bug fix:
-
-```bash
-git checkout -b <your-unique-branch-name>
-```
-
-3. Set up the project on your local machine:
-
-```bash
-# install dependencies
-npm install
-
-# start the development server
-cd apps/server
-npm run dev
-
-# start the client
-cd apps/client
-npm run dev
-```
-
-4. Make your changes and check if they work:
+2. Make your changes and check if they work:
 
 ```bash
 # check linting
