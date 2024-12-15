@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "jest --passWithNoTests --coverage",
-    "start": "ts-node -r tsconfig-paths/register src/app.ts",
+    "start": "cross-env NODE_ENV=production node dist/src/app.js",
     "lint": "eslint \"src/**/*.{js,ts}\" && eslint \"packages/**/*.{js,ts}\"",
     "format": "prettier --write \"src/**/*.{js,ts}\" && prettier --write \"packages/**/*.{js,ts}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,ts}\" && eslint --fix \"packages/**/*.{js,ts}\"",
@@ -13,11 +13,18 @@
     "build": "tsc",
     "load": "ts-node -r tsconfig-paths/register scripts/load.ts"
   },
+  "_moduleAliases": {
+    "@": "dist/src",
+    "@bes": "dist/packages/bes/src",
+    "@aim": "dist/packages/aim/src",
+    "@sharedtypes": "../../sharedtypes/src/*"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/express-useragent": "^1.0.5",
+    "@types/module-alias": "^2.0.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.34.1",
@@ -25,6 +32,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -34,6 +42,7 @@
     "ioredis": "^5.4.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "mongoose": "^8.5.4",
     "nodemailer": "^6.9.14",
     "nodemailer-express-handlebars": "^6.1.2",

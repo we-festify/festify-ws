@@ -1,6 +1,12 @@
+// required for building the app
+import { env } from './config';
+if (env.nodeEnv === 'production') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('module-alias/register');
+}
+
 import express from 'express';
 import initLoaders from './loaders';
-import { env } from './config';
 import { handler } from './utils/errors';
 import { logger } from './utils/logger';
 
