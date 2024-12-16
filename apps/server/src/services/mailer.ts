@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import { Options } from 'nodemailer/lib/mailer';
-import hbs from 'nodemailer-express-handlebars';
 import { env, meta } from '../config';
 import {
   LoginActivityEmailDTO,
@@ -12,9 +11,14 @@ import {
   TwoFactorAuthDisabledEmailDTO,
   SendEmailDTO,
 } from '../types/services/mailer';
-import path from 'path';
 import { errorLogger, logger } from '../utils/logger';
 import { convertDurationToReadable } from '../utils/time';
+import {
+  getEmailVerificationEmail,
+  getForceLoggedOutEmail,
+  getPasswordChangedEmail,
+  getResetPasswordEmail,
+} from '@/utils/emails';
 
 type ExtendedOptions = Options & {
   template: string;
@@ -39,25 +43,15 @@ export class MailerService {
 
     const verifyHandler = (err: Error | null) => {
       if (err) {
-        errorLogger.error(`Root Mail server connection error`, err);
+        errorLogger.error(
+          `Root Mail server connection error - ${env.mail.auth.name}`,
+          err,
+        );
       } else {
-        logger.info(`Root Mail server connected`);
+        logger.info(`Root Mail server connected - ${env.mail.auth.name}`);
       }
     };
     this.transporter.verify(verifyHandler);
-
-    // Set up Handlebars as the email template engine
-    const handlebarOptions = {
-      viewEngine: {
-        extName: '.hbs',
-        partialsDir: path.resolve(__dirname, '../views/emails/partials'),
-        defaultLayout: '',
-      },
-      viewPath: path.resolve(__dirname, '../views/emails'),
-      extName: '.hbs',
-    };
-
-    this.transporter.use('compile', hbs(handlebarOptions));
   }
 
   public async sendEmail(options: SendEmailDTO) {
@@ -70,28 +64,16 @@ export class MailerService {
   async sendEmailVerificationEmail({
     to,
     emailVerificationToken,
-    user,
   }: EmailVerificationEmailDTO) {
+    const verificationUrl = `${env.auth.emailVerificationUrl}?token=${emailVerificationToken}`;
+    const { subject, text } = getEmailVerificationEmail(verificationUrl);
+
     return this.transporter.sendMail({
       to,
       from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
-      subject: 'Email verification',
-      template: 'email-verification',
-      context: {
-        user: {
-          name: user.alias,
-        },
-        email_verification_url: `${env.auth.emailVerificationUrl}?token=${emailVerificationToken}`,
-        expires_in: convertDurationToReadable(
-          env.auth.emailVerificationTokenExpiresInSeconds,
-        ),
-        company: {
-          name: meta.company.name,
-          logo_url: meta.company.logo,
-          copyright_year: new Date().getFullYear(),
-        },
-      },
-    } as ExtendedOptions);
+      subject: subject,
+      text: text,
+    });
   }
 
   async sendLoginActivityEmail({
@@ -124,31 +106,18 @@ export class MailerService {
     user,
     resetPasswordToken,
   }: ResetPasswordEmailDTO) {
+    const resetUrl = `${env.client.url}${env.client.resetPasswordPath}?token=${encodeURIComponent(resetPasswordToken)}&email=${encodeURIComponent(user.email ?? '')}`;
+    const { subject, text } = getResetPasswordEmail(resetUrl);
     return this.transporter.sendMail({
       to,
       from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
-      subject: 'Reset your password',
-      template: 'reset-password',
-      context: {
-        user: {
-          name: user.alias,
-        },
-        reset_password_url: `${env.client.url}${env.client.resetPasswordPath}?token=${encodeURIComponent(resetPasswordToken)}&email=${encodeURIComponent(user.email ?? '')}`,
-        expires_in: convertDurationToReadable(
-          env.auth.resetPasswordTokenExpiresInSeconds,
-        ),
-        company: {
-          name: meta.company.name,
-          logo_url: meta.company.logo,
-          copyright_year: new Date().getFullYear(),
-        },
-      },
-    } as ExtendedOptions);
+      subject: subject,
+      text: text,
+    });
   }
 
   async sendPasswordChangedEmail({
     to,
-    user,
     deviceInfo,
     ipInfo,
   }: PasswordChangedEmailDTO) {
@@ -157,33 +126,26 @@ export class MailerService {
         .filter((v) => v !== 'unknown')
         .join(', ') || 'unknown';
 
+    const changeTime = new Date().toLocaleString();
+    const { subject, text } = getPasswordChangedEmail(
+      changeTime,
+      {
+        ip: ipInfo.ip,
+        location,
+      },
+      deviceInfo,
+    );
+
     return this.transporter.sendMail({
       to,
       from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
-      subject: 'Your password was changed',
-      template: 'password-changed',
-      context: {
-        user: {
-          name: user.alias,
-        },
-        deviceInfo,
-        ipInfo: {
-          ip: ipInfo.ip,
-          location,
-        },
-        change_date_time: new Date().toLocaleString(),
-        company: {
-          name: meta.company.name,
-          logo_url: meta.company.logo,
-          copyright_year: new Date().getFullYear(),
-        },
-      },
-    } as ExtendedOptions);
+      subject: subject,
+      text: text,
+    });
   }
 
   async sendForceLoggedOutEmail({
     to,
-    user,
     deviceInfo,
     ipInfo,
   }: PasswordChangedEmailDTO) {
@@ -192,28 +154,17 @@ export class MailerService {
         .filter((v) => v !== 'unknown')
         .join(', ') || 'unknown';
 
+    const { subject, text } = getForceLoggedOutEmail(
+      { ip: ipInfo.ip, location },
+      deviceInfo,
+    );
+
     return this.transporter.sendMail({
       to,
       from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
-      subject: 'You were logged out from all devices',
-      template: 'force-logged-out',
-      context: {
-        user: {
-          name: user.alias,
-        },
-        deviceInfo,
-        ipInfo: {
-          ip: ipInfo.ip,
-          location,
-        },
-        action_date_time: new Date().toLocaleString(),
-        company: {
-          name: meta.company.name,
-          logo_url: meta.company.logo,
-          copyright_year: new Date().getFullYear(),
-        },
-      },
-    } as ExtendedOptions);
+      subject: subject,
+      text: text,
+    });
   }
 
   async send2FAEnabledEmail({

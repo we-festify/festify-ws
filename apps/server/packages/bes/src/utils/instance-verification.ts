@@ -25,7 +25,7 @@ export const getInstanceVerificationEmail = (
     subject: 'Festify Web Services - Instance Email Verification',
     text: `Dear Festify Web Services Customer,
 
-We have received a request to authorize this email address for use with Festify BE). If you requested this verification, please go to the following URL to confirm that you are authorized to use this email address
+We have received a request to authorize this email address for use with Festify BES. If you requested this verification, please go to the following URL to confirm that you are authorized to use this email address
 
 ${verificationUrl}
 
