@@ -499,7 +499,9 @@ export class AuthService {
   ): Promise<RootUserLoginResponse> {
     const foundAccount = await this.accountModel
       .findOne({ email: userDTO.email })
-      .select('+passwordHash +twoFactorAuth');
+      .select(
+        '+passwordHash +twoFactorAuth +emailVerificationToken +emailVerificationTokenExpires',
+      );
     if (!foundAccount) {
       throw new AppError(
         CommonErrors.NotFound.name,
@@ -521,10 +523,42 @@ export class AuthService {
     }
 
     if (!foundAccount.isEmailVerified) {
+      const isEmailVerificationTokenExpired =
+        foundAccount.emailVerificationTokenExpires &&
+        foundAccount.emailVerificationTokenExpires < new Date();
+      if (isEmailVerificationTokenExpired) {
+        const payload = await this.generatePayload({
+          type: 'fws-root',
+          account: { email: foundAccount.email, _id: foundAccount._id },
+        });
+        foundAccount.emailVerificationToken =
+          this.generateEmailVerificationToken(payload);
+        foundAccount.emailVerificationTokenExpires = new Date(
+          Date.now() + env.auth.emailVerificationTokenExpiresInSeconds * 1000,
+        );
+        await foundAccount.save();
+
+        const account = this.excludeAccountSensitiveFields(
+          foundAccount.toObject(),
+        );
+
+        // Publish events
+        this.publisher.auth.publishRootUserEmailVerificationRequestedEvent({
+          account: { alias: account.alias ?? '', email: account.email ?? '' },
+          emailVerificationToken: foundAccount.emailVerificationToken,
+        });
+
+        throw new AppError(
+          CommonErrors.BadRequest.name,
+          CommonErrors.BadRequest.statusCode,
+          'Email not verified. Verification email sent again.',
+        );
+      }
+
       throw new AppError(
         CommonErrors.BadRequest.name,
         CommonErrors.BadRequest.statusCode,
-        'Email not verified. If you did not receive the verification email, please request a new one.',
+        'Email not verified. Please verify your email.',
       );
     }
 

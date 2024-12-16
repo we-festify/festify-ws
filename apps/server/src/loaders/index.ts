@@ -2,7 +2,6 @@ import * as express from 'express';
 import expressLoader from './express';
 import mongooseLoader from './mongoose';
 import { logger } from '../utils/logger';
-import subscribersLoader from './subscribers';
 import { redisLoader } from './redis';
 import { workersLoader } from './workers';
 
@@ -23,9 +22,6 @@ const initLoaders = async ({ expressApp }: InitLoadersProps) => {
   // Load jobs
   await workersLoader();
   logger.info('Workers loaded');
-  // Load subscribers
-  await subscribersLoader();
-  logger.info('Subscribers loaded');
 };
 
 export default initLoaders;

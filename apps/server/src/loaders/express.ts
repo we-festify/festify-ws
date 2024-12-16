@@ -12,10 +12,12 @@ import * as useragent from 'express-useragent';
 import { UserAgentMiddleware } from '../api/middlewares/user-agent';
 
 const expressLoader = async ({ app }: { app: express.Application }) => {
-  app.get('/status', (req, res) => {
-    res.status(200).end();
+  app.set('trust proxy', 1);
+
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');
   });
-  app.head('/status', (req, res) => {
+  app.head('/health', (req, res) => {
     res.status(200).end();
   });
 

@@ -23,7 +23,7 @@ export class AuthController {
   private generateAuthCookieOptions(): e.CookieOptions {
     return {
       httpOnly: true,
-      secure: env.nodeEnv !== 'development',
+      secure: true,
       sameSite: 'none',
       path: '/api/v1/auth',
     };

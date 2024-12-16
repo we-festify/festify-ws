@@ -2,7 +2,7 @@ import { env } from '@/config';
 import { redis } from '@/loaders/redis';
 import { decryptUsingAES } from '@/utils/crypto';
 import { AppError, CommonErrors } from '@/utils/errors';
-import { SendEmailJobDTO } from '@bes/types/jobs/send-email';
+import { BesSendEmailJobDTO } from '@bes/types/jobs/send-email-handler';
 import { sendEmail } from '@bes/utils/mailer';
 import { Worker } from 'bullmq';
 
@@ -16,8 +16,8 @@ if (!senderPasswordEncryptionKey) {
   );
 }
 
-const worker = new Worker<SendEmailJobDTO>(
-  'bes-email',
+const worker = new Worker<BesSendEmailJobDTO>(
+  'bes-send-email-handler',
   async (job) => {
     const data = job.data;
     // decrypt password

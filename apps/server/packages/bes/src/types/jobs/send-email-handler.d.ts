@@ -1,6 +1,6 @@
 import { SendEmailData } from '../handlers/send-email';
 
-export type SendEmailJobDTO = SendEmailData & {
+export type BesSendEmailJobDTO = SendEmailData & {
   sender: {
     email: string;
     encryptedPassword: string;

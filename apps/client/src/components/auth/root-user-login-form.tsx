@@ -9,14 +9,16 @@ import { getErrorMessage } from '@sharedui/utils/error';
 import { toast } from 'sonner';
 import { Form, FormField, FormFieldItem } from '@sharedui/primitives/form';
 import { Input } from '@sharedui/primitives/input';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { LoadingButton } from '@sharedui/components/loading-button';
+import Note from '@sharedui/components/note';
 
 const RootUserLoginForm = () => {
+  const location = useLocation();
   const rootUserForm = useForm<z.infer<typeof rootUserLoginSchema>>({
     resolver: zodResolver(rootUserLoginSchema),
     defaultValues: {
-      email: '',
+      email: location.state?.email ?? '',
       password: '',
     },
   });
@@ -43,49 +45,54 @@ const RootUserLoginForm = () => {
   };
 
   return (
-    <Form {...rootUserForm}>
-      <form
-        className="grid gap-4"
-        onSubmit={rootUserForm.handleSubmit(handleLoginFormSubmit)}
-      >
-        <FormField
-          control={rootUserForm.control}
-          name="email"
-          render={({ field }) => (
-            <FormFieldItem label="Root user email address">
-              <Input
-                key="fws-root-email"
-                placeholder="username@example.com"
-                autoComplete="email"
-                type="email"
-                {...field}
-              />
-            </FormFieldItem>
-          )}
-        />
-        <FormField
-          control={rootUserForm.control}
-          name="password"
-          render={({ field }) => (
-            <FormFieldItem label="Password">
-              <Input
-                key="fws-root-password"
-                type="password"
-                placeholder="••••••••"
-                autoComplete="current-password"
-                {...field}
-              />
-            </FormFieldItem>
-          )}
-        />
-        <Link to="/a/forgot-password" className="text-sm text-right">
-          Forgot password?
-        </Link>
-        <LoadingButton type="submit" className="mt-4" loading={isLoading}>
-          Login
-        </LoadingButton>
-      </form>
-    </Form>
+    <>
+      {location.state?.message && (
+        <Note variant="info">{location.state.message}</Note>
+      )}
+      <Form {...rootUserForm}>
+        <form
+          className="grid gap-4"
+          onSubmit={rootUserForm.handleSubmit(handleLoginFormSubmit)}
+        >
+          <FormField
+            control={rootUserForm.control}
+            name="email"
+            render={({ field }) => (
+              <FormFieldItem label="Root user email address">
+                <Input
+                  key="fws-root-email"
+                  placeholder="username@example.com"
+                  autoComplete="email"
+                  type="email"
+                  {...field}
+                />
+              </FormFieldItem>
+            )}
+          />
+          <FormField
+            control={rootUserForm.control}
+            name="password"
+            render={({ field }) => (
+              <FormFieldItem label="Password">
+                <Input
+                  key="fws-root-password"
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  {...field}
+                />
+              </FormFieldItem>
+            )}
+          />
+          <Link to="/a/forgot-password" className="text-sm text-right">
+            Forgot password?
+          </Link>
+          <LoadingButton type="submit" className="mt-4" loading={isLoading}>
+            Login
+          </LoadingButton>
+        </form>
+      </Form>
+    </>
   );
 };
 

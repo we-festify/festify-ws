@@ -1,17 +1,11 @@
-import EventEmitter from 'events';
 import { AuthEventsPublisher } from './auth';
-
-// Create a new instance of EventEmitter
-export const emitter = new EventEmitter();
+import { rootEmailQueue } from '@/queues/root-emails';
 
 export class EventsPublisher {
-  private readonly eventEmitter: EventEmitter;
   public readonly auth: AuthEventsPublisher;
 
   constructor() {
-    this.eventEmitter = emitter;
-
-    this.auth = new AuthEventsPublisher(this.eventEmitter);
+    this.auth = new AuthEventsPublisher(rootEmailQueue);
   }
 }
 

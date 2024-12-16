@@ -1,8 +1,8 @@
 import { HandlerFunction, ValidatorFunction } from '@/types/handler';
 import { AppError, CommonErrors } from '@/utils/errors';
 import { parseFRN, validateFRNForServiceAndResourceType } from '@/utils/frn';
+import { EventsPublisher, publisher } from '@bes/events';
 import BESInstance from '@bes/models/bes-instance';
-import { pushEmailToQueue } from '@bes/queues/email';
 import { SendEmailData } from '@bes/types/handlers/send-email';
 import { IBESInstance } from '@sharedtypes/bes';
 import Joi from 'joi';
@@ -38,6 +38,7 @@ export const validator: ValidatorFunction<string, unknown> = (
 export const handlerWithoutDeps =
   (
     instanceModel: Model<IBESInstance>,
+    eventsPublisher: EventsPublisher,
   ): HandlerFunction<string, SendEmailData> =>
   async (resource, data, context) => {
     const { accountId } = context.user;
@@ -66,7 +67,7 @@ export const handlerWithoutDeps =
     }
 
     // add job to queue
-    const jobId = await pushEmailToQueue({
+    const jobId = await eventsPublisher.handlers.publishSendEmailEvent({
       destination: {
         to: data.destination.to,
         cc: data.destination.cc,
@@ -91,7 +92,7 @@ export const handlerWithoutDeps =
     return { jobId };
   };
 
-const handler = handlerWithoutDeps(BESInstance);
+const handler = handlerWithoutDeps(BESInstance, publisher);
 
 export const name = 'SendEmail';
 export default handler;
