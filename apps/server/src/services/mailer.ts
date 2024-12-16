@@ -24,7 +24,7 @@ type ExtendedOptions = Options & {
 export class MailerService {
   private readonly transporter: nodemailer.Transporter;
 
-  constructor(useTemplates = true) {
+  constructor() {
     const transportOptions = {
       service: env.mail.service,
       host: env.mail.host,
@@ -39,27 +39,25 @@ export class MailerService {
 
     const verifyHandler = (err: Error | null) => {
       if (err) {
-        errorLogger.error('Mail server connection error', err);
+        errorLogger.error(`Root Mail server connection error`, err);
       } else {
-        logger.info('Mail server connected');
+        logger.info(`Root Mail server connected`);
       }
     };
     this.transporter.verify(verifyHandler);
 
     // Set up Handlebars as the email template engine
-    if (useTemplates) {
-      const handlebarOptions = {
-        viewEngine: {
-          extName: '.hbs',
-          partialsDir: path.resolve(__dirname, '../views/emails/partials'),
-          defaultLayout: '',
-        },
-        viewPath: path.resolve(__dirname, '../views/emails'),
+    const handlebarOptions = {
+      viewEngine: {
         extName: '.hbs',
-      };
+        partialsDir: path.resolve(__dirname, '../views/emails/partials'),
+        defaultLayout: '',
+      },
+      viewPath: path.resolve(__dirname, '../views/emails'),
+      extName: '.hbs',
+    };
 
-      this.transporter.use('compile', hbs(handlebarOptions));
-    }
+    this.transporter.use('compile', hbs(handlebarOptions));
   }
 
   public async sendEmail(options: SendEmailDTO) {

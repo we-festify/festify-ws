@@ -1,8 +1,8 @@
 import { env } from '@/config';
-import { SendEmailJobDTO } from '@bes/types/jobs/send-email';
+import { SendEmailJobDTO } from '@/types/jobs/email';
 import { Queue } from 'bullmq';
 
-const emailQueue = new Queue('bes-email', {
+export const rootEmailQueue = new Queue('root-emails', {
   connection: {
     host: env.redis.host,
     port: env.redis.port,
@@ -15,12 +15,12 @@ const emailQueue = new Queue('bes-email', {
   },
 });
 
-export const pushEmailToQueue = async (data: SendEmailJobDTO) => {
-  const res = await emailQueue.add('send-email', data);
+export const pushEmailToQueue = async (payload: SendEmailJobDTO) => {
+  const res = await rootEmailQueue.add('send-email', payload);
   return res.id;
 };
 
 export const retrieveEmailJobStatus = async (jobId: string) => {
-  const job = await emailQueue.getJob(jobId);
+  const job = await rootEmailQueue.getJob(jobId);
   return job;
 };

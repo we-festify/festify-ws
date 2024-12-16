@@ -1,4 +1,3 @@
-import EventEmitter from 'events';
 import {
   RootUserForceLoggedOutEventData,
   RootUserLoggedInEventData,
@@ -12,69 +11,103 @@ import {
   RootUserRecoveryEmailUpdateRequestedEventData,
   RootUser2faRecoveryOtpGeneratedEventData,
 } from '../types/events/auth';
+import { Queue } from 'bullmq';
 
 export class AuthEventsPublisher {
-  private readonly emitter: EventEmitter;
+  private readonly emailQueue: Queue;
 
-  constructor(emitter: EventEmitter) {
-    this.emitter = emitter;
+  constructor(emailQueue: Queue) {
+    this.emailQueue = emailQueue;
   }
 
   public publishRootUserRegisteredEvent(data: RootUserRegisteredEventData) {
-    this.emitter.emit('auth:root-user-registered', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-registered',
+      data,
+    });
   }
 
   public publishRootUserLoggedInEvent(data: RootUserLoggedInEventData) {
-    this.emitter.emit('auth:root-user-logged-in', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-logged-in',
+      data,
+    });
   }
 
   public publishRootUserEmailVerificationRequestedEvent(
     data: RootUserEmailVerificationRequestedEventData,
   ) {
-    this.emitter.emit('auth:root-user-email-verification-requested', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-email-verification-requested',
+      data,
+    });
   }
 
   public publishRootUserForceLoggedOutEvent(
     data: RootUserForceLoggedOutEventData,
   ) {
-    this.emitter.emit('auth:root-user-force-logged-out', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-force-logged-out',
+      data,
+    });
   }
 
   public publishRootUserPasswordChangeRequestedEvent(
     data: RootUserPasswordChangeRequestedEventData,
   ) {
-    this.emitter.emit('auth:root-user-password-change-requested', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-password-change-requested',
+      data,
+    });
   }
 
   public publishRootUserPasswordChangedEvent(
     data: RootUserPasswordChangedEventData,
   ) {
-    this.emitter.emit('auth:root-user-password-changed', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-password-changed',
+      data,
+    });
   }
 
   public publishRootUser2FAEnabledEvent(data: RootUser2FAEnabledEventData) {
-    this.emitter.emit('auth:root-user-2fa-enabled', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-2fa-enabled',
+      data,
+    });
   }
 
   public publishRootUser2FADisabledEvent(data: RootUser2FADisabledEventData) {
-    this.emitter.emit('auth:root-user-2fa-disabled', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-2fa-disabled',
+      data,
+    });
   }
 
   public publishRootUser2faOtpGeneratedEvent(
     data: RootUser2faOtpGeneratedEventData,
   ) {
-    this.emitter.emit('auth:root-user-2fa-otp-generated', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-2fa-otp-generated',
+      data,
+    });
   }
 
   public publishRootUser2faRecoveryOtpGeneratedEvent(
     data: RootUser2faRecoveryOtpGeneratedEventData,
   ) {
-    this.emitter.emit('auth:root-user-2fa-recovery-otp-generated', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-2fa-recovery-otp-generated',
+      data,
+    });
   }
 
   public publishRootUserRecoveryEmailUpdateRequestedEvent(
     data: RootUserRecoveryEmailUpdateRequestedEventData,
   ) {
-    this.emitter.emit('auth:root-user-recovery-email-update-requested', data);
+    this.emailQueue.add('send-email', {
+      event: 'user-recovery-email-update-requested',
+      data,
+    });
   }
 }

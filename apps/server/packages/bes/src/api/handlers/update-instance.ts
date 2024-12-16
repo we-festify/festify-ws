@@ -1,9 +1,9 @@
 import { env } from '@/config';
-import { MailerService } from '@/services/mailer';
 import { HandlerFunction, ValidatorFunction } from '@/types/handler';
 import { encryptUsingAES } from '@/utils/crypto';
 import { AppError, CommonErrors } from '@/utils/errors';
 import { parseFRN, validateFRNForServiceAndResourceType } from '@/utils/frn';
+import { EventsPublisher, publisher } from '@bes/events';
 import BESInstance from '@bes/models/bes-instance';
 import { generateInstanceEmailVerificationToken } from '@bes/utils/instance';
 import {
@@ -54,7 +54,7 @@ export const validator: ValidatorFunction<string, unknown> = (
 const handlerWithoutDeps =
   (
     instanceModel: Model<IBESInstance>,
-    mailerService: MailerService,
+    eventsPublisher: EventsPublisher,
   ): HandlerFunction<
     string,
     {
@@ -112,7 +112,7 @@ const handlerWithoutDeps =
       const { subject, text } = getInstanceVerificationEmail(
         instanceVerificationUrl,
       );
-      await mailerService.sendEmail({
+      await eventsPublisher.emails.publishSendEmailEvent({
         to: instance.senderEmail,
         subject,
         text,
@@ -133,7 +133,7 @@ const handlerWithoutDeps =
     );
   };
 
-const handler = handlerWithoutDeps(BESInstance, new MailerService(false));
+const handler = handlerWithoutDeps(BESInstance, publisher);
 
 export const name = 'UpdateInstance';
 export default handler;

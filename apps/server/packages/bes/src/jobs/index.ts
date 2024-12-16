@@ -1,1 +1,2 @@
-import './send-email';
+import './bes-emails';
+import './send-email-handler';
