@@ -19,7 +19,7 @@ export const createInstanceSchema = z.object({
   senderPassword: z.string().min(1, 'Password is required'),
   // smtp details
   smtpHost: z.string().optional(),
-  smtpPort: z.number().optional(),
+  smtpPort: z.coerce.number().optional(),
 });
 
 export const defaultValues = {
