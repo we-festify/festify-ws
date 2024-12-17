@@ -31,6 +31,9 @@ export class UserAgentMiddleware {
     next: e.NextFunction,
   ) {
     try {
+      console.log('req.ip', req.ip);
+      console.log('req.socket.remoteAddress', req.socket.remoteAddress);
+      console.log('req.x-forwarded-for', req.headers['x-forwarded-for']);
       const ipInfo = await fetchIPaddressInfo(req.ip || 'unknown');
       const defaultIpInfo = {
         ip: 'unknown',

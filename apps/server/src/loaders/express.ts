@@ -12,7 +12,7 @@ import * as useragent from 'express-useragent';
 import { UserAgentMiddleware } from '../api/middlewares/user-agent';
 
 const expressLoader = async ({ app }: { app: express.Application }) => {
-  app.set('trust proxy', 1);
+  app.set('trust proxy', true);
 
   app.get('/health', (req, res) => {
     res.status(200).send('OK');
