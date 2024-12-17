@@ -16,5 +16,5 @@ export type BesSendEmailConfig = {
 };
 
 export type BesSendEmailResponseData = {
-  messageId: string;
+  jobId: string;
 };
