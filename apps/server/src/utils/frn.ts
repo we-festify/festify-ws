@@ -13,6 +13,7 @@ export const parseFRN = (frn: string) => {
 };
 
 export const validateFRN = (frn: string) => {
+  if (!frn) return false;
   const parts = frn.split(':');
   return (
     parts.length === 5 &&

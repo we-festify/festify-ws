@@ -54,7 +54,7 @@ const EmailTemplateSummary = ({
                   label: 'Festify Resource Name (FRN)',
                   formatter: (_: unknown, row: unknown) => {
                     const { _id } = row as IBESEmailTemplate;
-                    const value = generateFRN('bes', '', 'instance', _id);
+                    const value = generateFRN('bes', '', 'template', _id);
                     return (
                       <div className="flex items-center gap-2">
                         <span>{readableFRN(value as string)}</span>

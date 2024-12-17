@@ -10,3 +10,12 @@ export interface SendEmailData extends Record<string, unknown> {
     text?: string;
   };
 }
+
+export interface SendTemplatedEmailData extends Record<string, unknown> {
+  destination: {
+    to: string[];
+    cc?: string[];
+    bcc?: string[];
+  };
+  variables: Record<string, unknown>;
+}

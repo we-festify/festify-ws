@@ -50,4 +50,9 @@ export const besActions: {
     alias: 'bes:SendEmail',
     description: 'Grants permission to send an email using the instance',
   },
+  {
+    alias: 'bes:SendTemplatedEmail',
+    description:
+      'Grants permission to send an email using the instance and template',
+  }
 ];
