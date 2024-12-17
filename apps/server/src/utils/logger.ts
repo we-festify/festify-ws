@@ -1,5 +1,20 @@
+import { env } from '@/config';
 import winston from 'winston';
+import { AppError, CommonErrors } from './errors';
 const { colorize, combine, timestamp, printf, json } = winston.format;
+import { Logtail } from '@logtail/node';
+import { LogtailTransport } from '@logtail/winston';
+
+const sourceToken = env.logs.betterstack.sourceToken;
+if (!sourceToken) {
+  throw new AppError(
+    CommonErrors.InternalServerError.name,
+    CommonErrors.InternalServerError.statusCode,
+    'Log tail source token is missing in the environment variables',
+    true,
+  );
+}
+const logtail = new Logtail(sourceToken);
 
 // General logger
 const logger = winston.createLogger({
@@ -18,7 +33,10 @@ const logger = winston.createLogger({
 const authLogger = winston.createLogger({
   level: 'info',
   format: combine(timestamp(), json()),
-  transports: [new winston.transports.File({ filename: 'logs/auth.log' })],
+  transports: [
+    new winston.transports.File({ filename: 'logs/auth.log' }),
+    new LogtailTransport(logtail),
+  ],
 });
 
 // Error logger

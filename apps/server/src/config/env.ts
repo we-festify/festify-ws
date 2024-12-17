@@ -97,6 +97,12 @@ export default {
   ipToGeo: {
     endpoint: process.env.IP_TO_GEO_ENDPOINT,
   },
+  logs: {
+    betterstack: {
+      sourceId: process.env.BETTERSTACK_SOURCE_ID,
+      sourceToken: process.env.BETTERSTACK_SOURCE_TOKEN,
+    },
+  },
 
   // docs
   docs: {
