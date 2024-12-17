@@ -1,4 +1,4 @@
-import { useTheme } from '@rootui/providers/theme-provider';
+import { Theme, useTheme } from '@rootui/providers/theme-provider';
 import { cn } from '../utils/tw';
 
 interface ServiceGradientHeroProps {
@@ -14,6 +14,24 @@ const ServiceGradientHero = ({
 }: Readonly<ServiceGradientHeroProps>) => {
   const { theme } = useTheme();
 
+  const getBackgroundImage = (theme: Theme) => {
+    if (theme === 'dark') {
+      return `radial-gradient(100% 140% at 60% -10%,#02081700,#020817 75%)`;
+    } else if (theme === 'light') {
+      return `radial-gradient(100% 140% at 60% -10%,#fff0,#fff 75%)`;
+    }
+
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+      .matches
+      ? 'dark'
+      : 'light';
+
+    if (systemTheme === 'dark') {
+      return `radial-gradient(100% 140% at 60% -10%,#02081700,#020817 75%)`;
+    }
+    return `radial-gradient(100% 140% at 60% -10%,#fff0,#fff 75%)`;
+  };
+
   return (
     <div
       className={cn(className)}
@@ -26,10 +44,7 @@ const ServiceGradientHero = ({
       <div
         className={cn(className)}
         style={{
-          backgroundImage:
-            theme === 'dark'
-              ? `radial-gradient(100% 140% at 60% -10%,#02081700,#020817 75%)`
-              : `radial-gradient(100% 140% at 60% -10%,#fff0,#fff 75%)`,
+          backgroundImage: getBackgroundImage(theme),
         }}
       >
         {children}
