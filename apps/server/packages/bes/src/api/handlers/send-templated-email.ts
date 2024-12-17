@@ -14,15 +14,9 @@ export const validator: ValidatorFunction<string[], unknown> = (
   resource,
   data,
 ) => {
-  const isValidResource = validateFRNForServiceAndResourceType(
-    resource[0],
-    'bes',
-    'instance',
-  ) && validateFRNForServiceAndResourceType(
-    resource[1],
-    'bes',
-    'template',
-    );
+  const isValidResource =
+    validateFRNForServiceAndResourceType(resource[0], 'bes', 'instance') &&
+    validateFRNForServiceAndResourceType(resource[1], 'bes', 'template');
 
   const dataSchema = Joi.object().keys({
     destination: Joi.object().keys({
@@ -47,7 +41,7 @@ export const handlerWithoutDeps =
     const { accountId } = context.user;
     const { resourceId: instanceAlias } = parseFRN(resource[0]);
     const { resourceId: templateId } = parseFRN(resource[1]);
-    
+
     const instance = await instanceModel
       .findOne({
         account: accountId,
@@ -71,17 +65,16 @@ export const handlerWithoutDeps =
     }
 
     // get template
-    const template = await emailTemplateModel
-        .findOne({
-            account: accountId,
-            _id: templateId,
-        });
+    const template = await emailTemplateModel.findOne({
+      account: accountId,
+      _id: templateId,
+    });
     if (!template) {
-        throw new AppError(
-            CommonErrors.NotFound.name,
-            CommonErrors.NotFound.statusCode,
-            `Template not found`,
-        );
+      throw new AppError(
+        CommonErrors.NotFound.name,
+        CommonErrors.NotFound.statusCode,
+        `Template not found`,
+      );
     }
 
     // replace variables in template body, subject
