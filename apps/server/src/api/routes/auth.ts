@@ -22,6 +22,8 @@ router.get(
 router.post(
   '/register',
   rateLimiterMiddleware.emailLimiter,
+  userAgentMiddleware.extractDeviceInfo.bind(userAgentMiddleware),
+  userAgentMiddleware.extractIpInfo.bind(userAgentMiddleware),
   authValidators.validateRegisterData.bind(authValidators),
   authController.register.bind(authController),
 );
@@ -40,6 +42,8 @@ router.post(
 router.post(
   '/login',
   rateLimiterMiddleware.limiter,
+  userAgentMiddleware.extractDeviceInfo.bind(userAgentMiddleware),
+  userAgentMiddleware.extractIpInfo.bind(userAgentMiddleware),
   authValidators.validateLoginData.bind(authValidators),
   authController.loginUser.bind(authController),
 );
@@ -51,12 +55,14 @@ router.post(
 router.get(
   '/refresh',
   rateLimiterMiddleware.limiter,
+  userAgentMiddleware.extractDeviceInfo.bind(userAgentMiddleware),
   userAgentMiddleware.extractIpInfo.bind(userAgentMiddleware),
   authController.refreshTokens.bind(authController),
 );
 router.post(
   '/reset-password',
   rateLimiterMiddleware.emailLimiter,
+  userAgentMiddleware.extractDeviceInfo.bind(userAgentMiddleware),
   userAgentMiddleware.extractIpInfo.bind(userAgentMiddleware),
   authValidators.validateResetPasswordData.bind(authValidators),
   authController.resetPassword.bind(authController),
@@ -64,6 +70,8 @@ router.post(
 router.post(
   '/request-password-reset',
   rateLimiterMiddleware.emailLimiter,
+  userAgentMiddleware.extractDeviceInfo.bind(userAgentMiddleware),
+  userAgentMiddleware.extractIpInfo.bind(userAgentMiddleware),
   authValidators.validateRequestPasswordResetData.bind(authValidators),
   authController.requestPasswordReset.bind(authController),
 );

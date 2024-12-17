@@ -11,6 +11,11 @@ export interface RootUserRegisterResponse {
   account: Partial<IAccount>;
 }
 
+export interface RootUserRegisterConfig {
+  deviceInfo: IDeviceInfo;
+  ipInfo?: IUserIPInfo;
+}
+
 export interface RootUserOTPLoginDTO {
   token: string;
   otp: string;
@@ -34,6 +39,7 @@ export type RootUserLoginResponse =
 
 export interface RootUserLoginConfig {
   deviceInfo: IDeviceInfo;
+  ipInfo?: IUserIPInfo;
 }
 
 export interface ManagedUserLoginDTO {
@@ -74,6 +80,11 @@ export interface UserRefreshTokensConfig {
 export interface RequestPasswordResetDTO {
   email: string;
   logoutAllDevices?: boolean;
+}
+
+export interface RequestPasswordResetConfig {
+  deviceInfo: IDeviceInfo;
+  ipInfo?: IUserIPInfo;
 }
 
 export interface ResetPasswordDTO {

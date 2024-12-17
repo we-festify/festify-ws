@@ -67,8 +67,12 @@ export class AuthController {
   public async register(req: e.Request, res: e.Response, next: e.NextFunction) {
     try {
       const { user } = req.body;
+      const { deviceInfo, ipInfo } = req;
 
-      const { account } = await this.authService.register(user);
+      const { account } = await this.authService.register(user, {
+        deviceInfo,
+        ipInfo,
+      });
 
       return res.status(201).json({ account });
     } catch (err) {
@@ -117,18 +121,13 @@ export class AuthController {
   ) {
     try {
       const { user: userData } = req.body;
-      const { useragent } = req;
-      const deviceInfo: IDeviceInfo = {
-        browser: useragent?.browser ?? 'unknown',
-        os: useragent?.os ?? 'unknown',
-        platform: useragent?.platform ?? 'unknown',
-        source: useragent?.source ?? 'unknown',
-      };
+      const { deviceInfo, ipInfo } = req;
 
       if (userData.type === 'fws-user') {
         const { type, ...user } = userData;
         const response = await this.authService.loginManagedUser(user, {
           deviceInfo,
+          ipInfo,
         });
 
         const { accessToken, refreshToken } = response;
@@ -145,7 +144,7 @@ export class AuthController {
 
       const response = await this.authService.loginRootWithEmailAndPassword(
         userData,
-        { deviceInfo },
+        { deviceInfo, ipInfo },
       );
 
       if ('requires2FA' in response) {
@@ -236,11 +235,15 @@ export class AuthController {
   ) {
     try {
       const { email, logoutAllDevices } = req.body;
+      const { deviceInfo, ipInfo } = req;
 
-      await this.authService.requestPasswordReset({
-        email: email,
-        logoutAllDevices,
-      });
+      await this.authService.requestPasswordReset(
+        {
+          email: email,
+          logoutAllDevices,
+        },
+        { deviceInfo, ipInfo },
+      );
 
       return res.status(200).json({ message: 'Password reset request sent' });
     } catch (err) {
@@ -256,26 +259,13 @@ export class AuthController {
     try {
       const { user, logoutAllDevices } = req.body;
       const { deviceInfo, ipInfo } = req;
-      const defaultIpInfo = {
-        ip: 'unknown',
-        location: {
-          country: 'unknown',
-          state: 'unknown',
-          city: 'unknown',
-          zip: 'unknown',
-          timezone: 'unknown',
-        },
-      };
 
       await this.authService.resetPassword(
         {
           user,
           logoutAllDevices,
         },
-        {
-          deviceInfo,
-          ipInfo: ipInfo ?? defaultIpInfo,
-        },
+        { deviceInfo, ipInfo },
       );
 
       return res.status(200).json({ message: 'Password reset successfully' });
