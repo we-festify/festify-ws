@@ -696,6 +696,16 @@ export class AuthService {
       );
     }
 
+    authLogger.info(
+      `Managed user ${managedUser.alias} logged in under ${foundAccount.email}`,
+      {
+        deviceInfo: config.deviceInfo,
+        ipInfo: config.ipInfo,
+        alias: managedUser.alias,
+        email: foundAccount.email,
+      },
+    );
+
     const payload = await this.generatePayload({
       type: 'fws-user',
       user: managedUser,
