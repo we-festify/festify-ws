@@ -9,6 +9,7 @@ export interface SendEmailData extends Record<string, unknown> {
     html?: string;
     text?: string;
   };
+  instance: string;
 }
 
 export interface SendTemplatedEmailData extends Record<string, unknown> {
@@ -18,4 +19,6 @@ export interface SendTemplatedEmailData extends Record<string, unknown> {
     bcc?: string[];
   };
   variables: Record<string, unknown>;
+  instance: string;
+  template: string;
 }

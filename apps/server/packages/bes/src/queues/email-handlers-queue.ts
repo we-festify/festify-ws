@@ -1,7 +1,7 @@
 import { env } from '@/config';
 import { Queue } from 'bullmq';
 
-export const sendEmailHandlerQueue = new Queue('bes-send-email-handler', {
+export const besEmailHandlersQueue = new Queue('bes-email-handlers', {
   connection: {
     host: env.redis.host,
     port: env.redis.port,

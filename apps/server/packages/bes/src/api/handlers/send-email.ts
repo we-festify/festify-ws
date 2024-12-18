@@ -78,15 +78,7 @@ export const handlerWithoutDeps =
         html: data.content.html,
         text: data.content.text,
       },
-      sender: {
-        email: instance.senderEmail,
-        encryptedPassword: instance.senderPassword,
-        name: instance.senderName,
-      },
-      smtp: {
-        host: instance.smtpHost,
-        port: instance.smtpPort,
-      },
+      instance: instance.id,
     });
 
     return { jobId };

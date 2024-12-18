@@ -5,7 +5,6 @@ import { EventsPublisher, publisher } from '@bes/events';
 import BESEmailTemplate from '@bes/models/bes-email-template';
 import BESInstance from '@bes/models/bes-instance';
 import { SendTemplatedEmailData } from '@bes/types/handlers/send-email';
-import { replaceVariables } from '@bes/utils/email-template';
 import { IBESEmailTemplate, IBESInstance } from '@sharedtypes/bes';
 import Joi from 'joi';
 import { Model } from 'mongoose';
@@ -77,33 +76,19 @@ export const handlerWithoutDeps =
       );
     }
 
-    // replace variables in template body, subject
-    const subject = template.subject;
-    const body = template.body;
-    const replacedBody = replaceVariables(body, data.variables);
-    const replacedSubject = replaceVariables(subject, data.variables);
-
     // add job to queue
-    const jobId = await eventsPublisher.handlers.publishSendEmailEvent({
-      destination: {
-        to: data.destination.to,
-        cc: data.destination.cc,
-        bcc: data.destination.bcc,
+    const jobId = await eventsPublisher.handlers.publishSendTemplatedEmailEvent(
+      {
+        destination: {
+          to: data.destination.to,
+          cc: data.destination.cc,
+          bcc: data.destination.bcc,
+        },
+        variables: data.variables,
+        instance: instance._id,
+        template: template._id,
       },
-      subject: replacedSubject,
-      content: {
-        text: replacedBody,
-      },
-      sender: {
-        email: instance.senderEmail,
-        encryptedPassword: instance.senderPassword,
-        name: instance.senderName,
-      },
-      smtp: {
-        host: instance.smtpHost,
-        port: instance.smtpPort,
-      },
-    });
+    );
 
     return { jobId };
   };
