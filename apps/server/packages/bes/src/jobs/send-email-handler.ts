@@ -111,7 +111,6 @@ const handleSendTemplatedEmail = async (
     smtpPasswordEncryptionKey,
   );
   // send email
-  console.time(`sendEmail`);
   const response = await sendEmail({
     to: data.destination.to,
     cc: data.destination.cc,
@@ -130,7 +129,6 @@ const handleSendTemplatedEmail = async (
     },
     from: `${instance.senderName} <${instance.senderEmail}>`,
   });
-  console.timeEnd(`sendEmail`);
   return response;
 };
 
@@ -138,7 +136,6 @@ const worker = new Worker<BesSendEmailJobDTO>(
   'bes-email-handlers',
   async (job) => {
     const data = job.data;
-    console.log(`Handler Email Job started: ${job.id}`);
     switch (data.event) {
       case 'send-email':
         return await handleSendEmail(data, BESInstance);
@@ -154,12 +151,21 @@ const worker = new Worker<BesSendEmailJobDTO>(
   },
   {
     connection: redis,
+    concurrency: 10,
   },
 );
 
-worker.on('completed', () => {
-  // const timeElapsed = job.processedOn
-  //   ? job.processedOn - job.timestamp
-  //   : 'unknown';
-  // console.log(`Handler Email Job completed: ${job.id} in ${timeElapsed}ms`);
+worker.on('completed', (job) => {
+  const timeElapsed = job.processedOn
+    ? job.processedOn - job.timestamp
+    : 'unknown';
+  console.log(`Handler Email Job completed: ${job.id} in ${timeElapsed}ms`);
+});
+
+worker.on('error', (err) => {
+  console.log(`Handler Email Job error: `, err);
+});
+
+worker.on('failed', (_job, err) => {
+  console.log(`Handler Email Job failed: `, err);
 });
