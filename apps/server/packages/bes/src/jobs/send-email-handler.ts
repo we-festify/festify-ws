@@ -15,8 +15,8 @@ import { IBESEmailTemplate, IBESInstance } from '@sharedtypes/bes';
 import { Worker } from 'bullmq';
 import { Model } from 'mongoose';
 
-const senderPasswordEncryptionKey = env.bes.sender_password_secret;
-if (!senderPasswordEncryptionKey) {
+const smtpPasswordEncryptionKey = env.bes.smtp_password_secret;
+if (!smtpPasswordEncryptionKey) {
   throw new AppError(
     CommonErrors.InternalServerError.name,
     CommonErrors.InternalServerError.statusCode,
@@ -32,7 +32,7 @@ const handleSendEmail = async (
   const { data } = jobData;
   const instance = await instanceModel
     .findById(data.instance)
-    .select('+senderPassword');
+    .select('+smtpPassword');
   if (!instance) {
     // this should not happen if the instance
     // is checked before shipping the job
@@ -44,9 +44,9 @@ const handleSendEmail = async (
   }
 
   // decrypt password
-  const senderPasswordDecrypted = decryptUsingAES(
-    instance.senderPassword,
-    senderPasswordEncryptionKey,
+  const smtpPasswordDecrypted = decryptUsingAES(
+    instance.smtpPassword,
+    smtpPasswordEncryptionKey,
   );
   // send email
   const response = await sendEmail({
@@ -62,8 +62,8 @@ const handleSendEmail = async (
       port: instance.smtpPort,
       secure: false,
       auth: {
-        user: instance.senderEmail,
-        pass: senderPasswordDecrypted,
+        user: instance.smtpUser,
+        pass: smtpPasswordDecrypted,
       },
     },
     from: `${instance.senderName} <${instance.senderEmail}>`,
@@ -79,7 +79,7 @@ const handleSendTemplatedEmail = async (
   const { data } = jobData;
   const instance = await instanceModel
     .findById(data.instance)
-    .select('+senderPassword');
+    .select('+smtpPassword');
   if (!instance) {
     // this should not happen if the instance is checked before shipping the job
     throw new AppError(
@@ -106,9 +106,9 @@ const handleSendTemplatedEmail = async (
   const replacedBody = replaceVariables(emailTemplate.body, data.variables);
 
   // decrypt password
-  const senderPasswordDecrypted = decryptUsingAES(
-    instance.senderPassword,
-    senderPasswordEncryptionKey,
+  const smtpPasswordDecrypted = decryptUsingAES(
+    instance.smtpPassword,
+    smtpPasswordEncryptionKey,
   );
   // send email
   console.time(`sendEmail`);
@@ -124,8 +124,8 @@ const handleSendTemplatedEmail = async (
       port: instance.smtpPort,
       secure: false,
       auth: {
-        user: instance.senderEmail,
-        pass: senderPasswordDecrypted,
+        user: instance.smtpUser,
+        pass: smtpPasswordDecrypted,
       },
     },
     from: `${instance.senderName} <${instance.senderEmail}>`,

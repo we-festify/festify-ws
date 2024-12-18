@@ -16,8 +16,12 @@ export const updateInstanceSchema = z.object({
     .min(3, 'Sender name must be at least 3 characters')
     .max(50, 'Sender name must be at most 50 characters'),
   senderEmail: z.string().email('Invalid email address'),
-  senderPassword: z.string().min(1, 'Password is required'),
+
   // smtp details
+  smtpUser: z.string().min(3, 'SMTP user must be at least 3 characters'),
+  smtpPassword: z
+    .string()
+    .min(3, 'SMTP password must be at least 3 characters'),
   smtpHost: z.string().optional(),
   smtpPort: z.coerce.number().optional(),
 });
@@ -27,8 +31,9 @@ export const defaultValues = {
 
   senderName: 'Test Sender',
   senderEmail: 'test@example.com',
-  senderPassword: 'password',
 
+  smtpUser: '',
+  smtpPassword: '',
   smtpHost: 'smtp.ethereal.email',
   smtpPort: 587,
 };

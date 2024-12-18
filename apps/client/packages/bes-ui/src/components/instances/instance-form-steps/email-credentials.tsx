@@ -45,24 +45,6 @@ const EmailCredentials = () => {
                   </FormFieldItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="senderPassword"
-                render={({ field }) => (
-                  <FormFieldItem
-                    label="Sender password"
-                    description="The password for the email address that will be used to authenticate the sender."
-                  >
-                    <Input
-                      key="sender-password"
-                      placeholder="password"
-                      type="password"
-                      autoComplete="off"
-                      {...field}
-                    />
-                  </FormFieldItem>
-                )}
-              />
             </div>
           </FormSection>
         </CardContent>

@@ -41,12 +41,10 @@ export const handlerWithoutDeps =
     const { resourceId: instanceAlias } = parseFRN(resource[0]);
     const { resourceId: templateId } = parseFRN(resource[1]);
 
-    const instance = await instanceModel
-      .findOne({
-        account: accountId,
-        alias: instanceAlias,
-      })
-      .select('+senderPassword');
+    const instance = await instanceModel.findOne({
+      account: accountId,
+      alias: instanceAlias,
+    });
     if (!instance) {
       throw new AppError(
         CommonErrors.NotFound.name,

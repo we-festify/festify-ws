@@ -19,10 +19,40 @@ const SMTPSettings = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
+                name="smtpUser"
+                render={({ field }) => (
+                  <FormFieldItem
+                    label="User"
+                    description="The username that will be used to authenticate with the SMTP server."
+                  >
+                    <Input key="smtp-user" placeholder="username" {...field} />
+                  </FormFieldItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="smtpPassword"
+                render={({ field }) => (
+                  <FormFieldItem
+                    label="Password"
+                    description="The password that will be used to authenticate with the SMTP server."
+                  >
+                    <Input
+                      key="smtp-password"
+                      placeholder="password"
+                      type="password"
+                      autoComplete="off"
+                      {...field}
+                    />
+                  </FormFieldItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="smtpHost"
                 render={({ field }) => (
                   <FormFieldItem
-                    label="SMTP host"
+                    label="Host"
                     description="The host of the SMTP server that will be used to send emails from your instance."
                   >
                     <Input
@@ -38,7 +68,7 @@ const SMTPSettings = () => {
                 name="smtpPort"
                 render={({ field }) => (
                   <FormFieldItem
-                    label="SMTP port"
+                    label="Port"
                     description="The port of the SMTP server that will be used to send emails from your instance."
                   >
                     <Input key="smtp-port" placeholder="587" {...field} />
