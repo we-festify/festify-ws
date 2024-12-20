@@ -1,4 +1,4 @@
-import { createTransport } from 'nodemailer';
+import { createTransport, Transporter } from 'nodemailer';
 
 type SmtpConfig = {
   host: string;
@@ -21,8 +21,24 @@ type SendEmailParams = {
   text?: string;
 };
 
+const transportCache = new Map<string, Transporter>();
+
 export const sendEmail = ({ smtpConfig, ...emailConfig }: SendEmailParams) => {
-  const transporter = createTransport(smtpConfig);
+  const cacheKey = `${smtpConfig.host}:${smtpConfig.port}:${smtpConfig.auth.user}`;
+  let transporter = transportCache.get(cacheKey);
+  if (!transporter) {
+    transporter = createTransport({
+      host: smtpConfig.host,
+      port: smtpConfig.port,
+      secure: smtpConfig.secure,
+      auth: {
+        user: smtpConfig.auth.user,
+        pass: smtpConfig.auth.pass,
+      },
+      pool: true,
+    });
+    transportCache.set(cacheKey, transporter);
+  }
 
   return transporter.sendMail({
     from: emailConfig.from,

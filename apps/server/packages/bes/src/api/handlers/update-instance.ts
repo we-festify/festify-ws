@@ -14,8 +14,8 @@ import { IBESInstance } from '@sharedtypes/bes';
 import Joi from 'joi';
 import { Model } from 'mongoose';
 
-const senderPasswordEncryptionKey = env.bes.sender_password_secret;
-if (!senderPasswordEncryptionKey) {
+const smtpPasswordEncryptionKey = env.bes.smtp_password_secret;
+if (!smtpPasswordEncryptionKey) {
   throw new AppError(
     CommonErrors.InternalServerError.name,
     CommonErrors.InternalServerError.statusCode,
@@ -40,8 +40,9 @@ export const validator: ValidatorFunction<string, unknown> = (
 
       senderName: Joi.string(),
       senderEmail: Joi.string().email(),
-      senderPassword: Joi.string(),
 
+      smtpUser: Joi.string(),
+      smtpPassword: Joi.string(),
       smtpHost: Joi.string(),
       smtpPort: Joi.number(),
     }),
@@ -119,9 +120,9 @@ const handlerWithoutDeps =
       });
     }
 
-    instance.senderPassword = encryptUsingAES(
-      instance.senderPassword,
-      senderPasswordEncryptionKey,
+    instance.smtpPassword = encryptUsingAES(
+      instance.smtpPassword,
+      smtpPasswordEncryptionKey,
     );
 
     await instanceModel.updateOne(

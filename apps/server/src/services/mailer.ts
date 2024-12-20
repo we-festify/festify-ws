@@ -38,6 +38,8 @@ export class MailerService {
         user: env.mail.auth.user,
         pass: env.mail.auth.pass,
       },
+      pool: true,
+      maxMessages: Infinity,
     };
     this.transporter = nodemailer.createTransport(transportOptions);
 

@@ -111,7 +111,7 @@ export default {
 
   // BES
   bes: {
-    sender_password_secret: process.env.BES_PASSWORD_SECRET,
+    smtp_password_secret: process.env.BES_PASSWORD_SECRET,
     instance_email_verification_secret:
       process.env.BES_INSTANCE_EMAIL_VERIFICATION_SECRET,
     instance_email_verification_expires_in:

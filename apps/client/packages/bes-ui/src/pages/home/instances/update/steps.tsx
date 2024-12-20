@@ -13,13 +13,13 @@ export const stepsForCreatingInstance: MultiStepFormStep[] = [
   {
     title: 'Email credentials',
     component: <EmailCredentials />,
-    validateNext: (form) =>
-      form.trigger(['senderName', 'senderEmail', 'senderPassword']),
+    validateNext: (form) => form.trigger(['senderName', 'senderEmail']),
   },
   {
     title: 'SMTP settings',
     component: <SMTPSettings />,
-    validateNext: (form) => form.trigger(['smtpHost', 'smtpPort']),
+    validateNext: (form) =>
+      form.trigger(['smtpUser', 'smtpPassword', 'smtpHost', 'smtpPort']),
   },
   {
     title: 'Review and create',

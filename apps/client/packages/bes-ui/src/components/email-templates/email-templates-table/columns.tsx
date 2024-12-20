@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 
-import { IBESEmailTemplate } from '@sharedtypes/bes/emailTemplate';
+import { IBESEmailTemplate } from '@sharedtypes/bes/email-template';
 import { formatTimeAgoFromNow } from '@sharedui/utils/time';
 import { Link } from 'react-router-dom';
 import { besPaths } from '@sharedui/constants/paths';

@@ -1,14 +1,28 @@
-import { BesSendEmailJobDTO } from '@bes/types/jobs/send-email-handler';
+import {
+  SendEmailData,
+  SendTemplatedEmailData,
+} from '@bes/types/handlers/send-email';
 import { Queue } from 'bullmq';
 
 export class BesHandlerEventsPublisher {
-  private readonly sendEmailHandlerQueue: Queue;
+  private readonly emailHandlersQueue: Queue;
   constructor(sendEmailHandlerQueue: Queue) {
-    this.sendEmailHandlerQueue = sendEmailHandlerQueue;
+    this.emailHandlersQueue = sendEmailHandlerQueue;
   }
 
-  public async publishSendEmailEvent(data: BesSendEmailJobDTO) {
-    const response = await this.sendEmailHandlerQueue.add('send-email', data);
+  public async publishSendEmailEvent(data: SendEmailData) {
+    const response = await this.emailHandlersQueue.add('send-email', {
+      event: 'send-email',
+      data,
+    });
+    return response.id;
+  }
+
+  public async publishSendTemplatedEmailEvent(data: SendTemplatedEmailData) {
+    const response = await this.emailHandlersQueue.add('send-email', {
+      event: 'send-templated-email',
+      data,
+    });
     return response.id;
   }
 }

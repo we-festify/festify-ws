@@ -44,12 +44,10 @@ export const handlerWithoutDeps =
     const { accountId } = context.user;
     const { resourceId: alias } = parseFRN(resource);
 
-    const instance = await instanceModel
-      .findOne({
-        account: accountId,
-        alias,
-      })
-      .select('+senderPassword');
+    const instance = await instanceModel.findOne({
+      account: accountId,
+      alias,
+    });
     if (!instance) {
       throw new AppError(
         CommonErrors.NotFound.name,
@@ -78,15 +76,7 @@ export const handlerWithoutDeps =
         html: data.content.html,
         text: data.content.text,
       },
-      sender: {
-        email: instance.senderEmail,
-        encryptedPassword: instance.senderPassword,
-        name: instance.senderName,
-      },
-      smtp: {
-        host: instance.smtpHost,
-        port: instance.smtpPort,
-      },
+      instance: instance._id,
     });
 
     return { jobId };
