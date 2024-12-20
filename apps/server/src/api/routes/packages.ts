@@ -13,4 +13,9 @@ import AIMRouter from '@aim/api';
 router.use('/aim', AIMRouter);
 logger.info('AIM package loaded');
 
+// Analog
+import AnalogRouter from '@analog/api';
+router.use('/analog', AnalogRouter);
+logger.info('Analog package loaded');
+
 export default router;

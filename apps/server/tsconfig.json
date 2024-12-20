@@ -15,6 +15,7 @@
       "@/*": ["./src/*"],
       "@bes/*": ["./packages/bes/src/*"],
       "@aim/*": ["./packages/aim/src/*"],
+      "@analog/*": ["./packages/analog/src/*"],
 
       "@sharedtypes/*": ["../../sharedtypes/src/*"]
     }

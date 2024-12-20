@@ -114,11 +114,15 @@
       "@rootui/*": ["./apps/client/packages/rootui/src/*"],
       "@sharedui/*": ["./apps/client/packages/sharedui/src/*"],
       "@bes-ui/*": ["./apps/client/packages/bes-ui/src/*"],
+      "@aim-ui/*": ["./apps/client/packages/aim-ui/src/*"],
+      "@analog-ui/*": ["./apps/client/packages/analog-ui/src/*"],
 
       "@server/*": ["./apps/server/src/*"],
       "@root/*": ["./apps/server/packages/root/src/*"],
       "@shared/*": ["./apps/server/packages/shared/src/*"],
-      "@bes/*": ["./apps/server/packages/bes/src/*"]
+      "@bes/*": ["./apps/server/packages/bes/src/*"],
+      "@aim/*": ["./apps/server/packages/aim/src/*"],
+      "@analog/*": ["./apps/server/packages/analog/src/*"]
     }
   },
   "include": ["apps/server/src**/*.ts", "apps/server/packages/**/src/**/*.ts"],
