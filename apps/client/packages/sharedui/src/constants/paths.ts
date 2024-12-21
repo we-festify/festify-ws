@@ -42,10 +42,21 @@ export const aimPaths = {
   POLICY_DETAILS: '/aim/home/policies/details',
 } as const;
 
+export const analogPaths = {
+  SERVICE: '/analog',
+
+  HOME: '/analog/home',
+
+  DOCS: '/docs/analog',
+
+  INSIGHTS: '/analog/home/insights',
+} as const;
+
 const paths = {
   root: rootPaths,
   bes: besPaths,
   aim: aimPaths,
+  analog: analogPaths,
 } as const;
 
 export default paths;

@@ -15,4 +15,11 @@ export const services: IServiceMeta[] = [
     src: '/logos/AIM.png',
     description: 'A service that manages access and identity',
   },
+  {
+    name: 'Festify Analog',
+    shortName: 'Analog',
+    alias: 'analog',
+    src: '/logos/Analog.png',
+    description: 'A service that provides analytics, logs and insights',
+  },
 ] as const;

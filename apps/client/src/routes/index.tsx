@@ -4,11 +4,13 @@ import HomePage from '@/pages/home-page';
 import DocsPage from '@/pages/docs';
 import NotFound from '@/pages/not-found';
 
+import Dashboard from '@/pages/dashboard';
+import RequireLoggedIn from '@sharedui/routes/require-logged-in';
+
 // packages
 import BESServiceIndex from '@bes-ui/index';
 import AIMServiceIndex from '@aim-ui/index';
-import Dashboard from '@/pages/dashboard';
-import RequireLoggedIn from '@sharedui/routes/require-logged-in';
+import AnalogServiceIndex from '@analog-ui/index';
 
 const AppRoutes = () => {
   return (
@@ -23,6 +25,7 @@ const AppRoutes = () => {
       {/* d-services */}
       <Route path="bes/*" element={<BESServiceIndex />} />
       <Route path="aim/*" element={<AIMServiceIndex />} />
+      <Route path="analog/*" element={<AnalogServiceIndex />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
