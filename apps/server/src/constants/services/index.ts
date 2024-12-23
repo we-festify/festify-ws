@@ -1,3 +1,4 @@
+import features from '@/config/features';
 import { IServiceMeta } from '@sharedtypes/meta';
 
 export const services: IServiceMeta[] = [
@@ -15,4 +16,11 @@ export const services: IServiceMeta[] = [
     src: '/logos/AIM.png',
     description: 'A service that manages access and identity',
   },
-] as const;
+  features.festifyAnalogService && {
+    name: 'Festify Analog',
+    shortName: 'Analog',
+    alias: 'analog',
+    src: '/logos/Analog.png',
+    description: 'A service that provides analytics, logs and insights',
+  },
+].filter(Boolean) as IServiceMeta[];

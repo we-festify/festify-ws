@@ -17,6 +17,7 @@
     "@": "dist/apps/server/src",
     "@bes": "dist/apps/server/packages/bes/src",
     "@aim": "dist/apps/server/packages/aim/src",
+    "@analog": "dist/apps/server/packages/analog/src",
     "@sharedtypes": "../../sharedtypes/src/*"
   },
   "keywords": [],
