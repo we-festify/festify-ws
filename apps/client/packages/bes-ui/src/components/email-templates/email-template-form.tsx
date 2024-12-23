@@ -7,7 +7,8 @@ import EmailTemplateBodyInput from './email-template-body-input';
 interface EmailTemplate {
   name: string;
   subject: string;
-  body: string;
+  text?: string;
+  html?: string;
 }
 
 interface EmailTemplateFormProps {

@@ -11,8 +11,8 @@ import {
 interface EmailTemplate {
   name: string;
   subject: string;
-  text: string;
-  html: string;
+  text?: string;
+  html?: string;
 }
 
 interface EmailTeplateBodyInputProps {
