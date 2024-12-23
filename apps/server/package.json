@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "jest --passWithNoTests --coverage",
-    "start": "cross-env NODE_ENV=production node dist/src/app.js",
+    "start": "cross-env NODE_ENV=production node dist/apps/server/src/app.js",
     "lint": "eslint \"src/**/*.{js,ts}\" && eslint \"packages/**/*.{js,ts}\"",
     "format": "prettier --write \"src/**/*.{js,ts}\" && prettier --write \"packages/**/*.{js,ts}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,ts}\" && eslint --fix \"packages/**/*.{js,ts}\"",
@@ -14,10 +14,10 @@
     "load": "ts-node -r tsconfig-paths/register scripts/load.ts"
   },
   "_moduleAliases": {
-    "@": "dist/src",
-    "@bes": "dist/packages/bes/src",
-    "@aim": "dist/packages/aim/src",
-    "@analog": "dist/packages/analog/src",
+    "@": "dist/apps/server/src",
+    "@bes": "dist/apps/server/packages/bes/src",
+    "@aim": "dist/apps/server/packages/aim/src",
+    "@analog": "dist/apps/server/packages/analog/src",
     "@sharedtypes": "../../sharedtypes/src/*"
   },
   "keywords": [],

@@ -89,6 +89,13 @@ const EmailTemplatePreview = ({
 const getPreviewTemplate = (template: IBESEmailTemplate) => {
   const variablesRegex = /\{\{([a-zA-Z_]+)\}\}/g;
 
+  if (template.html) {
+    return template.html.replace(
+      variablesRegex,
+      (_: unknown, variable: string) => `<span>{{${variable}}}</span>`,
+    );
+  }
+
   return `
 <html>
 <head>
@@ -111,7 +118,7 @@ const getPreviewTemplate = (template: IBESEmailTemplate) => {
     </style>
 </head>
 <body>
-    <pre>${template.body.replace(
+    <pre>${template.text?.replace(
       variablesRegex,
       (_: unknown, variable: string) => `<span>{{${variable}}}</span>`,
     )}</pre>
