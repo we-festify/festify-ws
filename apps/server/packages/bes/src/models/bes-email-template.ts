@@ -22,9 +22,15 @@ const BESEmailTemplateSchema = new mongoose.Schema<IBESEmailTemplate>(
       type: String,
       required: true,
     },
-    body: {
+    text: {
       type: String,
-      required: true,
+      minlength: 10,
+      maxlength: 1000,
+    },
+    html: {
+      type: String,
+      minlength: 10,
+      maxlength: 10000,
     },
 
     variables: {

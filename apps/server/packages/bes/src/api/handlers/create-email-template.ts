@@ -11,7 +11,8 @@ export const validator: ValidatorFunction<null, unknown> = (_, data) => {
     template: Joi.object().keys({
       name: Joi.string().required(),
       subject: Joi.string().required(),
-      body: Joi.string().required(),
+      text: Joi.string(),
+      html: Joi.string(),
     }),
   });
   const { error: dataError } = dataSchema.validate(data);
@@ -45,7 +46,7 @@ const handlerWithoutDeps =
     }
 
     template.variables = extractVariableNames(
-      template.subject + '\n' + template.body,
+      template.subject + '\n' + template.text + '\n' + template.html,
     );
 
     await emailTemplateModel.create({
