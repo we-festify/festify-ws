@@ -19,6 +19,7 @@ router.use(authMiddleware.requireAuthenticated.bind(authMiddleware));
 // register the routes for all handlers (in the handlers folder)
 const handlerFiles = fs.readdirSync(__dirname + '/../handlers');
 handlerFiles.forEach(async (file) => {
+  if (!file.endsWith('.ts')) return;
   const imported = await import(__dirname + '/../handlers/' + file);
   const actionName = imported.name as string;
   router.post(
