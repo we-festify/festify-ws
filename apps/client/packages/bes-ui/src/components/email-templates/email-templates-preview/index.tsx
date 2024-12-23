@@ -111,7 +111,7 @@ const getPreviewTemplate = (template: IBESEmailTemplate) => {
     </style>
 </head>
 <body>
-    <pre>${template.body.replace(
+    <pre>${template.text?.replace(
       variablesRegex,
       (_: unknown, variable: string) => `<span>{{${variable}}}</span>`,
     )}</pre>
