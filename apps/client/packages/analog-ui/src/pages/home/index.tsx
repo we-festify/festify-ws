@@ -6,10 +6,10 @@ import {
   PageSideNav,
 } from '@sharedui/components/page-layout';
 import HomePage from './home-page';
-import { analogPaths } from '@sharedui/constants/paths';
-
-import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
 import Insights from './insights';
+import { analogPaths } from '@sharedui/constants/paths';
+import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
+import Toolbox from '@analog-ui/components/toolbox';
 
 const AnalogHome = () => {
   const navigate = useNavigate();
@@ -29,12 +29,17 @@ const AnalogHome = () => {
       <PageContent>
         <Routes>
           <Route path="" element={<HomePage />} />
-          <Route path="insights" element={<Insights />} />
+          <Route
+            path="insights"
+            element={
+              <>
+                <Insights />
+                <PageSecondaryNav leading={<Toolbox />} />
+              </>
+            }
+          />
         </Routes>
       </PageContent>
-      <Routes>
-        <Route path="insights" element={<PageSecondaryNav />} />
-      </Routes>
     </PageLayout>
   );
 };

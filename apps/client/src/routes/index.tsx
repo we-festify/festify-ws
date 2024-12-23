@@ -11,6 +11,7 @@ import RequireLoggedIn from '@sharedui/routes/require-logged-in';
 import BESServiceIndex from '@bes-ui/index';
 import AIMServiceIndex from '@aim-ui/index';
 import AnalogServiceIndex from '@analog-ui/index';
+import features from '@/config/features';
 
 const AppRoutes = () => {
   return (
@@ -25,7 +26,9 @@ const AppRoutes = () => {
       {/* d-services */}
       <Route path="bes/*" element={<BESServiceIndex />} />
       <Route path="aim/*" element={<AIMServiceIndex />} />
-      <Route path="analog/*" element={<AnalogServiceIndex />} />
+      {features.festifyAnalogService && (
+        <Route path="analog/*" element={<AnalogServiceIndex />} />
+      )}
 
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import AnalogService from '../pages/service';
 import RequireLoggedIn from '@sharedui/routes/require-logged-in';
-import BESHome from '../pages/home';
+import AnalogHome from '../pages/home';
 
 import { Helmet } from 'react-helmet';
 
@@ -15,7 +15,7 @@ const AnalogRoutes = () => {
       <Routes>
         <Route path="" element={<AnalogService />} />
         <Route path="home/*" element={<RequireLoggedIn />}>
-          <Route path="*" element={<BESHome />} />
+          <Route path="*" element={<AnalogHome />} />
         </Route>
       </Routes>
     </>

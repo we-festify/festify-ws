@@ -25,10 +25,10 @@ const CardHeader = React.forwardRef<
     ref={ref}
     className={cn(
       'flex flex-col space-y-1.5 p-6 pb-0',
-      className,
       variant === 'muted'
         ? 'bg-muted/50 py-3 px-6 dark:bg-muted-foreground/5'
         : 'bg-card',
+      className,
     )}
     {...props}
   />
