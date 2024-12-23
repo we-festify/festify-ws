@@ -14,9 +14,9 @@
     "load": "ts-node -r tsconfig-paths/register scripts/load.ts"
   },
   "_moduleAliases": {
-    "@": "dist/src",
-    "@bes": "dist/packages/bes/src",
-    "@aim": "dist/packages/aim/src",
+    "@": "dist/apps/server/src",
+    "@bes": "dist/apps/server/packages/bes/src",
+    "@aim": "dist/apps/server/packages/aim/src",
     "@sharedtypes": "../../sharedtypes/src/*"
   },
   "keywords": [],
