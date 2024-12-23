@@ -21,8 +21,8 @@ export const validator: ValidatorFunction<string, unknown> = (
     template: Joi.object().keys({
       name: Joi.string(),
       subject: Joi.string(),
-      text: Joi.string(),
-      html: Joi.string(),
+      text: Joi.string().min(0).max(1000).optional(),
+      html: Joi.string().min(0).max(10000).optional(),
     }),
   });
   const { error: dataError } = dataSchema.validate(data);
