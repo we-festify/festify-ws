@@ -9,8 +9,12 @@ export const updateEmailTemplateSchema = z.object({
     .string()
     .min(3, 'Subject must be at least 3 characters')
     .max(100, 'Subject must be at most 100 characters'),
-  body: z
+  text: z
     .string()
-    .min(10, 'Body must be at least 10 characters')
-    .max(1000, 'Body must be at most 1000 characters'),
+    .max(1000, 'Body text must be at most 1000 characters')
+    .optional(),
+  html: z
+    .string()
+    .max(10000, 'Body HTML must be at most 10000 characters')
+    .optional(),
 });

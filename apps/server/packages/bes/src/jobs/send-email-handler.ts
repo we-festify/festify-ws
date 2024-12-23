@@ -103,7 +103,14 @@ const handleSendTemplatedEmail = async (
     emailTemplate.subject,
     data.variables,
   );
-  const replacedBody = replaceVariables(emailTemplate.body, data.variables);
+  const replacedText = replaceVariables(
+    emailTemplate.text ?? '',
+    data.variables,
+  );
+  const replacedHtml = replaceVariables(
+    emailTemplate.html ?? '',
+    data.variables,
+  );
 
   // decrypt password
   const smtpPasswordDecrypted = decryptUsingAES(
@@ -116,7 +123,8 @@ const handleSendTemplatedEmail = async (
     cc: data.destination.cc,
     bcc: data.destination.bcc,
     subject: replacedSubject,
-    text: replacedBody,
+    text: replacedText,
+    html: replacedHtml,
 
     smtpConfig: {
       host: instance.smtpHost,

@@ -9,7 +9,8 @@ export interface IBESEmailTemplate extends Record<string, unknown> {
   // Template details
   name: string;
   subject: string;
-  body: string;
+  text?: string;
+  html?: string;
 
   // Metadata
   variables: string[];

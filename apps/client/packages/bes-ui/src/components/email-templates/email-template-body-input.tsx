@@ -11,7 +11,8 @@ import {
 interface EmailTemplate {
   name: string;
   subject: string;
-  body: string;
+  text?: string;
+  html?: string;
 }
 
 interface EmailTeplateBodyInputProps {
@@ -20,33 +21,44 @@ interface EmailTeplateBodyInputProps {
 
 const EmailTemplateBodyInput = ({ form }: EmailTeplateBodyInputProps) => {
   return (
-    <FormField
-      control={form.control}
-      name="body"
-      render={({ field }) => (
-        <FormFieldItem
-          label="Body of the email"
-          description="The body of the email that will be sent to the recipients."
-        >
-          <Tabs defaultValue="simple">
-            <TabsList>
-              <TabsTrigger value="simple">Simple</TabsTrigger>
-              <TabsTrigger value="html" disabled>
-                HTML (coming soon)
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="simple" className="mt-4">
+    <Tabs defaultValue="text">
+      <TabsList>
+        <TabsTrigger value="text">Text</TabsTrigger>
+        <TabsTrigger value="html">HTML</TabsTrigger>
+      </TabsList>
+      <TabsContent value="text" className="mt-4">
+        <FormField
+          control={form.control}
+          name="text"
+          render={({ field }) => (
+            <FormFieldItem
+              label="Email Body (Text)"
+              description="This is the raw text body of the email. Use this field to write the email body in plain text format."
+            >
               <Textarea
                 key="email-body"
                 placeholder="raw text body"
                 {...field}
               />
-            </TabsContent>
-            <TabsContent value="html">Coming soon.</TabsContent>
-          </Tabs>
-        </FormFieldItem>
-      )}
-    />
+            </FormFieldItem>
+          )}
+        />
+      </TabsContent>
+      <TabsContent value="html" className="mt-4">
+        <FormField
+          control={form.control}
+          name="html"
+          render={({ field }) => (
+            <FormFieldItem
+              label="Email Body (HTML)"
+              description="This is the html body of the email. Use this field to write the email body in html format."
+            >
+              <Textarea key="email-body" placeholder="html body" {...field} />
+            </FormFieldItem>
+          )}
+        />
+      </TabsContent>
+    </Tabs>
   );
 };
 
