@@ -15,9 +15,10 @@ export interface IBESInstance extends Record<string, unknown> {
   // Credentials
   senderName: string;
   senderEmail: string;
-  senderPassword: string;
 
   // SMTP details
+  smtpUser: string;
+  smtpPassword: string;
   smtpHost: string;
   smtpPort: number;
 

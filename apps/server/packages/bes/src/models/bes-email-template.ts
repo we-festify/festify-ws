@@ -3,8 +3,6 @@ import { IBESEmailTemplate } from '@sharedtypes/bes';
 
 const BESEmailTemplateSchema = new mongoose.Schema<IBESEmailTemplate>(
   {
-    // fws:bes:account:template:id
-
     // Account details
     account: {
       type: mongoose.Schema.Types.ObjectId,

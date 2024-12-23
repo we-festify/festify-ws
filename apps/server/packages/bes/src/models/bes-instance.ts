@@ -38,14 +38,19 @@ const BESInstanceSchema = new mongoose.Schema<IBESInstance>(
       required: true,
       trim: true,
     },
-    senderPassword: {
+
+    // SMTP details
+    smtpUser: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    smtpPassword: {
       type: String,
       required: true,
       trim: true,
       select: false,
     },
-
-    // SMTP details
     smtpHost: {
       type: String,
       required: true,

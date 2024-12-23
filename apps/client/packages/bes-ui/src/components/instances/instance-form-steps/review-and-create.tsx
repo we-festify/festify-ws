@@ -53,21 +53,22 @@ const steps = [
     keys: [
       { key: 'senderName', label: 'Sender name' },
       { key: 'senderEmail', label: 'Sender email address' },
-      {
-        key: 'senderPassword',
-        label: 'Sender password',
-        formatter: () => (
-          <span className="text-muted-foreground text-xs">
-            hidden for security reasons
-          </span>
-        ),
-      },
     ],
   },
   {
     index: 2,
     title: 'SMTP settings',
     keys: [
+      { key: 'smtpUser', label: 'SMTP user' },
+      {
+        key: 'smtpPassword',
+        label: 'SMTP password',
+        formatter: () => (
+          <span className="text-muted-foreground text-xs">
+            hidden for security reasons
+          </span>
+        ),
+      },
       { key: 'smtpHost', label: 'SMTP host' },
       { key: 'smtpPort', label: 'SMTP port' },
     ],

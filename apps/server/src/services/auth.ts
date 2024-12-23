@@ -35,6 +35,8 @@ import {
   ManagedUserTokenPayload,
   ManagedUserLoginDTO,
   ManagedUserLoginResponse,
+  RootUserRegisterConfig,
+  RequestPasswordResetConfig,
 } from '../types/services/auth.d';
 import { authenticator } from 'otplib';
 import { IManagedUser } from '@sharedtypes/aim/managed-user';
@@ -44,6 +46,7 @@ import {
   encryptUsingAES,
 } from '@/utils/crypto';
 import * as e from 'express';
+import { authLogger } from '@/utils/logger';
 
 export class AuthService {
   private readonly accountModel: Model<IAccount>;
@@ -358,6 +361,7 @@ export class AuthService {
 
   public async register(
     registerDTO: RootUserRegisterDTO,
+    config: RootUserRegisterConfig,
   ): Promise<RootUserRegisterResponse> {
     const existingAccount = await this.accountModel.findOne({
       email: registerDTO.email,
@@ -392,6 +396,12 @@ export class AuthService {
     const account = this.excludeAccountSensitiveFields(
       createdAccount.toObject(),
     );
+
+    authLogger.info(`Root user registered with email ${account.email}`, {
+      deviceInfo: config.deviceInfo,
+      ipInfo: config.ipInfo,
+      email: account.email,
+    });
 
     // Publish events
     this.publisher.auth.publishRootUserEmailVerificationRequestedEvent({
@@ -515,6 +525,14 @@ export class AuthService {
       foundAccount.passwordHash || '',
     );
     if (!passwordsMatch) {
+      authLogger.warn(
+        `Incorrect password for root user ${foundAccount.email}`,
+        {
+          deviceInfo: config.deviceInfo,
+          ipInfo: config.ipInfo,
+          email: foundAccount.email,
+        },
+      );
       throw new AppError(
         CommonErrors.Unauthorized.name,
         CommonErrors.Unauthorized.statusCode,
@@ -561,6 +579,12 @@ export class AuthService {
         'Email not verified. Please verify your email.',
       );
     }
+
+    authLogger.info(`Root user logged in with email ${foundAccount.email}`, {
+      deviceInfo: config.deviceInfo,
+      ipInfo: config.ipInfo,
+      email: foundAccount.email,
+    });
 
     // Filter expired refresh tokens
     await this.refreshTokenModel.deleteMany({
@@ -656,12 +680,31 @@ export class AuthService {
       managedUser.passwordHash ?? '',
     );
     if (!passwordsMatch) {
+      authLogger.warn(
+        `Incorrect password for managed user ${managedUser.alias} under ${foundAccount.email}`,
+        {
+          deviceInfo: config.deviceInfo,
+          ipInfo: config.ipInfo,
+          alias: managedUser.alias,
+          email: foundAccount.email,
+        },
+      );
       throw new AppError(
         CommonErrors.Unauthorized.name,
         CommonErrors.Unauthorized.statusCode,
         'Incorrect alias or password',
       );
     }
+
+    authLogger.info(
+      `Managed user ${managedUser.alias} logged in under ${foundAccount.email}`,
+      {
+        deviceInfo: config.deviceInfo,
+        ipInfo: config.ipInfo,
+        alias: managedUser.alias,
+        email: foundAccount.email,
+      },
+    );
 
     const payload = await this.generatePayload({
       type: 'fws-user',
@@ -795,6 +838,14 @@ export class AuthService {
     );
 
     if (!isAuthenticatedDevice && foundRefreshToken.userType === 'fws-root') {
+      authLogger.error(
+        `Device mismatch for root user ${foundAccount.email}. Logging out from all devices.`,
+        {
+          deviceInfo,
+          ipInfo,
+          email: foundAccount.email,
+        },
+      );
       // Sign out from all devices for root users
       await this.refreshTokenModel.deleteMany({
         account: foundRefreshToken.account,
@@ -814,6 +865,15 @@ export class AuthService {
         'Device mismatch. Logged out from all devices.',
       );
     } else if (!isAuthenticatedDevice) {
+      authLogger.error(
+        `Device mismatch for managed user ${foundRefreshToken.alias} under ${foundAccount.email}. Logging out from all devices.`,
+        {
+          deviceInfo,
+          ipInfo,
+          alias: foundRefreshToken.alias,
+          email: foundAccount.email,
+        },
+      );
       // Sign out from all devices for managed users
       await this.refreshTokenModel.deleteMany({
         account: foundRefreshToken.account,
@@ -868,7 +928,10 @@ export class AuthService {
     };
   }
 
-  public async requestPasswordReset(data: RequestPasswordResetDTO) {
+  public async requestPasswordReset(
+    data: RequestPasswordResetDTO,
+    config: RequestPasswordResetConfig,
+  ): Promise<void> {
     const foundAccount = await this.accountModel
       .findOne({
         email: data.email,
@@ -881,6 +944,15 @@ export class AuthService {
         'Account not found',
       );
     }
+
+    authLogger.info(
+      `Password reset requested for root user ${foundAccount.email}`,
+      {
+        deviceInfo: config.deviceInfo,
+        ipInfo: config.ipInfo,
+        email: foundAccount.email,
+      },
+    );
 
     const payload = await this.generatePayload({
       type: 'fws-root',
@@ -933,6 +1005,14 @@ export class AuthService {
     );
 
     if (!isTokenValid && !passwordsMatch) {
+      authLogger.warn(
+        `Incorrect current password or token for root user ${foundAccount.email}`,
+        {
+          deviceInfo: config.deviceInfo,
+          ipInfo: config.ipInfo,
+          email: foundAccount.email,
+        },
+      );
       throw new AppError(
         CommonErrors.Unauthorized.name,
         CommonErrors.Unauthorized.statusCode,

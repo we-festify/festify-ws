@@ -13,12 +13,12 @@ import { IBESInstance } from '@sharedtypes/bes';
 import Joi from 'joi';
 import { Model } from 'mongoose';
 
-const senderPasswordEncryptionKey = env.bes.sender_password_secret;
-if (!senderPasswordEncryptionKey) {
+const smtpPasswordEncryptionKey = env.bes.smtp_password_secret;
+if (!smtpPasswordEncryptionKey) {
   throw new AppError(
     CommonErrors.InternalServerError.name,
     CommonErrors.InternalServerError.statusCode,
-    '"Sender password encryption key" not found in BES environment variables',
+    '"SMTP password encryption key" not found in BES environment variables',
     true,
   );
 }
@@ -30,8 +30,9 @@ export const validator: ValidatorFunction<null, unknown> = (_, data) => {
 
       senderName: Joi.string().required(),
       senderEmail: Joi.string().email().required(),
-      senderPassword: Joi.string().required(),
 
+      smtpUser: Joi.string().required(),
+      smtpPassword: Joi.string().required(),
       smtpHost: Joi.string().required(),
       smtpPort: Joi.number().required(),
     }),
@@ -67,9 +68,9 @@ const handlerWithoutDeps =
       );
     }
 
-    instance.senderPassword = encryptUsingAES(
-      instance.senderPassword,
-      senderPasswordEncryptionKey,
+    instance.smtpPassword = encryptUsingAES(
+      instance.smtpPassword,
+      smtpPasswordEncryptionKey,
     );
 
     const createdInstance = await instanceModel.create({

@@ -32,7 +32,24 @@ export class UserAgentMiddleware {
   ) {
     try {
       const ipInfo = await fetchIPaddressInfo(req.ip || 'unknown');
-      req.ipInfo = ipInfo;
+      const defaultIpInfo = {
+        ip: 'unknown',
+        location: {
+          country: 'unknown',
+          state: 'unknown',
+          city: 'unknown',
+          zip: 'unknown',
+          timezone: 'unknown',
+        },
+      };
+      req.ipInfo = {
+        ...defaultIpInfo,
+        ...(ipInfo || {}),
+        location: {
+          ...defaultIpInfo.location,
+          ...(ipInfo?.location || {}),
+        },
+      };
       next();
     } catch (_err) {
       errorLogger.error('IP fetch error');
