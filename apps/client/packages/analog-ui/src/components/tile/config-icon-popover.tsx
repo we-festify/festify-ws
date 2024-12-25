@@ -1,15 +1,20 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@sharedui/primitives/dropdown-menu';
 
 import { Bolt } from 'lucide-react';
 import { useTile } from '.';
+import { useCanvas } from '../canvas/provider';
+import { usePageLayout } from '@sharedui/components/page-layout';
 
 const ConfigIconPopover = () => {
-  const { deleteTile } = useTile();
+  const { openSecondaryNav } = usePageLayout();
+  const { setActiveActionTab, setActiveTileId } = useCanvas();
+  const { tile, deleteTile } = useTile();
 
   return (
     <DropdownMenu>
@@ -18,11 +23,22 @@ const ConfigIconPopover = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem
-          onClick={deleteTile}
-          className="focus:bg-destructive focus:text-destructive-foreground"
+          onClick={() => {
+            setActiveTileId(tile._id);
+            setActiveActionTab('config');
+            openSecondaryNav();
+          }}
         >
-          Delete
+          Configure
         </DropdownMenuItem>
+        <DropdownMenuGroup title="Danger Zone" className="text-destructive">
+          <DropdownMenuItem
+            onClick={deleteTile}
+            className="focus:bg-destructive focus:text-destructive-foreground"
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

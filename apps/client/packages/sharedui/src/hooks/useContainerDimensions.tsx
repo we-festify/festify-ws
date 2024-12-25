@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 
 function useContainerDimensions(containerRef: React.RefObject<HTMLDivElement>) {
   const [dimensions, setDimensions] = useState({
-    width: 0,
-    height: 0,
+    width: 4,
+    height: 4,
   });
 
   useEffect(() => {
@@ -15,6 +15,7 @@ function useContainerDimensions(containerRef: React.RefObject<HTMLDivElement>) {
         if (entry.target === containerRef.current) {
           const { width, height } = entry.contentRect;
           setDimensions({ width, height });
+          console.log('dimensions changed', { width, height });
         }
       }
     });

@@ -1,13 +1,28 @@
-import { IChartTile } from '@sharedtypes/analog';
+import Chart from '../charts/chart';
+import { useTile } from '.';
+import ChartLayout from '../charts/layout';
+import ErrorBoundary from '@sharedui/components/error-boundary';
+import { ChartDropAllowedTypes, ChartTypes } from '@analog-ui/constants/charts';
 
-interface ChartTileProps {
-  tile: IChartTile;
-}
+const ChartTile = () => {
+  const { chartMetadata: metadata } = useTile();
 
-const ChartTile = ({ tile }: ChartTileProps) => {
+  if (!Object.values(ChartTypes).includes(metadata.type)) {
+    return <p className="text-red-500">Invalid chart type: {metadata.type}</p>;
+  }
+
   return (
-    <div>
-      Chart {tile._id} - {tile.metadata.type}
+    <div className="w-full h-full">
+      <ErrorBoundary>
+        <ChartLayout
+          xAllowedTypes={ChartDropAllowedTypes[metadata.type].x}
+          yAllowedTypes={ChartDropAllowedTypes[metadata.type].y}
+          xLabel={ChartDropAllowedTypes[metadata.type].xLabel}
+          yLabel={ChartDropAllowedTypes[metadata.type].yLabel}
+        >
+          <Chart />
+        </ChartLayout>
+      </ErrorBoundary>
     </div>
   );
 };

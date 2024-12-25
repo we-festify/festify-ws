@@ -12,7 +12,8 @@ import {
 import Tile from '../tile';
 import ErrorBoundary from '@sharedui/components/error-boundary';
 import { useDragDropManager } from 'react-dnd';
-import { ChartTileData } from '../toolbox/charts';
+import { ChartTileData } from '../action-tabs/charts';
+import { useCanvas } from './provider';
 
 const Canvas = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,6 +22,7 @@ const Canvas = () => {
   const layout = useSelector(selectLayout);
   const dispatch = useDispatch();
   const dndManager = useDragDropManager();
+  const { activeActionTab } = useCanvas();
 
   const handleDrop = (layout: Layout[], item: Layout, _e: Event) => {
     try {
@@ -60,7 +62,7 @@ const Canvas = () => {
     try {
       const type = dndManager.getMonitor().getItemType();
       if (type !== 'chart') return false;
-      return { h: 2, w: 4 };
+      return undefined;
     } catch (_) {
       return false;
     }
@@ -73,12 +75,12 @@ const Canvas = () => {
           layout={layout}
           isDraggable={true}
           isResizable={true}
-          isDroppable={true}
+          isDroppable={activeActionTab === 'charts'}
           width={width}
           rowHeight={100}
           compactType="vertical"
           margin={[16, 16]}
-          droppingItem={{ i: '0', w: 4, h: 2 }} // This is the item that will be dropped
+          droppingItem={{ i: '0', w: 4, h: 1 }} // This is the item that will be dropped
           onDrop={handleDrop}
           onDropDragOver={handleDropDragOver}
           onLayoutChange={handleLayoutChange}

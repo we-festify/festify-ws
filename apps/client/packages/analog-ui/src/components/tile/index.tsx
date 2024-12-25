@@ -1,15 +1,25 @@
-import { removeTile, selectTileById } from '@analog-ui/store/canvas';
+import {
+  removeTile,
+  selectTileById,
+  updateTile,
+} from '@analog-ui/store/canvas';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { GripVertical } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import ChartTile from './chart-tile';
 import { createContext, useContext } from 'react';
-import { ITile } from '@sharedtypes/analog';
+import { ITile } from '@analog-ui/types/canvas';
 import ConfigIconPopover from './config-icon-popover';
+import { IChartMetadata } from '@analog-ui/types/charts';
+import { useCanvas } from '../canvas/provider';
+import { cn } from '@sharedui/utils/tw';
 
 interface ITileContext {
   tile: ITile;
   deleteTile: () => void;
+
+  chartMetadata: IChartMetadata;
+  updateChartMetadata: (metadata: IChartMetadata) => void;
 }
 
 const TileContext = createContext<ITileContext | null>(null);
@@ -19,6 +29,7 @@ interface TileProps {
 }
 
 const Tile = ({ tileId }: TileProps) => {
+  const { activeTileId } = useCanvas();
   const tile = useSelector(selectTileById(tileId));
   const dispatch = useDispatch();
 
@@ -29,11 +40,30 @@ const Tile = ({ tileId }: TileProps) => {
     deleteTile: () => {
       dispatch(removeTile(tile._id));
     },
+
+    chartMetadata: tile.metadata as IChartMetadata,
+    updateChartMetadata: (metadata: IChartMetadata) => {
+      dispatch(
+        updateTile({
+          ...tile,
+          metadata: {
+            ...tile.metadata,
+            ...metadata,
+          },
+        }),
+      );
+    },
   };
 
   return (
     <TileContext.Provider value={contextValue}>
-      <Card className="react-grid-item select-none w-full h-full">
+      <Card
+        className={cn(
+          'react-grid-item select-none w-full h-full flex flex-col',
+          activeTileId === tile._id &&
+            'outline outline-offset-2 outline-2 outline-secondary',
+        )}
+      >
         <CardHeader variant="muted" className="py-2 px-2">
           <div className="flex justify-between">
             <GripVertical
@@ -45,8 +75,8 @@ const Tile = ({ tileId }: TileProps) => {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-0">
-          {tile.type === 'chart' && <ChartTile tile={tile} />}
+        <CardContent className="p-0 flex h-full">
+          {tile.type === 'chart' && <ChartTile />}
         </CardContent>
       </Card>
     </TileContext.Provider>

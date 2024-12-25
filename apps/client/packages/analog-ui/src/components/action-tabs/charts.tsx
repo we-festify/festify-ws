@@ -8,12 +8,15 @@ import {
 } from 'lucide-react';
 import Draggable from '@sharedui/components/dnd/draggable';
 
-const chartTypes = [
-  { name: 'Bar', icon: BarChart },
-  { name: 'Line', icon: LineChart },
-  { name: 'Pie', icon: PieChart },
-  { name: 'Doughnut', icon: LifeBuoy },
-  { name: 'Radar', icon: Radar },
+const chartTypes: {
+  name: string;
+  icon: typeof BarChart;
+}[] = [
+  { name: 'bar', icon: BarChart },
+  { name: 'line', icon: LineChart },
+  { name: 'pie', icon: PieChart },
+  { name: 'doughnut', icon: LifeBuoy },
+  { name: 'radar', icon: Radar },
   { name: 'Scatter', icon: ScatterChart },
 ];
 
@@ -34,7 +37,18 @@ const Charts = () => {
           data={
             {
               type: 'chart',
-              metadata: { type: chartType.name },
+              metadata: {
+                type: chartType.name,
+                option: {}, // no user customisations for a new chart
+                xAxis: {
+                  metric: { key: 'xAxis', type: 'number' },
+                  collection: 'xAxisCollection',
+                },
+                yAxis: {
+                  metric: { key: 'yAxis', type: 'number' },
+                  collection: 'yAxisCollection',
+                },
+              },
             } as ChartTileData
           }
           render={() => (

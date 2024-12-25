@@ -1,4 +1,4 @@
-import { ChartMetadata } from './charts';
+import { IChartMetadata } from '@analog-ui/types/charts';
 
 export interface ICanvas extends Record<string, unknown> {
   _id: string;
@@ -18,7 +18,7 @@ export interface IChartTile extends Record<string, unknown> {
     h: number;
   };
 
-  metadata: ChartMetadata;
+  metadata: IChartMetadata;
 }
 
 export interface IFilterTile extends Record<string, unknown> {
@@ -32,7 +32,9 @@ export interface IFilterTile extends Record<string, unknown> {
     h: number;
   };
 
-  metadata: {};
+  metadata: {
+    something: string;
+  };
 }
 
 export type ITile = IChartTile | IFilterTile;
