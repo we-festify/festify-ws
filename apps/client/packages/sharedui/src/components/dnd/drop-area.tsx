@@ -1,38 +1,35 @@
-import { useRef } from 'react';
+import React from 'react';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 
 type DropAreaProps = {
-  type: string;
-  render?: ({ isOver }: { isOver: boolean }) => JSX.Element;
-  onDrop?: (
-    item: unknown,
-    monitor: DropTargetMonitor,
-    ref: React.RefObject<HTMLDivElement>,
-  ) => void;
-  [key: string]: unknown;
+  type: string | string[];
+  render?: ({
+    isOver,
+  }: {
+    isOver: boolean;
+    draggingItemType: string | null;
+  }) => JSX.Element;
+  onDragDrop?: (item: unknown, monitor: DropTargetMonitor) => void;
 };
 
-const DropArea = ({ type, render, onDrop, ...props }: DropAreaProps) => {
-  const dropRef = useRef<HTMLDivElement | null>(null);
-  const [{ isOver }, drop] = useDrop(() => ({
+const DropArea = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & DropAreaProps
+>(({ type, render, onDragDrop, ...props }, _ref) => {
+  const [{ isOver, draggingItemType }, drop] = useDrop(() => ({
     accept: type,
-    drop: (item, monitor) => onDrop?.(item, monitor, dropRef),
+    drop: (item, monitor) => onDragDrop?.(item, monitor),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
+      draggingItemType: monitor.getItemType()?.toString() ?? null,
     }),
   }));
 
   return (
-    <div
-      ref={(node) => {
-        drop(node);
-        dropRef.current = node;
-      }}
-      {...props}
-    >
-      {render?.({ isOver })}
+    <div ref={drop} {...props}>
+      {render?.({ isOver, draggingItemType })}
     </div>
   );
-};
+});
 
 export default DropArea;

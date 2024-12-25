@@ -25,6 +25,11 @@ interface PageLayoutContextProps {
     height: string;
   };
   setHeader: (value: { isOpen: boolean; height: string }) => void;
+
+  openSecondaryNav: () => void;
+  closeSecondaryNav: () => void;
+  openSideNav: () => void;
+  closeSideNav: () => void;
 }
 
 const DocsLayoutContext = createContext({} as PageLayoutContextProps);
@@ -62,6 +67,32 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       setPageNavBar,
       header,
       setHeader,
+      openSecondaryNav: () => {
+        setPageNavBar((prev) => ({
+          ...prev,
+          isOpen: true,
+          width: '72',
+        }));
+      },
+      closeSecondaryNav: () => {
+        setPageNavBar({
+          ...pageNavBar,
+          isOpen: false,
+        });
+      },
+      openSideNav: () => {
+        setSideNavBar({
+          ...sideNavBar,
+          isOpen: true,
+          width: '72',
+        });
+      },
+      closeSideNav: () => {
+        setSideNavBar({
+          ...sideNavBar,
+          isOpen: false,
+        });
+      },
     }),
     [sideNavBar, setSideNavBar, pageNavBar, setPageNavBar, header, setHeader],
   );

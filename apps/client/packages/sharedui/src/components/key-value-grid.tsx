@@ -57,11 +57,11 @@ function KeyValueGrid<TData extends Record<string, unknown>>({
         style={{ gridTemplateColumns: `repeat(${colsCount}, auto)` }}
       >
         {keys
-          ? keys.map((currentKey) => {
+          ? keys.map((currentKey, index) => {
               if (typeof currentKey === 'string') {
                 return (
                   <KeyValue
-                    key={currentKey}
+                    key={`${currentKey}-${index}`}
                     label={currentKey}
                     value={data[currentKey]}
                     row={data}
@@ -70,7 +70,7 @@ function KeyValueGrid<TData extends Record<string, unknown>>({
               } else {
                 return (
                   <KeyValue
-                    key={currentKey.key}
+                    key={`${currentKey.key}-${index}`}
                     label={currentKey.label ?? currentKey.key}
                     value={data[currentKey.key]}
                     formatter={currentKey.formatter}

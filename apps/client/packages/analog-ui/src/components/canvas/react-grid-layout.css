@@ -29,7 +29,7 @@
   border-radius: var(--radius);
   opacity: 0.1;
   transition-duration: 100ms;
-  z-index: 2;
+  z-index: 50;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -39,8 +39,9 @@
 
 .react-grid-item > .react-resizable-handle {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  z-index: 50;
+  width: 10px;
+  height: 10px;
   bottom: 0;
   right: 0;
   cursor: se-resize;
@@ -49,8 +50,8 @@
 .react-grid-item > .react-resizable-handle::after {
   content: '';
   position: absolute;
-  right: 3px;
-  bottom: 3px;
+  right: 5px;
+  bottom: 5px;
   width: 5px;
   height: 5px;
   border-right: 2px solid hsl(var(--muted-foreground));
