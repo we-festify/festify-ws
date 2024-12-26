@@ -5,15 +5,15 @@ export type ChartType = 'bar' | 'pie' | 'line';
 
 export interface IChartMetadata extends Record<string, unknown> {
   type: ChartType;
-  xAxis: {
-    collection: string;
-    metric: AnalogMetric;
+  xAxis?: {
+    collection?: string;
+    metric?: AnalogMetric;
   };
-  yAxis: {
-    collection: string;
-    metric: AnalogMetric;
+  yAxis?: {
+    collection?: string;
+    metric?: AnalogMetric;
   };
-  option: Partial<EChartsOption>;
+  option?: Partial<EChartsOption>;
 }
 
 export interface BarChartMetadata extends IChartMetadata {

@@ -4,11 +4,17 @@ import {
   TabsList,
   TabsTrigger,
 } from '@sharedui/primitives/tabs';
-import { ChartSpline, Database as DatabaseIcon, Settings } from 'lucide-react';
+import {
+  ChartSpline,
+  Database as DatabaseIcon,
+  Filter,
+  Settings,
+} from 'lucide-react';
 import Charts from './charts';
 import Metrics from './metrics';
 import OptionConfig from './option-config';
 import { useCanvas } from '../canvas/provider';
+import Filters from './filters';
 
 const ActionTabs = () => {
   const {
@@ -35,9 +41,14 @@ const ActionTabs = () => {
         <TabsTrigger value="charts">
           <ChartSpline size={16} />
         </TabsTrigger>
-        {activeTileId && (
+        {activeTileId && activeActionTab === 'config' && (
           <TabsTrigger value="config">
             <Settings size={16} />
+          </TabsTrigger>
+        )}
+        {activeTileId && activeActionTab === 'filters' && (
+          <TabsTrigger value="filters">
+            <Filter size={16} />
           </TabsTrigger>
         )}
       </TabsList>
@@ -47,9 +58,14 @@ const ActionTabs = () => {
       <TabsContent value="charts">
         <Charts />
       </TabsContent>
-      {activeTileId && (
+      {activeTileId && activeActionTab === 'config' && (
         <TabsContent value="config">
           <OptionConfig />
+        </TabsContent>
+      )}
+      {activeTileId && activeActionTab === 'filters' && (
+        <TabsContent value="filters">
+          <Filters />
         </TabsContent>
       )}
     </Tabs>

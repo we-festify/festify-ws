@@ -19,23 +19,25 @@ const ChartLayout = ({
   xLabel = 'x axis',
   yLabel = 'y axis',
 }: PropsWithChildren<ChartLayoutProps>) => {
-  const { chartMetadata: metadata, updateChartMetadata } = useTile();
+  const { chartMetadata: metadata, updateTile } = useTile();
   const handleXAxisDrop = (metric: AnalogMetric, collection: string) => {
-    updateChartMetadata({
-      ...metadata,
-      xAxis: {
-        metric,
-        collection,
+    updateTile({
+      metadata: {
+        xAxis: {
+          metric,
+          collection,
+        },
       },
     });
   };
 
   const handleYAxisDrop = (metric: AnalogMetric, collection: string) => {
-    updateChartMetadata({
-      ...metadata,
-      yAxis: {
-        metric,
-        collection,
+    updateTile({
+      metadata: {
+        yAxis: {
+          metric,
+          collection,
+        },
       },
     });
   };
@@ -44,6 +46,20 @@ const ChartLayout = ({
     <div className="size-full flex flex-col relative">
       {children}
 
+      {/* Empty data components */}
+      <div
+        className={cn(
+          'absolute inset-0 flex items-center justify-center opacity-50',
+          metadata.xAxis?.metric && metadata.yAxis?.metric ? 'hidden' : 'flex',
+        )}
+      >
+        <div className="text-center">
+          <p className="text-base font-semibold">No chart to show</p>
+          <p className="text-sm">set x and y axis</p>
+        </div>
+      </div>
+
+      {/* Drop areas */}
       <DropArea
         type={xAllowedTypes}
         className="z-10 absolute left-0 right-0 bottom-0 w-full h-8 flex flex-col-reverse"

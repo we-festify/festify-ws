@@ -9,7 +9,7 @@ import {
   IOptionData,
   IPieOptionData,
 } from '@analog-ui/types/option';
-import { merge } from '@sharedui/utils/object';
+import { createDeepMergedObject } from '@sharedui/utils/object';
 import {
   BarSeriesOption,
   EChartsOption,
@@ -43,6 +43,10 @@ export const generateOptionForBarChart = (
   metadata: BarChartMetadata,
   data: IBarOptionData,
 ): EChartsOption => {
+  if (!metadata.xAxis || !metadata.yAxis) return {};
+  if (!metadata.yAxis.metric || !metadata.xAxis.metric) return {};
+  if (!data.x || !data.y) return {};
+
   const xAxis: XAXisOption = {
     type: 'category',
     data: data.x,
@@ -51,14 +55,19 @@ export const generateOptionForBarChart = (
   const series: BarSeriesOption[] = [
     {
       type: 'bar',
-      name: metadata.yAxis.metric.key,
+      name: metadata.yAxis.metric?.key,
       data: data.y,
     },
   ];
   const dataOption = { xAxis, yAxis, series };
 
   // {} <-- default <-- user customisations <-- data
-  const option = merge({}, baseOption, metadata.option, dataOption);
+  const option = createDeepMergedObject(
+    {},
+    baseOption,
+    metadata?.option ?? {},
+    dataOption,
+  );
   return option;
 };
 
@@ -66,6 +75,10 @@ export const generateOptionForPieChart = (
   metadata: PieChartMetadata,
   data: IPieOptionData,
 ): EChartsOption => {
+  if (!metadata.xAxis || !metadata.yAxis) return {};
+  if (!metadata.yAxis.metric || !metadata.xAxis.metric) return {};
+  if (!data.x || !data.y) return {};
+
   const legend: LegendOption = {
     data: data.x.map((d) => d.toString()),
   };
@@ -84,6 +97,11 @@ export const generateOptionForPieChart = (
   const dataOption = { legend, series };
 
   // {} <-- default <-- user customisations <-- data
-  const option = merge({}, baseOption, metadata.option, dataOption);
+  const option = createDeepMergedObject(
+    {},
+    baseOption,
+    metadata.option ?? {},
+    dataOption,
+  );
   return option;
 };

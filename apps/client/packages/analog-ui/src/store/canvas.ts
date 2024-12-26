@@ -1,5 +1,6 @@
 import { ITile } from '@analog-ui/types/canvas';
 import { createSlice } from '@reduxjs/toolkit';
+import { deepMergeObjects } from '@sharedui/utils/object';
 import { Layout } from 'react-grid-layout';
 
 export interface CanvasState {
@@ -30,7 +31,9 @@ const canvasSlice = createSlice({
         (tile) => tile._id === action.payload._id,
       );
       if (tile) {
-        Object.assign(tile, action.payload);
+        console.log('updating tile', tile, action.payload);
+        deepMergeObjects(tile, action.payload);
+        console.log('updated tile', JSON.parse(JSON.stringify(tile)));
       }
     },
   },
