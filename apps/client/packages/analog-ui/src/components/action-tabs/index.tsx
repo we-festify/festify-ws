@@ -8,10 +8,10 @@ import {
   ChartSpline,
   Database as DatabaseIcon,
   Filter,
-  Settings,
+  Settings2,
 } from 'lucide-react';
 import Charts from './charts';
-import Metrics from './metrics';
+import Fields from './fields';
 import OptionConfig from './option-config';
 import { useCanvas } from '../canvas/provider';
 import Filters from './filters';
@@ -43,7 +43,7 @@ const ActionTabs = () => {
         </TabsTrigger>
         {activeTileId && activeActionTab === 'config' && (
           <TabsTrigger value="config">
-            <Settings size={16} />
+            <Settings2 size={16} />
           </TabsTrigger>
         )}
         {activeTileId && activeActionTab === 'filters' && (
@@ -53,7 +53,7 @@ const ActionTabs = () => {
         )}
       </TabsList>
       <TabsContent value="database">
-        <Metrics />
+        <Fields />
       </TabsContent>
       <TabsContent value="charts">
         <Charts />

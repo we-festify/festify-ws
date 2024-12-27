@@ -6,11 +6,11 @@ export const validator: ValidatorFunction<null, unknown> = (_, data) => {
     type: Joi.string().required(),
     xAxis: Joi.object().keys({
       collection: Joi.string().required(),
-      metric: Joi.string().required(),
+      field: Joi.string().required(),
     }),
     yAxis: Joi.object().keys({
       collection: Joi.string().required(),
-      metric: Joi.string().required(),
+      field: Joi.string().required(),
     }),
   });
   const { error: dataError } = dataSchema.validate(data);
@@ -23,8 +23,8 @@ const handlerWithoutDeps =
     null,
     {
       type: string;
-      xAxis: { collection: string; metric: string };
-      yAxis: { collection: string; metric: string };
+      xAxis: { collection: string; field: string };
+      yAxis: { collection: string; field: string };
     }
   > =>
   async (_r, _data, _context) => {

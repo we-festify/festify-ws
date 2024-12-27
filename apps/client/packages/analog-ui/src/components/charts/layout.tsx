@@ -1,4 +1,4 @@
-import { AnalogMetric } from '@sharedtypes/analog';
+import { AnalogField } from '@sharedtypes/analog';
 import DropArea from '@sharedui/components/dnd/drop-area';
 import { cn } from '@sharedui/utils/tw';
 import { PropsWithChildren } from 'react';
@@ -20,22 +20,22 @@ const ChartLayout = ({
   yLabel = 'y axis',
 }: PropsWithChildren<ChartLayoutProps>) => {
   const { chartMetadata: metadata, updateTile } = useTile();
-  const handleXAxisDrop = (metric: AnalogMetric, collection: string) => {
+  const handleXAxisDrop = (field: AnalogField, collection: string) => {
     updateTile({
       metadata: {
         xAxis: {
-          metric,
+          field,
           collection,
         },
       },
     });
   };
 
-  const handleYAxisDrop = (metric: AnalogMetric, collection: string) => {
+  const handleYAxisDrop = (field: AnalogField, collection: string) => {
     updateTile({
       metadata: {
         yAxis: {
-          metric,
+          field,
           collection,
         },
       },
@@ -50,7 +50,7 @@ const ChartLayout = ({
       <div
         className={cn(
           'absolute inset-0 flex items-center justify-center opacity-50',
-          metadata.xAxis?.metric && metadata.yAxis?.metric ? 'hidden' : 'flex',
+          metadata.xAxis?.field && metadata.yAxis?.field ? 'hidden' : 'flex',
         )}
       >
         <div className="text-center">
@@ -77,10 +77,10 @@ const ChartLayout = ({
         )}
         onDragDrop={(_item, monitor) => {
           const { data } = monitor.getItem<{
-            data: { metric: AnalogMetric; type: string; collection: string };
+            data: { field: AnalogField; type: string; collection: string };
           }>();
-          if (data?.type === 'metric') {
-            handleXAxisDrop(data.metric, data.collection);
+          if (data?.type === 'field') {
+            handleXAxisDrop(data.field, data.collection);
           }
         }}
       />
@@ -101,10 +101,10 @@ const ChartLayout = ({
         )}
         onDragDrop={(_item, monitor) => {
           const { data } = monitor.getItem<{
-            data: { metric: AnalogMetric; type: string; collection: string };
+            data: { field: AnalogField; type: string; collection: string };
           }>();
-          if (data?.type === 'metric') {
-            handleYAxisDrop(data.metric, data.collection);
+          if (data?.type === 'field') {
+            handleYAxisDrop(data.field, data.collection);
           }
         }}
       />

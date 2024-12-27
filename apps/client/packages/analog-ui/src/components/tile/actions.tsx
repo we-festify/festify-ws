@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from '@sharedui/primitives/dropdown-menu';
 
-import { Bolt, Filter, SlidersHorizontal } from 'lucide-react';
+import { Bolt, Filter, Settings2 } from 'lucide-react';
 import { useTile } from '.';
 import { useCanvas } from '../canvas/provider';
 import { usePageLayout } from '@sharedui/components/page-layout';
@@ -31,7 +31,7 @@ const Actions = () => {
           openSecondaryNav();
         }}
       />
-      <SlidersHorizontal
+      <Settings2
         size={14}
         className={cn(
           'cursor-pointer text-muted-foreground',

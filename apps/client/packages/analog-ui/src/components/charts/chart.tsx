@@ -9,11 +9,11 @@ const Chart = () => {
   const { data: { xAxis, yAxis } = {} } = useReadChartDataQuery(
     {
       xAxis: {
-        metric: metadata.xAxis?.metric?.key ?? '',
+        field: metadata.xAxis?.field?.key ?? '',
         collection: metadata.xAxis?.collection ?? '',
       },
       yAxis: {
-        metric: metadata.yAxis?.metric?.key ?? '',
+        field: metadata.yAxis?.field?.key ?? '',
         collection: metadata.yAxis?.collection ?? '',
       },
       type: metadata.type,
@@ -24,7 +24,7 @@ const Chart = () => {
 
   useEffect(() => {
     if (!metadata || !metadata.xAxis || !metadata.yAxis) return;
-    if (!metadata.xAxis?.metric || !metadata.yAxis?.metric) return;
+    if (!metadata.xAxis?.field || !metadata.yAxis?.field) return;
     if (!xAxis?.data || !yAxis?.data) return;
     console.log(metadata, xAxis, yAxis);
     setChartOption(generateOption(metadata, { x: xAxis.data, y: yAxis.data }));

@@ -16,17 +16,17 @@ export const ChartDropAllowedTypes: Record<
   }
 > = {
   bar: {
-    x: [`metric-ref`],
-    y: [`metric-number`],
+    x: [`field-ref`],
+    y: [`field-number`],
   },
   pie: {
-    x: [`metric-ref`],
-    y: [`metric-number`],
+    x: [`field-ref`],
+    y: [`field-number`],
     xLabel: `Category`,
     yLabel: `Value`,
   },
   line: {
-    x: [`metric-ref`],
-    y: [`metric-number`],
+    x: [`field-ref`],
+    y: [`field-number`],
   },
 } as const;

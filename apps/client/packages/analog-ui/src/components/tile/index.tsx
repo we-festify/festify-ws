@@ -85,8 +85,8 @@ const Tile = ({ tileId }: TileProps) => {
               />
               {tile.type === 'chart' && (
                 <span className="text-xs text-muted-foreground">
-                  {tile.metadata.xAxis?.metric?.key ?? 'x'}
-                  {` - ${tile.metadata.yAxis?.metric?.key ?? 'y'}`}
+                  {tile.metadata.xAxis?.field?.key ?? 'x'}
+                  {` - ${tile.metadata.yAxis?.field?.key ?? 'y'}`}
                 </span>
               )}
             </div>

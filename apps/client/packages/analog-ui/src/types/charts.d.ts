@@ -1,19 +1,31 @@
-import { AnalogMetric } from '@sharedtypes/analog';
+import { AnalogField } from '@sharedtypes/analog';
 import { EChartsOption } from 'echarts/types/dist/shared';
 
 export type ChartType = 'bar' | 'pie' | 'line';
+
+export interface IFilter extends Record<string, unknown> {
+  collection: string;
+  field: string;
+  operator: string;
+  value: string;
+}
+
+export interface IFilterGroup extends Record<string, unknown> {
+  filters: IFilter[];
+}
 
 export interface IChartMetadata extends Record<string, unknown> {
   type: ChartType;
   xAxis?: {
     collection?: string;
-    metric?: AnalogMetric;
+    field?: AnalogField;
   };
   yAxis?: {
     collection?: string;
-    metric?: AnalogMetric;
+    field?: AnalogField;
   };
   option?: Partial<EChartsOption>;
+  filterGroups?: string[];
 }
 
 export interface BarChartMetadata extends IChartMetadata {

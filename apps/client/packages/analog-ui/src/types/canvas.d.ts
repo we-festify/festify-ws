@@ -21,20 +21,4 @@ export interface IChartTile extends Record<string, unknown> {
   metadata: IChartMetadata;
 }
 
-export interface IFilterTile extends Record<string, unknown> {
-  _id: string;
-  type: 'filter';
-
-  position: {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-  };
-
-  metadata: {
-    something: string;
-  };
-}
-
-export type ITile = IChartTile | IFilterTile;
+export type ITile = IChartTile;

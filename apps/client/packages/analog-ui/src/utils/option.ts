@@ -44,7 +44,7 @@ export const generateOptionForBarChart = (
   data: IBarOptionData,
 ): EChartsOption => {
   if (!metadata.xAxis || !metadata.yAxis) return {};
-  if (!metadata.yAxis.metric || !metadata.xAxis.metric) return {};
+  if (!metadata.yAxis.field || !metadata.xAxis.field) return {};
   if (!data.x || !data.y) return {};
 
   const xAxis: XAXisOption = {
@@ -55,7 +55,7 @@ export const generateOptionForBarChart = (
   const series: BarSeriesOption[] = [
     {
       type: 'bar',
-      name: metadata.yAxis.metric?.key,
+      name: metadata.yAxis.field?.key,
       data: data.y,
     },
   ];
@@ -76,7 +76,7 @@ export const generateOptionForPieChart = (
   data: IPieOptionData,
 ): EChartsOption => {
   if (!metadata.xAxis || !metadata.yAxis) return {};
-  if (!metadata.yAxis.metric || !metadata.xAxis.metric) return {};
+  if (!metadata.yAxis.field || !metadata.xAxis.field) return {};
   if (!data.x || !data.y) return {};
 
   const legend: LegendOption = {
@@ -85,7 +85,7 @@ export const generateOptionForPieChart = (
   const series: PieSeriesOption[] = [
     {
       type: 'pie',
-      name: metadata.yAxis.metric.key,
+      name: metadata.yAxis.field.key,
       radius: '50%',
       data: data.y.map((y, index) => ({
         name: data.x[index] ?? '',

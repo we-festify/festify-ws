@@ -1,21 +1,21 @@
 export type PrimitiveAnalogType = 'number' | 'string' | 'datetime';
 export type RefAnalogType = 'ref';
-export type AnalogMetricType = PrimitiveAnalogType | RefAnalogType;
+export type AnalogFieldType = PrimitiveAnalogType | RefAnalogType;
 
-export interface PrimitiveMetric {
+export interface PrimitiveField {
   key: string;
   type: PrimitiveAnalogType;
 }
 
-export interface RefMetric {
+export interface ReferenceField {
   key: string;
   type: RefAnalogType;
   ref: string;
 }
 
-export type AnalogMetric = PrimitiveMetric | RefMetric;
+export type AnalogField = PrimitiveField | ReferenceField;
 
 export interface AnalogSchema {
   name: string;
-  metrics: AnalogMetric[];
+  fields: AnalogField[];
 }
