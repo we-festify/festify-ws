@@ -1,12 +1,13 @@
 import { AnalogField } from '@sharedtypes/analog';
 import { EChartsOption } from 'echarts/types/dist/shared';
+import { OperatorType } from './operators';
 
 export type ChartType = 'bar' | 'pie' | 'line';
 
 export interface IFilter extends Record<string, unknown> {
   collection: string;
-  field: string;
-  operator: string;
+  field: AnalogField;
+  operator: OperatorType;
   value: string;
 }
 
@@ -25,7 +26,7 @@ export interface IChartMetadata extends Record<string, unknown> {
     field?: AnalogField;
   };
   option?: Partial<EChartsOption>;
-  filterGroups?: string[];
+  filterGroups?: IFilterGroup[];
 }
 
 export interface BarChartMetadata extends IChartMetadata {

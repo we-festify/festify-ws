@@ -10,7 +10,7 @@ const AnalogRoutes = () => {
     <>
       <Helmet>
         <title>Festify Analog</title>
-        <link rel="icon" type="image/png" href="/logos/BES.png" />
+        <link rel="icon" type="image/png" href="/logos/Analog.png" />
       </Helmet>
       <Routes>
         <Route path="" element={<AnalogService />} />

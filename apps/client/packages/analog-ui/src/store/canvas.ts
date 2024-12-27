@@ -31,9 +31,15 @@ const canvasSlice = createSlice({
         (tile) => tile._id === action.payload._id,
       );
       if (tile) {
-        console.log('updating tile', tile, action.payload);
         deepMergeObjects(tile, action.payload);
-        console.log('updated tile', JSON.parse(JSON.stringify(tile)));
+      }
+    },
+    updateFilterGroups(state, action) {
+      const tile = (state.tiles as ITile[]).find(
+        (tile) => tile._id === action.payload.tile,
+      );
+      if (tile) {
+        tile.metadata.filterGroups = action.payload.groups;
       }
     },
   },
@@ -48,7 +54,12 @@ export const selectLayout = (state: State) => state.canvas.layout;
 export const selectTileById = (id: string) => (state: State) =>
   state.canvas.tiles.find((tile) => tile._id === id);
 
-export const { addTile, removeTile, setLayout, updateTile } =
-  canvasSlice.actions;
+export const {
+  addTile,
+  removeTile,
+  setLayout,
+  updateTile,
+  updateFilterGroups,
+} = canvasSlice.actions;
 
 export default canvasSlice.reducer;

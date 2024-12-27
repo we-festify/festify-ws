@@ -26,7 +26,6 @@ const Chart = () => {
     if (!metadata || !metadata.xAxis || !metadata.yAxis) return;
     if (!metadata.xAxis?.field || !metadata.yAxis?.field) return;
     if (!xAxis?.data || !yAxis?.data) return;
-    console.log(metadata, xAxis, yAxis);
     setChartOption(generateOption(metadata, { x: xAxis.data, y: yAxis.data }));
   }, [metadata, xAxis, yAxis]);
 
