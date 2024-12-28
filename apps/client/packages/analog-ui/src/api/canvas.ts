@@ -1,5 +1,5 @@
 import { api } from '@rootui/api';
-import { AnalogSchema } from '@sharedtypes/analog';
+import { AnalogSchema, IFilterGroup } from '@sharedtypes/analog';
 
 const canvasApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,13 +18,14 @@ const canvasApi = api.injectEndpoints({
       {
         xAxis: { field: string; collection: string };
         yAxis: { field: string; collection: string };
+        filterGroups?: IFilterGroup[];
         type: string;
       }
     >({
-      query: ({ xAxis, yAxis, type }) => ({
+      query: (data) => ({
         url: `/v1/d/analog/execute/ReadChartData`,
         method: 'POST',
-        body: { xAxis, yAxis, type },
+        body: { data },
       }),
     }),
   }),

@@ -10,7 +10,7 @@ import ChartTile from './chart-tile';
 import { createContext, useContext, useRef } from 'react';
 import { ITile } from '@analog-ui/types/canvas';
 import Actions from './actions';
-import { IChartMetadata } from '@analog-ui/types/charts';
+import { IChartMetadata } from '@sharedtypes/analog/charts';
 import { useCanvas } from '../canvas/provider';
 import { cn } from '@sharedui/utils/tw';
 import useContainerDimensions from '@sharedui/hooks/useContainerDimensions';

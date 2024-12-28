@@ -1,5 +1,4 @@
-import { AnalogField } from '@sharedtypes/analog';
-import { EChartsOption } from 'echarts/types/dist/shared';
+import { AnalogField } from './schema';
 import { OperatorType } from './operators';
 
 export type ChartType = 'bar' | 'pie' | 'line';
@@ -25,7 +24,7 @@ export interface IChartMetadata extends Record<string, unknown> {
     collection?: string;
     field?: AnalogField;
   };
-  option?: Partial<EChartsOption>;
+  option?: Record<string, unknown>;
   filterGroups?: IFilterGroup[];
 }
 

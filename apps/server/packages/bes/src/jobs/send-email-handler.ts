@@ -2,6 +2,7 @@ import { env } from '@/config';
 import { redis } from '@/loaders/redis';
 import { decryptUsingAES } from '@/utils/crypto';
 import { AppError, CommonErrors } from '@/utils/errors';
+import BESEmailDeliveryStats from '@bes/models/bes-email-delivery-stats';
 import BESEmailTemplate from '@bes/models/bes-email-template';
 import BESInstance from '@bes/models/bes-instance';
 import {
@@ -164,6 +165,13 @@ const worker = new Worker<BesSendEmailJobDTO>(
 );
 
 worker.on('completed', (job) => {
+  // log job completion
+  const ONE_HOUR_IN_MS = 3600000;
+  BESEmailDeliveryStats.findOneAndUpdate(
+    { hour: Math.floor(Date.now() / ONE_HOUR_IN_MS) * ONE_HOUR_IN_MS },
+    { $inc: { delivered: 1 } },
+    { upsert: true },
+  );
   const timeElapsed = job.processedOn
     ? job.processedOn - job.timestamp
     : 'unknown';

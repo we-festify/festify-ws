@@ -1,4 +1,4 @@
-import { ChartType } from '@analog-ui/types/charts';
+import { ChartType } from '@sharedtypes/analog/charts';
 
 export const ChartTypes: Record<string, ChartType> = {
   BAR: 'bar',
@@ -16,17 +16,17 @@ export const ChartDropAllowedTypes: Record<
   }
 > = {
   bar: {
-    x: [`field-ref`],
-    y: [`field-number`],
+    x: ['field-datetime', 'field-ref'],
+    y: ['field-number'],
   },
   pie: {
-    x: [`field-ref`],
-    y: [`field-number`],
-    xLabel: `Category`,
-    yLabel: `Value`,
+    x: ['field-ref'],
+    y: ['field-number'],
+    xLabel: 'Category',
+    yLabel: 'Value',
   },
   line: {
-    x: [`field-ref`],
-    y: [`field-number`],
+    x: ['field-number', 'field-datetime'],
+    y: ['field-number'],
   },
 } as const;

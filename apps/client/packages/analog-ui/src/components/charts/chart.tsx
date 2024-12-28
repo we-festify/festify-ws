@@ -16,6 +16,7 @@ const Chart = () => {
         field: metadata.yAxis?.field?.key ?? '',
         collection: metadata.yAxis?.collection ?? '',
       },
+      filterGroups: metadata.filterGroups ?? [],
       type: metadata.type,
     },
     { skip: !metadata.xAxis || !metadata.yAxis || !metadata.type },
