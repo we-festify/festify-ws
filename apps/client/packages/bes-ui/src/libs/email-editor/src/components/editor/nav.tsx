@@ -1,5 +1,5 @@
 const EditorNav = () => {
-  return <div></div>;
+  return <></>;
 };
 
 export default EditorNav;
