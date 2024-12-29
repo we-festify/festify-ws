@@ -1,4 +1,4 @@
-import { IFilter } from '@analog-ui/types/charts';
+import { IFilter } from '@sharedtypes/analog/charts';
 import { Button } from '@sharedui/primitives/button';
 import { useFilter } from './provider';
 

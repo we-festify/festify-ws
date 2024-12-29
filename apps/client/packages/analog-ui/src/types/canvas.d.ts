@@ -1,4 +1,4 @@
-import { IChartMetadata } from '@analog-ui/types/charts';
+import { IChartMetadata } from '@sharedtypes/analog/charts';
 
 export interface ICanvas extends Record<string, unknown> {
   _id: string;

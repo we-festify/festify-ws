@@ -1,4 +1,6 @@
-import lodash from 'lodash';
+import _get from 'lodash/get';
+import _merge from 'lodash/merge';
+import _set from 'lodash/set';
 
 export const get = (
   object: Record<string, unknown> | null | undefined,
@@ -6,7 +8,7 @@ export const get = (
   defaultValue?: unknown,
 ) => {
   if (!object) return defaultValue;
-  return lodash.get(object, path, defaultValue);
+  return _get(object, path, defaultValue);
 };
 
 /**
@@ -23,8 +25,8 @@ export const createAndSetValue = (
   value: unknown,
 ) => {
   const newObj = {};
-  lodash.merge(newObj, object);
-  lodash.set(newObj, path, value);
+  _merge(newObj, object);
+  _set(newObj, path, value);
   return newObj;
 };
 
@@ -41,7 +43,7 @@ export const setValue = (
   path: string,
   value: unknown,
 ) => {
-  lodash.set(object, path, value);
+  _set(object, path, value);
 };
 
 /**
@@ -56,7 +58,7 @@ export const createDeepMergedObject = (
   ...sources: Record<string, unknown>[]
 ) => {
   const newObj = {};
-  lodash.merge(newObj, object, ...sources);
+  _merge(newObj, object, ...sources);
   return newObj;
 };
 
@@ -71,7 +73,7 @@ export const deepMergeObjects = (
   object: Record<string, unknown>,
   ...sources: Record<string, unknown>[]
 ) => {
-  lodash.merge(object, ...sources);
+  _merge(object, ...sources);
 };
 
 /**
@@ -87,6 +89,6 @@ export function createUpdatedObject(
 ) {
   const updatesObj = {};
   for (const [key, value] of Object.entries(updates))
-    lodash.set(updatesObj, key, value);
-  return lodash.merge(object, updatesObj);
+    _set(updatesObj, key, value);
+  return _merge(object, updatesObj);
 }

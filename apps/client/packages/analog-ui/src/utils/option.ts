@@ -3,7 +3,7 @@ import {
   BarChartMetadata,
   IChartMetadata,
   PieChartMetadata,
-} from '@analog-ui/types/charts';
+} from '@sharedtypes/analog/charts';
 import {
   IBarOptionData,
   IOptionData,

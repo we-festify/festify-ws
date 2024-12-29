@@ -1,5 +1,5 @@
 import { OPERATORS } from '@analog-ui/constants/operators';
-import { IFilter } from '@analog-ui/types/charts';
+import { IFilter } from '@sharedtypes/analog/charts';
 
 interface NaturalFilterPreviewProps {
   filter: Partial<IFilter>;

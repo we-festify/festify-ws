@@ -1,4 +1,4 @@
-import { IFilterGroup } from '@analog-ui/types/charts';
+import { IFilterGroup } from '@sharedtypes/analog/charts';
 import Filter from './filter';
 import { Button } from '@sharedui/primitives/button';
 import { Plus, X } from 'lucide-react';

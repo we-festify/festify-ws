@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from '@sharedui/primitives/select';
 import { useFilter } from './provider';
-import { OperatorType } from '@analog-ui/types/operators';
+import { OperatorType } from '@sharedtypes/analog/operators';
 
 const ChooseOperator = () => {
   const { filter, updateFilter } = useFilter();

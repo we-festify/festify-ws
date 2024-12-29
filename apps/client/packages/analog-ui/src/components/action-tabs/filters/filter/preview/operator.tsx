@@ -1,4 +1,4 @@
-import { OperatorType } from '@analog-ui/types/operators';
+import { OperatorType } from '@sharedtypes/analog/operators';
 
 interface OperatorPreviewProps {
   operator: OperatorType;
