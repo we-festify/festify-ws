@@ -1,5 +1,6 @@
 import { ITile } from '@analog-ui/types/canvas';
 import { createSlice } from '@reduxjs/toolkit';
+import { deepMergeObjects } from '@sharedui/utils/object';
 import { Layout } from 'react-grid-layout';
 
 export interface CanvasState {
@@ -30,7 +31,15 @@ const canvasSlice = createSlice({
         (tile) => tile._id === action.payload._id,
       );
       if (tile) {
-        Object.assign(tile, action.payload);
+        deepMergeObjects(tile, action.payload);
+      }
+    },
+    updateFilterGroups(state, action) {
+      const tile = (state.tiles as ITile[]).find(
+        (tile) => tile._id === action.payload.tile,
+      );
+      if (tile) {
+        tile.metadata.filterGroups = action.payload.groups;
       }
     },
   },
@@ -45,7 +54,12 @@ export const selectLayout = (state: State) => state.canvas.layout;
 export const selectTileById = (id: string) => (state: State) =>
   state.canvas.tiles.find((tile) => tile._id === id);
 
-export const { addTile, removeTile, setLayout, updateTile } =
-  canvasSlice.actions;
+export const {
+  addTile,
+  removeTile,
+  setLayout,
+  updateTile,
+  updateFilterGroups,
+} = canvasSlice.actions;
 
 export default canvasSlice.reducer;

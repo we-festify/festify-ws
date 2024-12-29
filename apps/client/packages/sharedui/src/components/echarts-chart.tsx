@@ -20,7 +20,6 @@ import { LabelLayout, UniversalTransition } from 'echarts/features';
 // Note that including the CanvasRenderer or SVGRenderer is a required step
 import { CanvasRenderer } from 'echarts/renderers';
 import { EChartsOption } from 'echarts/types/dist/shared';
-import useContainerDimensions from '@sharedui/hooks/useContainerDimensions';
 import { useTheme } from '@rootui/providers/theme-provider';
 
 echarts.use([
@@ -40,13 +39,12 @@ echarts.use([
 
 export interface EchartsChartProps {
   option: EChartsOption;
+  dimensions: { width: number; height: number };
 }
 
-const EchartsChart = ({ option }: EchartsChartProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+const EchartsChart = ({ dimensions, option }: EchartsChartProps) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chart = useRef<echarts.ECharts>();
-  const dimensions = useContainerDimensions(containerRef);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -74,11 +72,7 @@ const EchartsChart = ({ option }: EchartsChartProps) => {
     chart.current.setOption({ darkMode: currentTheme === 'dark' }, false, true);
   }, [theme]);
 
-  return (
-    <div ref={containerRef} className="size-full flex-1 flex flex-col">
-      <div ref={chartRef} className="min-h-1 min-w-1 flex-1" />
-    </div>
-  );
+  return <div ref={chartRef} className="min-h-1 min-w-1 flex-1" />;
 };
 
 export default EchartsChart;

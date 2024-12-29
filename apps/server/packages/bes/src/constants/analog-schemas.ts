@@ -3,7 +3,7 @@ import { AnalogSchema } from '@sharedtypes/analog';
 export const schemas: AnalogSchema[] = [
   {
     name: 'BESEmailDeliveryStats',
-    metrics: [
+    fields: [
       { key: 'instance', type: 'ref', ref: 'BESInstance' },
       { key: 'sent', type: 'number' },
       { key: 'delivered', type: 'number' },

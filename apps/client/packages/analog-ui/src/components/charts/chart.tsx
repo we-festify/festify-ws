@@ -5,17 +5,18 @@ import { generateOption } from '@analog-ui/utils/option';
 import { useEffect, useState } from 'react';
 
 const Chart = () => {
-  const { chartMetadata: metadata } = useTile();
+  const { chartMetadata: metadata, dimensions } = useTile();
   const { data: { xAxis, yAxis } = {} } = useReadChartDataQuery(
     {
       xAxis: {
-        metric: metadata.xAxis?.metric.key ?? '',
+        field: metadata.xAxis?.field?.key ?? '',
         collection: metadata.xAxis?.collection ?? '',
       },
       yAxis: {
-        metric: metadata.yAxis?.metric.key ?? '',
+        field: metadata.yAxis?.field?.key ?? '',
         collection: metadata.yAxis?.collection ?? '',
       },
+      filterGroups: metadata.filterGroups ?? [],
       type: metadata.type,
     },
     { skip: !metadata.xAxis || !metadata.yAxis || !metadata.type },
@@ -23,12 +24,13 @@ const Chart = () => {
   const [chartOption, setChartOption] = useState({});
 
   useEffect(() => {
-    setChartOption(
-      generateOption(metadata, { x: xAxis?.data ?? [], y: yAxis?.data ?? [] }),
-    );
+    if (!metadata || !metadata.xAxis || !metadata.yAxis) return;
+    if (!metadata.xAxis?.field || !metadata.yAxis?.field) return;
+    if (!xAxis?.data || !yAxis?.data) return;
+    setChartOption(generateOption(metadata, { x: xAxis.data, y: yAxis.data }));
   }, [metadata, xAxis, yAxis]);
 
-  return <EchartsChart option={chartOption} />;
+  return <EchartsChart option={chartOption} dimensions={dimensions} />;
 };
 
 export default Chart;

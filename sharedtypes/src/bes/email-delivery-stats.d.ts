@@ -14,6 +14,9 @@ export interface IBESEmailDeliveryStats extends Record<string, unknown> {
   sent: number;
   delivered: number;
   errored: number;
-  /** Hour of the day */
+  /** Hour of the day as timestamp
+   *
+   * formular: `Math.floor(timestamp / ONE_HOUR_IN_MS) * ONE_HOUR_IN_MS`
+   */
   hour: number;
 }

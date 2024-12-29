@@ -1,4 +1,4 @@
-import { AnalogMetric } from '@sharedtypes/analog';
+import { AnalogField } from '@sharedtypes/analog';
 import DropArea from '@sharedui/components/dnd/drop-area';
 import { cn } from '@sharedui/utils/tw';
 import { PropsWithChildren } from 'react';
@@ -19,23 +19,25 @@ const ChartLayout = ({
   xLabel = 'x axis',
   yLabel = 'y axis',
 }: PropsWithChildren<ChartLayoutProps>) => {
-  const { chartMetadata: metadata, updateChartMetadata } = useTile();
-  const handleXAxisDrop = (metric: AnalogMetric, collection: string) => {
-    updateChartMetadata({
-      ...metadata,
-      xAxis: {
-        metric,
-        collection,
+  const { chartMetadata: metadata, updateTile } = useTile();
+  const handleXAxisDrop = (field: AnalogField, collection: string) => {
+    updateTile({
+      metadata: {
+        xAxis: {
+          field,
+          collection,
+        },
       },
     });
   };
 
-  const handleYAxisDrop = (metric: AnalogMetric, collection: string) => {
-    updateChartMetadata({
-      ...metadata,
-      yAxis: {
-        metric,
-        collection,
+  const handleYAxisDrop = (field: AnalogField, collection: string) => {
+    updateTile({
+      metadata: {
+        yAxis: {
+          field,
+          collection,
+        },
       },
     });
   };
@@ -44,6 +46,20 @@ const ChartLayout = ({
     <div className="size-full flex flex-col relative">
       {children}
 
+      {/* Empty data components */}
+      <div
+        className={cn(
+          'absolute inset-0 flex items-center justify-center opacity-50',
+          metadata.xAxis?.field && metadata.yAxis?.field ? 'hidden' : 'flex',
+        )}
+      >
+        <div className="text-center">
+          <p className="text-base font-semibold">No chart to show</p>
+          <p className="text-sm">set x and y axis</p>
+        </div>
+      </div>
+
+      {/* Drop areas */}
       <DropArea
         type={xAllowedTypes}
         className="z-10 absolute left-0 right-0 bottom-0 w-full h-8 flex flex-col-reverse"
@@ -61,10 +77,10 @@ const ChartLayout = ({
         )}
         onDragDrop={(_item, monitor) => {
           const { data } = monitor.getItem<{
-            data: { metric: AnalogMetric; type: string; collection: string };
+            data: { field: AnalogField; type: string; collection: string };
           }>();
-          if (data?.type === 'metric') {
-            handleXAxisDrop(data.metric, data.collection);
+          if (data?.type === 'field') {
+            handleXAxisDrop(data.field, data.collection);
           }
         }}
       />
@@ -85,10 +101,10 @@ const ChartLayout = ({
         )}
         onDragDrop={(_item, monitor) => {
           const { data } = monitor.getItem<{
-            data: { metric: AnalogMetric; type: string; collection: string };
+            data: { field: AnalogField; type: string; collection: string };
           }>();
-          if (data?.type === 'metric') {
-            handleYAxisDrop(data.metric, data.collection);
+          if (data?.type === 'field') {
+            handleYAxisDrop(data.field, data.collection);
           }
         }}
       />

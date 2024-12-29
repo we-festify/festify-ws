@@ -1,11 +1,11 @@
 import { api } from '@rootui/api';
-import { AnalogSchema } from '@sharedtypes/analog';
+import { AnalogSchema, IFilterGroup } from '@sharedtypes/analog';
 
 const canvasApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    listMetrics: builder.query<{ collections: AnalogSchema[] }, undefined>({
+    listFields: builder.query<{ collections: AnalogSchema[] }, undefined>({
       query: () => ({
-        url: `/v1/d/analog/execute/ListMetrics`,
+        url: `/v1/d/analog/execute/ListFields`,
         method: 'POST',
         body: {},
       }),
@@ -16,18 +16,19 @@ const canvasApi = api.injectEndpoints({
         yAxis: { data: (string | number)[] };
       },
       {
-        xAxis: { metric: string; collection: string };
-        yAxis: { metric: string; collection: string };
+        xAxis: { field: string; collection: string };
+        yAxis: { field: string; collection: string };
+        filterGroups?: IFilterGroup[];
         type: string;
       }
     >({
-      query: ({ xAxis, yAxis, type }) => ({
+      query: (data) => ({
         url: `/v1/d/analog/execute/ReadChartData`,
         method: 'POST',
-        body: { xAxis, yAxis, type },
+        body: { data },
       }),
     }),
   }),
 });
 
-export const { useListMetricsQuery, useReadChartDataQuery } = canvasApi;
+export const { useListFieldsQuery, useReadChartDataQuery } = canvasApi;

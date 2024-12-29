@@ -15,7 +15,6 @@ function useContainerDimensions(containerRef: React.RefObject<HTMLDivElement>) {
         if (entry.target === containerRef.current) {
           const { width, height } = entry.contentRect;
           setDimensions({ width, height });
-          console.log('dimensions changed', { width, height });
         }
       }
     });

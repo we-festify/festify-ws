@@ -10,5 +10,5 @@ const handlerWithoutDeps =
 
 const handler = handlerWithoutDeps();
 
-export const name = 'ListMetrics';
+export const name = 'ListFields';
 export default handler;

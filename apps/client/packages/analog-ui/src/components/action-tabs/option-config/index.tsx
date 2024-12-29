@@ -7,7 +7,7 @@ import {
 import { useCanvas } from '../../canvas/provider';
 import { selectTileById, updateTile } from '@analog-ui/store/canvas';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, set } from '@sharedui/utils/object';
+import { get, createAndSetValue } from '@sharedui/utils/object';
 import { ChartConfigSections } from '@analog-ui/constants/config';
 import TextInput from './text-input';
 import EnumInput from './enum-input';
@@ -31,14 +31,13 @@ const OptionConfig = () => {
     if (!Array.isArray(values)) values = [values];
 
     const newOption = keys.reduce((acc, key, index) => {
-      return set(acc, key, (values as unknown[])[index]);
+      return createAndSetValue(acc ?? {}, key, (values as unknown[])[index]);
     }, option);
 
     dispatch(
       updateTile({
-        ...tile,
+        _id: tile._id,
         metadata: {
-          ...tile.metadata,
           option: newOption,
         },
       }),

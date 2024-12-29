@@ -1,5 +1,5 @@
 import { ChartConfigSection } from '@analog-ui/types/chart-config';
-import { ChartType } from '@analog-ui/types/charts';
+import { ChartType } from '@sharedtypes/analog/charts';
 
 const commonConfigSections: ChartConfigSection[] = [
   {

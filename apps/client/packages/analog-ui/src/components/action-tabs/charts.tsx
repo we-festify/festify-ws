@@ -37,18 +37,7 @@ const Charts = () => {
           data={
             {
               type: 'chart',
-              metadata: {
-                type: chartType.name,
-                option: {}, // no user customisations for a new chart
-                xAxis: {
-                  metric: { key: 'xAxis', type: 'number' },
-                  collection: 'xAxisCollection',
-                },
-                yAxis: {
-                  metric: { key: 'yAxis', type: 'number' },
-                  collection: 'yAxisCollection',
-                },
-              },
+              metadata: { type: chartType.name },
             } as ChartTileData
           }
           render={() => (
