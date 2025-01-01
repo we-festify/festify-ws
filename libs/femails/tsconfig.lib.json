@@ -25,7 +25,9 @@
     "paths": {
       "@/*": ["src/*"],
       "@femails/*": ["lib/*"]
-    }
+    },
+
+    "declaration": true
   },
-  "include": ["src", "lib"]
+  "include": ["lib/**/*.ts", "lib/**/*.tsx"]
 }

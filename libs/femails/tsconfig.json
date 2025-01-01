@@ -2,7 +2,8 @@
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.lib.json" }
   ],
   "compilerOptions": {
     "strict": true,
@@ -10,6 +11,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-    }
+      "@femails/*": ["lib/*"]
+    },
+    "declaration": true,
+    "declarationDir": "dist"
   }
 }
