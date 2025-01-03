@@ -41,8 +41,6 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'ReactDOM',
         },
-        preserveModules: true,
-        preserveModulesRoot: 'lib', // Keep imports relative to `lib/`
         entryFileNames: '[name].[format].js', // Output file naming for preserved modules
       },
     },

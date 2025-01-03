@@ -1,2 +1,2 @@
-export { default as Button } from './components/button';
-export { default as Link } from './components/link';
+import './index.css';
+export * as blocks from './blocks';
