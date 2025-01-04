@@ -46,8 +46,8 @@ export interface IPluginRegistry {
   readonly registry: Map<string, Plugin>;
   /** Register a plugin */
   register: (plugins: Plugin | Plugin[]) => void;
-  /** Unregister a plugin by its id */
-  unregister: (id: string) => void;
+  /** Deregisters a plugin by its id */
+  deregister: (id: string) => void;
   /** Get a plugin by its id */
   get: (id: string) => Plugin;
   /** Get all the plugins that match the category */

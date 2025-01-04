@@ -20,7 +20,7 @@ export class PluginRegistry implements IPluginRegistry {
     plugins.forEach((p) => {
       if (this.registry.has(p.id)) {
         throw new Error(
-          `Plugin with id ${p.id} has already been registered. To register this plugin, you need to unregister it first.`,
+          `Plugin with id ${p.id} has already been registered. To register this plugin, you need to deregister it first.`,
         );
       }
 
@@ -28,7 +28,7 @@ export class PluginRegistry implements IPluginRegistry {
     });
   };
 
-  unregister: (id: string) => void = (id) => {
+  deregister: (id: string) => void = (id) => {
     if (!this.registry.has(id)) {
       throw new Error(
         `Plugin with id ${id} has not been registered. To unregister this plugin, you need to register it first.`,
