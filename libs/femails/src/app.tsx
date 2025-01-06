@@ -1,29 +1,12 @@
-import { FemailsEventsManager } from 'femails-core';
+import { Femails } from 'femails-core';
 
-const em = new FemailsEventsManager();
-em.on('print', async (e) => {
-  console.log(e);
-});
-em.on('print', async (e) => {
-  console.log(e.payload.message);
-});
+const femails = new Femails();
 
 const App = () => {
   return (
     <div>
       <h1>App</h1>
-      <button
-        onClick={() =>
-          em.emit({
-            type: 'print',
-            payload: {
-              message: 'Hello world',
-            },
-          })
-        }
-      >
-        Click me
-      </button>
+      <button onClick={() => console.log('Femails:', femails)}>Click me</button>
     </div>
   );
 };

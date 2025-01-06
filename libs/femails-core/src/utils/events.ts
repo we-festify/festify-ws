@@ -7,7 +7,7 @@ import {
 import mitt, { Emitter, Handler } from 'mitt';
 
 export class FemailsEventsManager implements IFemailsEventsManager {
-  private emitter: Emitter<Record<EventType, IFemailsEvent>>;
+  private readonly emitter: Emitter<Record<EventType, IFemailsEvent>>;
 
   constructor() {
     this.emitter = mitt();

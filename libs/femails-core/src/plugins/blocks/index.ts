@@ -1,1 +1,0 @@
-export { TextBlockPluginCore } from './text';
