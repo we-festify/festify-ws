@@ -3,7 +3,7 @@ import {
   IPluginRegistry,
   Plugin,
   PluginCategory,
-} from '@femails/types/plugins';
+} from '@/types/plugins';
 
 export class PluginRegistry implements IPluginRegistry {
   readonly registry: Map<string, IBlockPlugin>;

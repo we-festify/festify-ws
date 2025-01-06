@@ -1,12 +1,31 @@
-import { TextBlockPlugin } from '@femails/blocks';
-import EditorComponent from '@femails/components/editor';
-import { Editor } from '@femails/core/editor';
+import { FemailsEventsManager } from 'femails-core';
 
-const editor = new Editor();
-editor.registry.register(new TextBlockPlugin());
+const em = new FemailsEventsManager();
+em.on('print', async (e) => {
+  console.log(e);
+});
+em.on('print', async (e) => {
+  console.log(e.payload.message);
+});
 
 const App = () => {
-  return <EditorComponent editor={editor} />;
+  return (
+    <div>
+      <h1>App</h1>
+      <button
+        onClick={() =>
+          em.emit({
+            type: 'print',
+            payload: {
+              message: 'Hello world',
+            },
+          })
+        }
+      >
+        Click me
+      </button>
+    </div>
+  );
 };
 
 export default App;

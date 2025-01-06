@@ -1,5 +1,5 @@
-import { IBlockPluginCore } from '@femails/types/plugins';
-import { IBlock } from '@femails/types/blocks';
+import { IBlockPluginCore } from '@/types/plugins';
+import { IBlock } from '@/types/blocks';
 
 export class TextBlockPluginCore implements IBlockPluginCore {
   readonly category: 'block';

@@ -1,5 +1,5 @@
-import { IEditor } from '@femails/types/editor';
-import { IPluginRegistry } from '@femails/types/plugins';
+import { IEditor } from '@/types/editor';
+import { IPluginRegistry } from '@/types/plugins';
 import { PluginRegistry } from './plugins/registry';
 
 export class Editor implements IEditor {
