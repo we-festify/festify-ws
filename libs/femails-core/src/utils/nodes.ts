@@ -9,10 +9,12 @@ import {
 export class FemailsNodesManager implements IFemailsNodesManager {
   private readonly nodes: Readonly<Map<string, IFemailsNode>>;
   readonly instances: Map<string, IFemailsNodeInstance>;
+  root: string;
 
   constructor() {
     this.nodes = new Map();
     this.instances = new Map();
+    this.root = '';
   }
 
   register: (node: IFemailsNode) => void = (node) => {
@@ -50,6 +52,18 @@ export class FemailsNodesManager implements IFemailsNodesManager {
       node.attributes,
     );
     this.instances.set(instance.id, instance);
+
+    if (!this.root) {
+      this.root = instance.id;
+      return instance.id;
+    }
+
+    const parentNode = this.instances.get(parent);
+    if (!parentNode) {
+      throw new Error(`Parent node with id "${parent}" does not exist.`);
+    }
+    parentNode.children.push(instance.id);
+
     return instance.id;
   };
 

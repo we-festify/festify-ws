@@ -35,6 +35,8 @@ export interface IFemailsNode {
 export interface IFemailsNodesManager {
   /** The list of instances of nodes */
   readonly instances: Map<string, IFemailsNodeInstance>;
+  /** The id of the root node */
+  readonly root: string;
   /**
    * Register a new node
    * @param node The node to register
