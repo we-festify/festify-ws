@@ -1,7 +1,9 @@
+export type IFemailsNodeAttributeType = 'string' | 'number' | 'boolean';
+
 export type IFemailsNodeAttributeValue = string | number | boolean;
 
 export interface IFemailsNodeAttribute {
-  readonly type: string;
+  readonly type: IFemailsNodeAttributeType;
   readonly name: string;
   readonly description: string;
   readonly defaultValue: IFemailsNodeAttributeValue;

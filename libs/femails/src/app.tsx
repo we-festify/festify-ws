@@ -1,6 +1,7 @@
-import { Femails } from 'femails-core';
+import { Femails, TextBlockPlugin } from 'femails-core';
 
 const femails = new Femails();
+femails.init([new TextBlockPlugin()]);
 
 const App = () => {
   return (
