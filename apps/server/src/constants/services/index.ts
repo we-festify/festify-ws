@@ -23,4 +23,18 @@ export const services: IServiceMeta[] = [
     src: '/logos/Analog.png',
     description: 'A service that provides analytics, logs and insights',
   },
+  features.festifyBridgeService && {
+    name: 'Festify Bridge',
+    shortName: 'Bridge',
+    alias: 'bridge',
+    src: '/logos/Bridge.png',
+    description: 'An API gateway that connects services and clients',
+  },
+  features.festifyMethodsService && {
+    name: 'Festify Methods',
+    shortName: 'Methods',
+    alias: 'methods',
+    src: '/logos/Methods.png',
+    description: 'A service that provides serverless functions',
+  },
 ].filter(Boolean) as IServiceMeta[];

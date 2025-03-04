@@ -16,6 +16,8 @@
       "@bes/*": ["./packages/bes/src/*"],
       "@aim/*": ["./packages/aim/src/*"],
       "@analog/*": ["./packages/analog/src/*"],
+      "@bridge/*": ["./packages/bridge/src/*"],
+      "@methods/*": ["./packages/methods/src/*"],
 
       "@sharedtypes/*": ["../../sharedtypes/src/*"]
     }

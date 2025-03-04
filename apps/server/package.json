@@ -18,6 +18,8 @@
     "@bes": "dist/packages/bes/src",
     "@aim": "dist/packages/aim/src",
     "@analog": "dist/packages/analog/src",
+    "@bridge": "dist/packages/bridge/src",
+    "@methods": "dist/packages/methods/src",
     "@sharedtypes": "../../sharedtypes/src/*"
   },
   "keywords": [],

@@ -1,4 +1,4 @@
-import { cn } from '@femails/utils/tw';
+import { cn } from '@femails-react/utils/tw';
 
 function Skeleton({
   className,

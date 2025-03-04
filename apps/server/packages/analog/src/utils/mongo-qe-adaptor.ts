@@ -164,6 +164,14 @@ export class MongoQEAdaptor implements IQueryEngineAdaptor {
     }
 
     query.push({ $sort: { [x]: 1 } });
+    // aggregate by value of x
+    query.push({
+      $group: {
+        _id: `$${x}`,
+        [x]: { $first: `$${x}` },
+        [y]: { $first: `$${y}` },
+      },
+    });
     query.push({ $limit: 1000 });
     query.push(...this.generateQueryForProjection({ x, y }));
 

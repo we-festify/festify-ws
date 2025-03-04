@@ -12,11 +12,16 @@ export interface IFemailsNodeAttribute {
 export interface IFemailsNodeInstance {
   readonly id: string;
   readonly type: string;
-  readonly name: string;
+  name: string;
   readonly attributes: Record<string, IFemailsNodeAttributeValue>;
   parent: string;
   children: string[];
 
+  /**
+   * Update the name of the node
+   * @param name The new name of the node
+   */
+  readonly rename: (name: string) => void;
   /**
    * Set a value for an attribute of the node
    * @param attribute The attribute to set the value for
@@ -25,16 +30,21 @@ export interface IFemailsNodeInstance {
   readonly set: (attribute: string, value: string | number | boolean) => void;
 }
 
+export interface IFemailsNodeMeta {
+  readonly areChildrenAllowed: boolean;
+}
+
 export interface IFemailsNode {
   readonly type: string;
   readonly name: string;
   readonly description: string;
-  readonly attributes: Readonly<Record<string, IFemailsNodeAttribute>>;
+  readonly attributes?: Readonly<Record<string, IFemailsNodeAttribute>>;
+  readonly meta?: Partial<IFemailsNodeMeta>;
 }
 
 export interface IFemailsNodesManager {
   /** The list of instances of nodes */
-  readonly instances: Map<string, IFemailsNodeInstance>;
+  readonly instances: Record<string, IFemailsNodeInstance>;
   /** The id of the root node */
   readonly root: string;
   /**
@@ -48,6 +58,13 @@ export interface IFemailsNodesManager {
    */
   readonly override: (node: IFemailsNode) => void;
   /**
+   * Get the node with the given type
+   * @param type The type of the node to get
+   * @returns The node with the given type
+   */
+  readonly get: (type: string) => IFemailsNode;
+
+  /**
    * Create a new instance of a node
    * @param type The type of the node to create
    * @param parent The parent id of the node
@@ -60,4 +77,9 @@ export interface IFemailsNodesManager {
    * @returns The instance of the node
    */
   readonly getInstance: (id: string) => IFemailsNodeInstance;
+  /**
+   * Get the list of all registered node types
+   * @returns The list of all registered node types
+   */
+  readonly getTypes: () => string[];
 }

@@ -7,38 +7,47 @@ import {
 } from '@/types/nodes';
 
 export class FemailsNodesManager implements IFemailsNodesManager {
-  private readonly nodes: Readonly<Map<string, IFemailsNode>>;
-  readonly instances: Map<string, IFemailsNodeInstance>;
+  private readonly nodes: Record<string, IFemailsNode>;
+  readonly instances: Record<string, IFemailsNodeInstance>;
   root: string;
 
   constructor() {
-    this.nodes = new Map();
-    this.instances = new Map();
+    this.nodes = {};
+    this.instances = {};
     this.root = '';
   }
 
   register: (node: IFemailsNode) => void = (node) => {
-    if (this.nodes.has(node.type)) {
+    if (this.nodes[node.type]) {
       throw new Error(
         `Node with type "${node.type}" already exists. If you want to override it, use the "override" method instead.`,
       );
     }
 
-    this.nodes.set(node.type, node);
+    this.nodes[node.type] = node;
   };
 
   override: (node: IFemailsNode) => void = (node) => {
-    if (!this.nodes.has(node.type)) {
+    if (!this.nodes[node.type]) {
       throw new Error(
         `Node with type "${node.type}" does not exist. If you want to register it, use the "register" method instead.`,
       );
     }
 
-    this.nodes.set(node.type, node);
+    this.nodes[node.type] = node;
+  };
+
+  get: (type: string) => IFemailsNode = (type) => {
+    const node = this.nodes[type];
+    if (!node) {
+      throw new Error(`Node with type "${type}" does not exist.`);
+    }
+
+    return node;
   };
 
   createInstance: (type: string, parent: string) => string = (type, parent) => {
-    const node = this.nodes.get(type);
+    const node = this.nodes[type];
     if (!node) {
       throw new Error(
         `Node with type "${type}" does not exist. Please register it first.`,
@@ -49,31 +58,34 @@ export class FemailsNodesManager implements IFemailsNodesManager {
       parent,
       type,
       node.name,
-      node.attributes,
+      node?.attributes ?? {},
     );
-    this.instances.set(instance.id, instance);
+    this.instances[instance.id] = instance;
 
-    if (!this.root) {
-      this.root = instance.id;
-      return instance.id;
-    }
-
-    const parentNode = this.instances.get(parent);
+    const parentNode =
+      this.instances[parent] ?? this.instances[this.root] ?? null;
     if (!parentNode) {
-      throw new Error(`Parent node with id "${parent}" does not exist.`);
+      this.root = instance.id;
+    } else {
+      const nodeMeta = this.nodes[parentNode.type]?.meta;
+      if (nodeMeta?.areChildrenAllowed === true) {
+        parentNode.children.push(instance.id);
+      }
     }
-    parentNode.children.push(instance.id);
-
     return instance.id;
   };
 
   getInstance: (id: string) => IFemailsNodeInstance = (id) => {
-    const instance = this.instances.get(id);
+    const instance = this.instances[id];
     if (!instance) {
       throw new Error(`Node instance with id "${id}" does not exist.`);
     }
 
     return instance;
+  };
+
+  getTypes: () => string[] = () => {
+    return Array.from(Object.keys(this.nodes));
   };
 }
 
@@ -100,6 +112,13 @@ export class FemailsNodeInstance implements IFemailsNodeInstance {
     });
     this.parent = parent;
   }
+
+  readonly rename: (name: string) => void = (name) => {
+    if (!name) {
+      throw new Error('Name cannot be empty.');
+    }
+    this.name = name;
+  };
 
   readonly set: (attribute: string, value: string | number | boolean) => void =
     (attribute, value) => {

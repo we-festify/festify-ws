@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
-import { useIsMobile } from '@femails/hooks/use-mobile';
-import { cn } from '@femails/utils/tw';
-import { Button } from '@femails/components/ui/button';
-import { Input } from '@femails/components/ui/input';
-import { Separator } from '@femails/components/ui/separator';
-import { Sheet, SheetContent } from '@femails/components/ui/sheet';
-import { Skeleton } from '@femails/components/ui/skeleton';
+import { useIsMobile } from '@femails-react/hooks/use-mobile';
+import { cn } from '@femails-react/utils/tw';
+import { Button } from '@femails-react/components/ui/button';
+import { Input } from '@femails-react/components/ui/input';
+import { Separator } from '@femails-react/components/ui/separator';
+import { Sheet, SheetContent } from '@femails-react/components/ui/sheet';
+import { Skeleton } from '@femails-react/components/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@femails/components/ui/tooltip';
+} from '@femails-react/components/ui/tooltip';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
