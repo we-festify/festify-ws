@@ -19,6 +19,8 @@ export default defineConfig({
       '@bes-ui': path.resolve(__dirname, './packages/bes-ui/src'),
       '@aim-ui': path.resolve(__dirname, './packages/aim-ui/src'),
       '@analog-ui': path.resolve(__dirname, './packages/analog-ui/src'),
+      '@bridge-ui': path.resolve(__dirname, './packages/bridge-ui/src'),
+      '@methods-ui': path.resolve(__dirname, './packages/methods-ui/src'),
     },
   },
   build: {

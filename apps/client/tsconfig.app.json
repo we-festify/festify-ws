@@ -29,6 +29,8 @@
       "@bes-ui/*": ["packages/bes-ui/src/*"],
       "@aim-ui/*": ["packages/aim-ui/src/*"],
       "@analog-ui/*": ["packages/analog-ui/src/*"],
+      "@bridge-ui/*": ["packages/bridge-ui/src/*"],
+      "@methods-ui/*": ["packages/methods-ui/src/*"],
 
       "@sharedtypes/*": ["../../sharedtypes/src/*"]
     }

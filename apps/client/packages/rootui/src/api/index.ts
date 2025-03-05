@@ -64,5 +64,9 @@ export const api = createApi({
     'ManagedUser',
     'PermissionPolicy',
     'AimAccessKey',
+
+    // Bridge
+    'BridgeApi',
+    'BridgeApiEndpoint',
   ],
 });

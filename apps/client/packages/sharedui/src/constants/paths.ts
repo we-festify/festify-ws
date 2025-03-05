@@ -52,11 +52,30 @@ export const analogPaths = {
   INSIGHTS: '/analog/home/insights',
 } as const;
 
+export const bridgePaths = {
+  SERVICE: '/bridge',
+
+  HOME: '/bridge/home',
+
+  DOCS: '/docs/bridge',
+
+  APIS: '/bridge/home/apis',
+  CREATE_NEW_API: '/bridge/home/apis/create',
+  UPDATE_API: '/bridge/home/apis/update',
+  API_DETAILS: '/bridge/home/apis/details',
+
+  ENDPOINTS: '/bridge/home/endpoints',
+  CREATE_NEW_ENDPOINT: '/bridge/home/endpoints/create',
+  UPDATE_ENDPOINT: '/bridge/home/endpoints/update',
+  ENDPOINT_DETAILS: '/bridge/home/endpoints/details',
+} as const;
+
 const paths = {
   root: rootPaths,
   bes: besPaths,
   aim: aimPaths,
   analog: analogPaths,
+  bridge: bridgePaths,
 } as const;
 
 export default paths;
