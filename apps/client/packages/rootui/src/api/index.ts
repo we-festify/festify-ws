@@ -68,5 +68,8 @@ export const api = createApi({
     // Bridge
     'BridgeApi',
     'BridgeApiEndpoint',
+
+    // Methods
+    'MethodsHandler',
   ],
 });
