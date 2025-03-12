@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { cn } from '@sharedui/utils/tw';
 import { useSelector } from 'react-redux';
 import { selectIsLoggedIn } from '@rootui/store/auth';
+import { SERVICE_GRADIENTS } from '@bridge-ui/constants/colors';
 
 const BridgeHeroSection = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -14,11 +15,11 @@ const BridgeHeroSection = () => {
   return (
     <ServiceGradientHero
       className="h-dvh"
-      gradient="linear-gradient(120deg, #ff9cb1, #f26982 29.94%, #c85eac 66.98%, #87459c)"
+      gradient={SERVICE_GRADIENTS.BG_SHADOW}
     >
       <div className="container max-w-[1200px] flex flex-col gap-6 justify-center h-full flex-1">
         <GradientShadow
-          gradient="linear-gradient(120deg, #ff9cb1, #f26982 29.94%, #c85eac 66.98%, #87459c)"
+          gradient="linear-gradient(120deg, #6CC308, #A78C16 29.94%, #77A809 66.98%, #4C8C04)"
           initialOpacity={0}
           hoverOpacity={0.6}
           durationInMs={500}
@@ -42,7 +43,7 @@ const BridgeHeroSection = () => {
         </GradientShadow>
         <h1 className="text-4xl md:text-5xl font-bold">Festify Bridge</h1>
         <h2 className="text-xl md:text-2xl">
-          API Gateway for your microservices and serverless applications
+          Create, maintain, and secure APIs at any scale
         </h2>
         <div className="flex gap-6 mt-10">
           <Link

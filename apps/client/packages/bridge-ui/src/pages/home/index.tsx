@@ -4,7 +4,7 @@ import {
   PageLayout,
   PageSideNav,
 } from '@sharedui/components/page-layout';
-import HomePage from './home-page';
+// import HomePage from './home-page';
 import { bridgePaths } from '@sharedui/constants/paths';
 
 import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
@@ -31,7 +31,8 @@ const BridgeHome = () => {
       />
       <PageContent>
         <Routes>
-          <Route path="" element={<HomePage />} />
+          {/* <Route path="" element={<HomePage />} /> */}
+          <Route path="" element={<APIs />} />
           <Route path="apis/*">
             <Route path="" element={<APIs />} />
             <Route path="create" element={<CreateApiPage />} />
@@ -50,7 +51,7 @@ const BridgeHome = () => {
 };
 
 const sideNavItems = [
-  { title: 'Home', path: bridgePaths.HOME },
+  // { title: 'Home', path: bridgePaths.HOME },
   {
     title: 'APIs',
     path: bridgePaths.APIS,
