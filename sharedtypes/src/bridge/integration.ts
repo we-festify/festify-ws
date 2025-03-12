@@ -5,16 +5,17 @@ export type BridgeEndpointIntegration =
 
 export interface IBridgeHttpIntegration {
   type: 'http';
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
   url: string;
 }
 
 export interface IBridgeMethodIntegration {
-  type: 'function';
+  type: 'method';
 }
 
 export interface IBridgeMockIntegration {
   type: 'mock';
   statusCode: number;
   headers?: Record<string, string>;
-  body?: unknown;
+  body?: string;
 }

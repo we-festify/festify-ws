@@ -9,6 +9,10 @@ import { bridgePaths } from '@sharedui/constants/paths';
 
 import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
 import { APIs } from './apis';
+import { CreateApiPage } from './apis/create';
+import { ApiDetailsPage } from './apis/details';
+import { CreateApiEndpointPage } from './apis/details/endpoints/create';
+import { UpdateApiEndpointPage } from './apis/details/endpoints/update';
 
 const BridgeHome = () => {
   const navigate = useNavigate();
@@ -30,6 +34,14 @@ const BridgeHome = () => {
           <Route path="" element={<HomePage />} />
           <Route path="apis/*">
             <Route path="" element={<APIs />} />
+            <Route path="create" element={<CreateApiPage />} />
+            <Route path="details/:apiId/*">
+              <Route path="" element={<ApiDetailsPage />} />
+              <Route path="endpoints/*">
+                <Route path="create" element={<CreateApiEndpointPage />} />
+                <Route path="update" element={<UpdateApiEndpointPage />} />
+              </Route>
+            </Route>
           </Route>
         </Routes>
       </PageContent>

@@ -10,4 +10,8 @@ router.get('/', (req, res) => {
 import handlerRoutes from './routes/handlers';
 router.use('/execute', handlerRoutes);
 
+// Invoke API routes
+import invokeRoutes from './routes/invoke';
+router.use('/invoke', invokeRoutes);
+
 export default router;

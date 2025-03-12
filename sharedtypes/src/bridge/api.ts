@@ -1,4 +1,4 @@
-import { IAccount } from 'src/auth/account';
+import { IAccount } from '../auth/account';
 import { BridgeEndpointIntegration } from './integration';
 import { BridgeEndpointPolicy } from './policy';
 
@@ -10,12 +10,15 @@ export interface IBridgeApi {
 
   // Deployment details
   // If the API is deployed, this will be unique identifier for the deployment
-  uid?: string;
-  invokeUrl?: string;
+  uid: string;
+  invokeUrl: string;
 
   // API details
   alias: string;
   description: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export enum BridgeApiEndpointMethod {

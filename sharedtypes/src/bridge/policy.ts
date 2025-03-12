@@ -6,6 +6,15 @@ export type BridgeEndpointPolicy =
   | IBridgeTimeoutPolicy
   | IBridgeCorsPolicy;
 
+export enum BridgeApiEndpointPolicyType {
+  RateLimit = 'rate-limit',
+  Cache = 'cache',
+  Auth = 'auth',
+  Retry = 'retry',
+  Timeout = 'timeout',
+  Cors = 'cors',
+}
+
 export interface IBridgeRateLimitPolicy {
   type: 'rate-limit';
 }

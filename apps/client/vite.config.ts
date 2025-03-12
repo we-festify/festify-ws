@@ -21,6 +21,8 @@ export default defineConfig({
       '@analog-ui': path.resolve(__dirname, './packages/analog-ui/src'),
       '@bridge-ui': path.resolve(__dirname, './packages/bridge-ui/src'),
       '@methods-ui': path.resolve(__dirname, './packages/methods-ui/src'),
+
+      '@sharedtypes': path.resolve(__dirname, '../../sharedtypes/src'),
     },
   },
   build: {

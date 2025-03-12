@@ -27,14 +27,14 @@ const CopyIcon = (props: CopyIconProps) => {
       type="button"
       variant="ghost"
       size="sm"
-      className={props.className}
+      className={cn(props.className, 'size-6 p-1')}
       onClick={handleCopy}
     >
       {props.icon ? (
         props.icon
       ) : (
         <Copy
-          className={cn('h-4 w-4', props.iconClassName)}
+          className={cn('size-5', props.iconClassName)}
           aria-hidden="true"
         />
       )}

@@ -62,12 +62,14 @@ export const bridgePaths = {
   APIS: '/bridge/home/apis',
   CREATE_NEW_API: '/bridge/home/apis/create',
   UPDATE_API: '/bridge/home/apis/update',
-  API_DETAILS: '/bridge/home/apis/details',
+  API_DETAILS: (alias: string) => `/bridge/home/apis/details/${alias}` as const,
 
-  ENDPOINTS: '/bridge/home/endpoints',
-  CREATE_NEW_ENDPOINT: '/bridge/home/endpoints/create',
-  UPDATE_ENDPOINT: '/bridge/home/endpoints/update',
-  ENDPOINT_DETAILS: '/bridge/home/endpoints/details',
+  CREATE_NEW_API_ENDPOINT: (apiId: string) =>
+    `/bridge/home/apis/details/${apiId}/endpoints/create` as const,
+  UPDATE_API_ENDPOINT: (apiId: string, endpoint: string) =>
+    `/bridge/home/apis/details/${apiId}/endpoints/update?endpoint=${endpoint}` as const,
+  API_ENDPOINT_DETAILS: (apiId: string, endpoint: string) =>
+    `/bridge/home/apis/details/${apiId}?endpoint=${endpoint}` as const,
 } as const;
 
 const paths = {

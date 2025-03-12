@@ -10,18 +10,32 @@ interface InitLoadersProps {
 }
 
 const initLoaders = async ({ expressApp }: InitLoadersProps) => {
-  // Load express loader
-  await expressLoader({ app: expressApp });
-  logger.info('Express loaded');
+  let startTime = Date.now();
+  let diff = Date.now() - startTime;
+
   // Load mongoose loader
+  startTime = Date.now();
   await mongooseLoader();
-  logger.info('MongoDB loaded');
+  diff = Date.now() - startTime;
+  logger.info(`MongoDB loaded (${diff}ms)`);
+
   // Load redis loader
+  startTime = Date.now();
   await redisLoader();
-  logger.info('Redis loaded');
+  diff = Date.now() - startTime;
+  logger.info(`Redis loaded (${diff}ms)`);
+
+  // Load express loader
+  startTime = Date.now();
+  await expressLoader({ app: expressApp });
+  diff = Date.now() - startTime;
+  logger.info(`Express loaded (${diff}ms)`);
+
   // Load jobs
+  startTime = Date.now();
   await workersLoader();
-  logger.info('Workers loaded');
+  diff = Date.now() - startTime;
+  logger.info(`Workers loaded (${diff}ms)`);
 };
 
 export default initLoaders;

@@ -6,10 +6,10 @@ export const readableFRN = (frn: string): string => {
 };
 
 export const generateFRN = (
-  service: string,
-  account: string,
-  resourceType: string,
-  resourceId: string,
+  service?: string | null,
+  account?: string | null,
+  resourceType?: string | null,
+  resourceId?: string | null,
 ): string => {
-  return `frn:${service}:${account}:${resourceType}:${resourceId}`;
+  return `frn:${service ?? ''}:${account ?? ''}:${resourceType ?? ''}:${resourceId ?? ''}`;
 };

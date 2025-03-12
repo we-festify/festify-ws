@@ -6,30 +6,34 @@ import {
   useState,
 } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { DefaultValues, FieldValues, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Form } from '../../primitives/form';
 import { Button } from '../../primitives/button';
 import { cn } from '../../utils/tw';
 import { LoadingButton } from '../loading-button';
 
-interface MultiStepFormContextProps {
-  form: ReturnType<typeof useForm>;
+interface MultiStepFormContextProps<TFormValues extends FieldValues> {
+  form: ReturnType<typeof useForm<TFormValues>>;
   goToStep: (step: number) => void;
 }
 
-const MultiStepFormContext = createContext({} as MultiStepFormContextProps);
+// Create a non-generic context with a null initial value
+const MultiStepFormContext =
+  createContext<MultiStepFormContextProps<FieldValues> | null>(null);
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useMultiStepForm = () => {
-  if (!MultiStepFormContext) {
-    throw new Error(
-      'useMultiStepForm must be used within a MultiStepFormProvider',
-    );
+export function useMultiStepForm<
+  TFormValues extends FieldValues,
+>(): MultiStepFormContextProps<TFormValues> {
+  const context = useContext(MultiStepFormContext);
+
+  if (context === null) {
+    throw new Error('useMultiStepForm must be used within a MultiStepForm');
   }
 
-  return useContext(MultiStepFormContext);
-};
+  return context as unknown as MultiStepFormContextProps<TFormValues>;
+}
 
 export interface MultiStepFormStep {
   title: string;

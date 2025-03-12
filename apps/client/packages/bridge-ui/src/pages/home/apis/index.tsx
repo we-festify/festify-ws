@@ -23,14 +23,14 @@ export const APIs = () => {
     refetch,
     error,
   } = useListApisQuery(undefined);
-  const [deleteInstances] = useDeleteApisMutation();
+  const [deleteApis] = useDeleteApisMutation();
 
   const handleDelete = async (rows: IBridgeApi[]) => {
     try {
       const frns = rows.map((r) =>
         generateFRN('bridge', user?.accountId ?? '', 'api', r.alias),
       );
-      await deleteInstances(frns).unwrap();
+      await deleteApis(frns).unwrap();
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
@@ -47,7 +47,10 @@ export const APIs = () => {
 
   return (
     <div className="p-8">
-      <PageSection title="APIs" description="">
+      <PageSection
+        title="APIs"
+        description="APIs are the collection of endpoints that you can invoke to interact with your services."
+      >
         <Card>
           <CardContent>
             <DataTable
@@ -135,7 +138,7 @@ const columns: ColumnDef<IBridgeApi>[] = [
       const alias = row.original.alias;
       return (
         <Link
-          to={`${bridgePaths.API_DETAILS}/${alias}`}
+          to={bridgePaths.API_DETAILS(alias)}
           className="text-blue-600 hover:underline"
         >
           {alias}
