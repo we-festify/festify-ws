@@ -26,12 +26,7 @@ const expressLoader = async ({ app }: { app: express.Application }) => {
   app.use(cookieParser());
 
   // Enable CORS for the client app
-  app.use(
-    cors({
-      origin: env.client.url,
-      credentials: true,
-    }),
-  );
+  app.use(cors({ origin: env.client.url, credentials: true }));
   // Set security headers
   app.use(helmet());
   // Compress response bodies for all requests

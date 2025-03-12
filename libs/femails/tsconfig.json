@@ -11,9 +11,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@femails/*": ["lib/*"]
+      "@femails-react/*": ["lib/*"],
+      "femails-react": ["lib/index.ts"]
     },
     "declaration": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+
+    "types": ["vite/client"]
   }
 }

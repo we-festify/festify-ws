@@ -21,7 +21,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@femails': path.resolve(__dirname, './lib'),
+      '@femails-react': path.resolve(__dirname, './lib'),
+      'femails-react': path.resolve(__dirname, './lib/index.ts'),
     },
   },
   build: {
@@ -41,8 +42,6 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'ReactDOM',
         },
-        preserveModules: true,
-        preserveModulesRoot: 'lib', // Keep imports relative to `lib/`
         entryFileNames: '[name].[format].js', // Output file naming for preserved modules
       },
     },

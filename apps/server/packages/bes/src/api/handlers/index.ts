@@ -1,0 +1,12 @@
+export * as createEmailTemplate from './create-email-template';
+export * as createInstance from './create-instance';
+export * as deleteEmailTemplates from './delete-email-templates';
+export * as deleteInstances from './delete-instances';
+export * as listEmailTemplates from './list-email-templates';
+export * as listInstances from './list-instances';
+export * as readEmailTemplate from './read-email-template';
+export * as readInstance from './read-instance';
+export * as sendEmail from './send-email';
+export * as sendTemplatedEmail from './send-templated-email';
+export * as updateEmailTemplate from './update-email-template';
+export * as updateInstance from './update-instance';

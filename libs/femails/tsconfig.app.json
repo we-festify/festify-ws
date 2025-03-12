@@ -24,8 +24,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@femails/*": ["lib/*"]
-    }
+      "@femails-react/*": ["lib/*"],
+      "femails-react": ["lib/index.ts"]
+    },
+
+    "types": ["vite/client"]
   },
   "include": ["src", "lib"]
 }

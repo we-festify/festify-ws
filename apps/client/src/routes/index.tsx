@@ -8,10 +8,11 @@ import Dashboard from '@/pages/dashboard';
 import RequireLoggedIn from '@sharedui/routes/require-logged-in';
 
 // packages
+import features from '@/config/features';
 import BESServiceIndex from '@bes-ui/index';
 import AIMServiceIndex from '@aim-ui/index';
 import AnalogServiceIndex from '@analog-ui/index';
-import features from '@/config/features';
+import BridgeServiceIndex from '@bridge-ui/index';
 
 const AppRoutes = () => {
   return (
@@ -21,13 +22,19 @@ const AppRoutes = () => {
       <Route path="home" element={<RequireLoggedIn />}>
         <Route path="" element={<Dashboard />} />
       </Route>
-      <Route path="docs/*" element={<DocsPage />} />
+
+      {/* docs */}
+      <Route path="docs/bes/*" element={<DocsPage />} />
+      <Route path="docs/aim/*" element={<DocsPage />} />
 
       {/* d-services */}
       <Route path="bes/*" element={<BESServiceIndex />} />
       <Route path="aim/*" element={<AIMServiceIndex />} />
       {features.festifyAnalogService && (
         <Route path="analog/*" element={<AnalogServiceIndex />} />
+      )}
+      {features.festifyBridgeService && (
+        <Route path="bridge/*" element={<BridgeServiceIndex />} />
       )}
 
       <Route path="*" element={<NotFound />} />

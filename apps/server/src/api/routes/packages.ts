@@ -4,20 +4,43 @@ import features from '@/config/features';
 
 const router = express.Router();
 
+logger.info(
+  Object.entries({
+    BES: true,
+    AIM: true,
+    Analog: features.festifyAnalogService,
+    Bridge: features.festifyBridgeService,
+    Methods: features.festifyMethodsService,
+  })
+    .filter(([, enabled]) => enabled)
+    .map(([name]) => name)
+    .join(', ') + ' services enabled',
+);
+
 // BES
 import BESRouter from '@bes/api';
 router.use('/bes', BESRouter);
-logger.info('BES package loaded');
 
 // AIM
 import AIMRouter from '@aim/api';
 router.use('/aim', AIMRouter);
-logger.info('AIM package loaded');
 
-import AnalogRouter from '@analog/api';
 if (features.festifyAnalogService) {
-  router.use('/analog', AnalogRouter);
-  logger.info('Analog package loaded');
+  import('@analog/api').then((AnalogRouter) => {
+    router.use('/analog', AnalogRouter.default);
+  });
+}
+
+if (features.festifyBridgeService) {
+  import('@bridge/api').then((BridgeRouter) => {
+    router.use('/bridge', BridgeRouter.default);
+  });
+}
+
+if (features.festifyMethodsService) {
+  import('@methods/api').then((MethodsRouter) => {
+    router.use('/methods', MethodsRouter.default);
+  });
 }
 
 export default router;
