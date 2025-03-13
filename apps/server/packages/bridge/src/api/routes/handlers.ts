@@ -51,7 +51,7 @@ const registerHandlers = () => {
       }
 
       const authZCheck = authZMiddleware
-        .canExecuteActionOnResource(`Bridge:${actionName}`)
+        .canExecuteActionOnResource(`bridge:${actionName}`)
         .bind(authZMiddleware);
 
       router.post(`/${actionName}`, authZCheck, (req, res, next) => {
