@@ -13,7 +13,7 @@ import useSearchParam from '@sharedui/hooks/useSearchParam';
 import { Button, buttonVariants } from '@sharedui/primitives/button';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
 import { getErrorMessage } from '@sharedui/utils/error';
-import { generateFRN } from '@sharedui/utils/frn';
+import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import { cn } from '@sharedui/utils/tw';
 import { RotateCw } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
@@ -168,7 +168,7 @@ export const ApiEndpointDetails = () => {
                       ]
                     : []),
                   ...(endpoint?.integration?.type === 'method'
-                    ? [{ label: 'Method', key: 'method' }]
+                    ? [{ label: 'Method', key: 'frn', formatter: readableFRN }]
                     : []),
                   ...(endpoint?.integration?.type === 'mock'
                     ? [
