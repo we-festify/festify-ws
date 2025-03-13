@@ -4,12 +4,12 @@ import {
   PageLayout,
   PageSideNav,
 } from '@sharedui/components/page-layout';
-// import HomePage from './home-page';
 import { methodsPaths } from '@sharedui/constants/paths';
 import { ItemProps } from '@sharedui/components/page-layout/side-nav-item';
 import { Handlers } from './handlers';
 import { CreateHandlerPage } from './handlers/create';
 import { HandlerDetailsPage } from './handlers/details';
+import { HomePage } from './home-page';
 
 const MethodsHome = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const MethodsHome = () => {
       />
       <PageContent>
         <Routes>
-          {/* <Route path="" element={<HomePage />} /> */}
+          <Route path="" element={<HomePage />} />
           <Route path="handlers/*">
             <Route path="" element={<Handlers />} />
             <Route path="create" element={<CreateHandlerPage />} />

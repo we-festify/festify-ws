@@ -1,6 +1,7 @@
 import { PermissionPolicyAction } from '@sharedtypes/aim/permission-policy';
 import { besActions } from '@bes/constants/actions';
 import { bridgeActions } from '@bridge/constants/actions';
+import { methodsActions } from '@methods/constants/actions';
 
 export const aimActions: {
   description?: string;
@@ -91,4 +92,4 @@ export const aimActions: {
 export const ACTIONS: {
   description?: string;
   alias: PermissionPolicyAction;
-}[] = [...besActions, ...aimActions, ...bridgeActions];
+}[] = [...besActions, ...aimActions, ...bridgeActions, ...methodsActions];

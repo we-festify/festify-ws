@@ -1,6 +1,25 @@
 import { api } from '@rootui/api';
 import { IMethodsHandler } from '@sharedtypes/methods';
 
+interface IMethodsSummaryResponse {
+  summary: {
+    count: number;
+    total: {
+      codeSize: number;
+      memory: number;
+    };
+    avg: {
+      codeSize: number;
+      memory: number;
+      timeout: number;
+    };
+  };
+  methodsByRuntime: {
+    runtime: string;
+    count: number;
+  }[];
+}
+
 const handlersApi = api.injectEndpoints({
   endpoints: (builder) => ({
     listHandlers: builder.query<{ handlers: IMethodsHandler[] }, void>({
@@ -45,6 +64,13 @@ const handlersApi = api.injectEndpoints({
       }),
       invalidatesTags: ['MethodsHandler'],
     }),
+
+    readSummary: builder.query<IMethodsSummaryResponse, void>({
+      query: () => ({
+        url: `/v1/d/methods/execute/ReadSummary`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -54,4 +80,6 @@ export const {
   useReadHandlerQuery,
   useUpdateHandlerMutation,
   useDeleteHandlersMutation,
+
+  useReadSummaryQuery,
 } = handlersApi;
