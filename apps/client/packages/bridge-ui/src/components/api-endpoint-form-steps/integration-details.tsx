@@ -253,7 +253,11 @@ export const IntegrationDetails = () => {
                       >
                         <div className="md:w-2/3">
                           <HeadersInput
-                            defaultValue={field.value}
+                            defaultValue={
+                              field.value ?? {
+                                'Content-Type': 'application/json',
+                              }
+                            }
                             onChange={field.onChange}
                           />
                         </div>

@@ -13,7 +13,7 @@ const endpointInvokeService = new EndpointInvokeService(
   new InvokeHandlerService(MethodsHandler),
 );
 
-router.use('/:apiUId/*', async (req, res, next) => {
+router.all('/:apiUId/*', async (req, res, next) => {
   try {
     const { apiUId } = req.params;
     const path = req.path.replace(`/${apiUId}`, '') || '/';

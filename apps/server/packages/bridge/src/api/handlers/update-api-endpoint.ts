@@ -1,4 +1,5 @@
 import { HandlerFunction, ValidatorFunction } from '@/types/handler';
+import { AppError, CommonErrors } from '@/utils/errors';
 import { parseFRN, validateFRNForServiceAndResourceType } from '@/utils/frn';
 import BridgeApiEndpoint from '@bridge/models/bridge-api-endpoint';
 import {
@@ -69,9 +70,25 @@ const handlerWithoutDeps =
     [string, string],
     { endpoint: Partial<IBridgeApiEndpoint> }
   > =>
-  async (resource, data, _context) => {
+  async (resource, data, context) => {
+    const { accountId } = context.user;
     const { endpoint } = data;
     const { resourceId: endpointId } = parseFRN(resource[1]);
+
+    if (endpoint.path && endpoint.method) {
+      const existingEndpoint = await endpointModel.findOne({
+        account: accountId,
+        path: endpoint.path,
+        method: endpoint.method,
+      });
+      if (existingEndpoint?._id.toString() !== endpointId) {
+        throw new AppError(
+          CommonErrors.Conflict.name,
+          CommonErrors.Conflict.statusCode,
+          'Endpoint with the same path and method already exists',
+        );
+      }
+    }
 
     await endpointModel.findByIdAndUpdate(endpointId, endpoint);
   };

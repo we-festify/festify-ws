@@ -41,5 +41,5 @@ const handlerWithoutDeps =
 
 const handler = handlerWithoutDeps(BridgeApiEndpoint);
 
-export const name = 'DeleteApiEndpoint';
+export const name = 'DeleteApiEndpoints';
 export default handler;
