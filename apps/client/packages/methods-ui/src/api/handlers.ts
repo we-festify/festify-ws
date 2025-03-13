@@ -1,5 +1,9 @@
 import { api } from '@rootui/api';
-import { IMethodsHandler } from '@sharedtypes/methods';
+import {
+  HandlerEvent,
+  IInvokeHandlerResponse,
+  IMethodsHandler,
+} from '@sharedtypes/methods';
 
 interface IMethodsSummaryResponse {
   summary: {
@@ -71,6 +75,17 @@ const handlersApi = api.injectEndpoints({
         method: 'POST',
       }),
     }),
+
+    invokeHandler: builder.mutation<
+      IInvokeHandlerResponse,
+      { frn: string; event: HandlerEvent }
+    >({
+      query: ({ frn, event }) => ({
+        url: `/v1/d/methods/execute/InvokeHandler`,
+        method: 'POST',
+        body: { resource: frn, data: { event } },
+      }),
+    }),
   }),
 });
 
@@ -82,4 +97,6 @@ export const {
   useDeleteHandlersMutation,
 
   useReadSummaryQuery,
+
+  useInvokeHandlerMutation,
 } = handlersApi;

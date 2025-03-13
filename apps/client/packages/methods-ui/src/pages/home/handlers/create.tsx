@@ -45,7 +45,7 @@ const defaultValues: SchemaValues = {
   timeoutInSeconds: 3,
   memoryInMB: 8,
   runtime: MethodsHandlerRuntime.NODEJS,
-  codeSource: `export const handler = async (event) => {
+  codeSource: `const main = async (event) => {
   // TODO implement
   const response = {
     statusCode: 200,

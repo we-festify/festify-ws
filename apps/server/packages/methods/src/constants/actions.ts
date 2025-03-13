@@ -28,4 +28,8 @@ export const methodsActions: {
     alias: 'methods:ReadSummary',
     description: 'Grants permission to read summary of handlers',
   },
+  {
+    alias: 'methods:InvokeHandler',
+    description: 'Grants permission to invoke a handler',
+  },
 ];

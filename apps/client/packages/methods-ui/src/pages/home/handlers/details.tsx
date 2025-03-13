@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   useDeleteHandlersMutation,
+  useInvokeHandlerMutation,
   useReadHandlerQuery,
   useUpdateHandlerMutation,
 } from '@methods-ui/api/handlers';
@@ -9,11 +10,12 @@ import { useAuth } from '@rootui/providers/auth-provider';
 import CopyIcon from '@sharedui/components/copy-icon';
 import DeleteButton from '@sharedui/components/delete-button';
 import KeyValueGrid from '@sharedui/components/key-value-grid';
+import Note from '@sharedui/components/note';
 import PageSection from '@sharedui/components/page-section';
 import { methodsPaths } from '@sharedui/constants/paths';
 import { Button, buttonVariants } from '@sharedui/primitives/button';
 import { Card, CardContent, CardHeader } from '@sharedui/primitives/card';
-import { Form, FormField } from '@sharedui/primitives/form';
+import { Form, FormField, FormFieldItem } from '@sharedui/primitives/form';
 import {
   Select,
   SelectContent,
@@ -21,12 +23,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@sharedui/primitives/select';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@sharedui/primitives/sheet';
+import { Textarea } from '@sharedui/primitives/textarea';
 import { getErrorMessage } from '@sharedui/utils/error';
 import { generateFRN, readableFRN } from '@sharedui/utils/frn';
 import { cn } from '@sharedui/utils/tw';
 import { Maximize, Minimize, RotateCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -261,15 +271,20 @@ const HandlerCodeForm = () => {
               <h2 className="text-lg font-medium">Code source</h2>
               <div className="flex items-center gap-4">
                 {handler && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 font-normal"
-                    type="submit"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting ? 'Saving...' : 'Save changes'}
-                  </Button>
+                  <>
+                    <TestHandlerButton />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 font-normal"
+                      type="submit"
+                      disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting
+                        ? 'Saving...'
+                        : 'Save changes'}
+                    </Button>
+                  </>
                 )}
                 <Select value={theme} onValueChange={setTheme}>
                   <SelectTrigger className="h-8">
@@ -324,5 +339,170 @@ const HandlerCodeForm = () => {
         </form>
       </Form>
     </Card>
+  );
+};
+
+const eventSchema = z.union([
+  z.object({
+    type: z.literal('bridge'),
+    headers: z.string(),
+    body: z.string(),
+  }),
+  z.object({
+    type: z.literal('test'),
+    payload: z.string(),
+  }),
+]);
+
+type EventSchema = z.infer<typeof eventSchema>;
+
+const TestHandlerButton = () => {
+  const { handlerId } = useParams();
+  const { user } = useAuth();
+  const handlerFrn = generateFRN(
+    'methods',
+    user?.accountId ?? '',
+    'handler',
+    handlerId ?? '',
+  );
+  const [invokeHandler, { data, isLoading, error }] =
+    useInvokeHandlerMutation();
+  const form = useForm<EventSchema>({
+    resolver: zodResolver(eventSchema),
+    defaultValues: {
+      type: 'test',
+    },
+  });
+  const eventType = useWatch({ control: form.control, name: 'type' });
+
+  const handleTestHandler = async (values: EventSchema) => {
+    try {
+      await invokeHandler({
+        frn: handlerFrn,
+        event:
+          values.type === 'bridge'
+            ? {
+                ...values,
+                headers: JSON.parse(values.headers),
+              }
+            : values,
+      }).unwrap();
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    }
+  };
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button size="sm" variant="outline" className="w-20 h-8 font-normal">
+          Test
+        </Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Test handler</SheetTitle>
+        </SheetHeader>
+        <Form {...form}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit(handleTestHandler)();
+            }}
+          >
+            <div className="flex flex-col gap-4">
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormFieldItem label="Event type">
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select event type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="bridge">Bridge</SelectItem>
+                        <SelectItem value="test">Test</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormFieldItem>
+                )}
+              />
+              {eventType === 'bridge' ? (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="headers"
+                    render={({ field }) => (
+                      <FormFieldItem label="Headers">
+                        <Textarea {...field} placeholder="Headers" />
+                      </FormFieldItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="body"
+                    render={({ field }) => (
+                      <FormFieldItem label="Body">
+                        <Textarea {...field} placeholder="Body" />
+                      </FormFieldItem>
+                    )}
+                  />
+                </>
+              ) : (
+                <FormField
+                  control={form.control}
+                  name="payload"
+                  render={({ field }) => (
+                    <FormFieldItem label="Payload">
+                      <Textarea {...field} placeholder="Payload" />
+                    </FormFieldItem>
+                  )}
+                />
+              )}
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  size="sm"
+                  className="w-20 h-8 font-normal"
+                >
+                  Test
+                </Button>
+              </div>
+              {isLoading && <div>Invoking...</div>}
+              {error && (
+                <Note variant="danger">Error: {getErrorMessage(error)}</Note>
+              )}
+              {data && (
+                <div className="flex flex-col gap-4">
+                  <pre className="bg-gray-100 p-4 rounded-md text-xs max-h-96 overflow-auto">
+                    <code>{JSON.stringify(data.result, null, 2)}</code>
+                  </pre>
+                  <KeyValueGrid
+                    data={data.metadata}
+                    colsCount={2}
+                    keys={[
+                      { label: 'Init time (ms)', key: 'initTime' },
+                      { label: 'Exec time (ms)', key: 'execTime' },
+                      { label: 'Total time (ms)', key: 'totalTime' },
+                      {
+                        label: 'Memory used (Mb)',
+                        key: 'memoryUsed',
+                        formatter: (value: unknown) => {
+                          const num = Number(value);
+                          return `${Math.round(num / 1024 / 1024)} Mb`;
+                        },
+                      },
+                    ]}
+                  />
+                </div>
+              )}
+            </div>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
   );
 };
