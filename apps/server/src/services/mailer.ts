@@ -46,11 +46,11 @@ export class MailerService {
     const verifyHandler = (err: Error | null) => {
       if (err) {
         errorLogger.error(
-          `Root Mail server connection error - ${env.mail.auth.name}`,
+          `Root Mail server connection error - ${env.mail.sender.name}`,
           err,
         );
       } else {
-        logger.info(`Root Mail server connected - ${env.mail.auth.name}`);
+        logger.info(`Root Mail server connected - ${env.mail.sender.name}`);
       }
     };
     this.transporter.verify(verifyHandler);
@@ -58,7 +58,7 @@ export class MailerService {
 
   public async sendEmail(options: SendEmailDTO) {
     return this.transporter.sendMail({
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       ...options,
     });
   }
@@ -72,7 +72,7 @@ export class MailerService {
 
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: subject,
       text: text,
     });
@@ -85,7 +85,7 @@ export class MailerService {
   }: LoginActivityEmailDTO) {
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: 'A new login activity was detected',
       template: 'login-activity',
       context: {
@@ -112,7 +112,7 @@ export class MailerService {
     const { subject, text } = getResetPasswordEmail(resetUrl);
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: subject,
       text: text,
     });
@@ -140,7 +140,7 @@ export class MailerService {
 
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: subject,
       text: text,
     });
@@ -163,7 +163,7 @@ export class MailerService {
 
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: subject,
       text: text,
     });
@@ -182,7 +182,7 @@ export class MailerService {
 
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: 'Two-factor authentication enabled',
       template: '2fa-enabled',
       context: {
@@ -217,7 +217,7 @@ export class MailerService {
 
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: 'Two-factor authentication disabled',
       template: '2fa-disabled',
       context: {
@@ -242,7 +242,7 @@ export class MailerService {
   async sendTwoFactorAuthOTPEmail({ to, otp, user }: TwoFactorAuthOTPEmailDTO) {
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: 'One-time password for two-factor authentication',
       template: '2fa-otp',
       context: {
@@ -265,7 +265,7 @@ export class MailerService {
   async sendRecoveryEmailOTP({ to, otp, user }: TwoFactorAuthOTPEmailDTO) {
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: 'One-time password for account recovery',
       template: '2fa-recovery-otp',
       context: {
@@ -291,7 +291,7 @@ export class MailerService {
   }: EmailVerificationEmailDTO) {
     return this.transporter.sendMail({
       to,
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       subject: 'Email verification',
       template: 'recovery-email-verification',
       context: {

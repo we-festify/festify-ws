@@ -91,7 +91,10 @@ export default {
     auth: {
       user: process.env.MAIL_USER,
       pass: process.env.MAIL_PASS,
+    },
+    sender: {
       name: process.env.MAIL_SENDER_NAME,
+      email: process.env.MAIL_SENDER_EMAIL,
     },
   },
   ipToGeo: {
