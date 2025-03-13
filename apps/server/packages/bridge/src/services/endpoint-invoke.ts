@@ -4,6 +4,7 @@ import {
   IBridgeApi,
   IBridgeApiEndpoint,
   IBridgeHttpIntegration,
+  IBridgeMethodIntegration,
   IBridgeMockIntegration,
 } from '@sharedtypes/bridge';
 import { Model } from 'mongoose';
@@ -12,6 +13,8 @@ import { v4 as uuidv4 } from 'uuid';
 import fetch, { RequestInit } from 'node-fetch';
 import http from 'http';
 import https from 'https';
+import { IHandlerBridgeEvent } from '@sharedtypes/methods';
+import { InvokeHandlerService } from '@methods/services/invoke-handler';
 
 const apiCache = new LRUCache<
   string, // 'uid'
@@ -65,13 +68,16 @@ const httpsAgent = new https.Agent({ keepAlive: true });
 export class EndpointInvokeService {
   private readonly apiModel: Model<IBridgeApi>;
   private readonly endpointModel: Model<IBridgeApiEndpoint>;
+  private readonly invokeHandlerService: InvokeHandlerService;
 
   constructor(
     apiModel: Model<IBridgeApi>,
     endpointModel: Model<IBridgeApiEndpoint>,
+    invokeHandlerService: InvokeHandlerService,
   ) {
     this.apiModel = apiModel;
     this.endpointModel = endpointModel;
+    this.invokeHandlerService = invokeHandlerService;
   }
 
   public async invoke(
@@ -200,6 +206,8 @@ export class EndpointInvokeService {
         return this.handleHttpIntegration(logger, integration, options);
       case 'mock':
         return this.handleMockIntegration(logger, integration);
+      case 'method':
+        return this.handleMethodsIntegration(logger, integration, options);
       default:
         throw new AppError(
           CommonErrors.InternalServerError.name,
@@ -241,7 +249,7 @@ export class EndpointInvokeService {
       );
     }
 
-    const responseData = await response.text();
+    const responseData = await response.buffer();
 
     const responseHeaders: Record<string, string> = {};
     response.headers.forEach((value, key) => {
@@ -266,6 +274,53 @@ export class EndpointInvokeService {
       statusCode,
       body,
       headers: headers || {},
+    };
+  }
+
+  private async handleMethodsIntegration(
+    logger: RequestLogger,
+    integration: IBridgeMethodIntegration,
+    options: { headers?: Record<string, string>; body?: unknown },
+  ) {
+    logger.log('Handling Methods integration request');
+    const { frn } = integration;
+    const { headers = {}, body } = options;
+
+    const event: IHandlerBridgeEvent = {
+      type: 'bridge',
+      headers: {
+        ...headers,
+        'User-Agent': 'FwsBridgeService/1.0',
+      },
+      body: JSON.stringify(body),
+    };
+
+    // Invoke the handler
+    const { result, metadata } = await this.invokeHandlerService.invoke(
+      frn,
+      event,
+    );
+
+    logger.log(`Handler execution completed in ${metadata.totalTime}ms`);
+    let statusCode = 200,
+      responseHeaders = {},
+      responseBody;
+    if (typeof result === 'object') {
+      const {
+        statusCode: responseStatusCode,
+        headers: rh,
+        body: rb,
+        ...rest
+      } = result;
+      statusCode = responseStatusCode || statusCode;
+      responseHeaders = rh || responseHeaders;
+      responseBody = rb || rest;
+    }
+
+    return {
+      statusCode,
+      body: responseBody,
+      headers: responseHeaders,
     };
   }
 }

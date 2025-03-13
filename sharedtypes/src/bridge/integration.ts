@@ -11,6 +11,7 @@ export interface IBridgeHttpIntegration {
 
 export interface IBridgeMethodIntegration {
   type: 'method';
+  frn: string;
 }
 
 export interface IBridgeMockIntegration {

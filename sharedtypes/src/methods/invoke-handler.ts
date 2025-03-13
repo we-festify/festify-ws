@@ -14,7 +14,7 @@ export interface IHandlerTestEvent {
 export type HandlerEvent = IHandlerBridgeEvent | IHandlerTestEvent;
 
 export interface IInvokeHandlerResponse {
-  result: string;
+  result: any;
   metadata: {
     initTime: number;
     execTime: number;
