@@ -33,7 +33,7 @@ export class MailerService {
 
   public async sendEmail(options: SendEmailDTO) {
     return this.transporter.sendMail({
-      from: `${env.mail.auth.name} <${env.mail.auth.user}>`,
+      from: `${env.mail.sender.name} <${env.mail.sender.email}>`,
       ...options,
     });
   }
