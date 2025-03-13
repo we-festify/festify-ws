@@ -21,7 +21,7 @@
     "@analog": "dist/apps/server/packages/analog/src",
     "@bridge": "dist/apps/server/packages/bridge/src",
     "@methods": "dist/apps/server/packages/methods/src",
-    "@sharedtypes": "../../sharedtypes/src/*"
+    "@sharedtypes": "dist/sharedtypes/src"
   },
   "keywords": [],
   "author": "",

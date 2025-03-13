@@ -1,6 +1,7 @@
 // required for building the app
 import { env } from './config';
 if (env.nodeEnv === 'production') {
+  console.log('mode', env.nodeEnv);
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('module-alias/register');
 }

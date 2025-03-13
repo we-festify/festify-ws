@@ -20,27 +20,29 @@ logger.info(
 // BES
 import BESRouter from '@bes/api';
 router.use('/bes', BESRouter);
+logger.info('[BES] service enabled');
 
 // AIM
 import AIMRouter from '@aim/api';
 router.use('/aim', AIMRouter);
+logger.info('[AIM] service enabled');
 
+import AnalogRouter from '@analog/api';
 if (features.festifyAnalogService) {
-  import('@analog/api').then((AnalogRouter) => {
-    router.use('/analog', AnalogRouter.default);
-  });
+  router.use('/analog', AnalogRouter);
+  logger.info('[Analog] service enabled');
 }
 
+import BridgeRouter from '@bridge/api';
 if (features.festifyBridgeService) {
-  import('@bridge/api').then((BridgeRouter) => {
-    router.use('/bridge', BridgeRouter.default);
-  });
+  router.use('/bridge', BridgeRouter);
+  logger.info('[Bridge] service enabled');
 }
 
+import MethodsRouter from '@methods/api';
 if (features.festifyMethodsService) {
-  import('@methods/api').then((MethodsRouter) => {
-    router.use('/methods', MethodsRouter.default);
-  });
+  router.use('/methods', MethodsRouter);
+  logger.info('[Methods] service enabled');
 }
 
 export default router;
