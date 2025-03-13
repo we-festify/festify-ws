@@ -13,8 +13,5 @@
     "lint:femails": "cd libs/femails && npm run lint",
     "test:femails": "cd libs/femails && npm run test",
     "build:femails": "cd libs/femails && npm run build"
-  },
-  "dependencies": {
-    "isolated-vm": "^5.0.4"
   }
 }

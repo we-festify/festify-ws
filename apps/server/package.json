@@ -46,6 +46,7 @@
     "express-useragent": "^1.0.15",
     "helmet": "^7.1.0",
     "ioredis": "^5.4.1",
+    "isolated-vm": "^5.0.4",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "lru-cache": "^11.0.2",
