@@ -1,3 +1,15 @@
+const get = (obj: Record<string, unknown>, path: string) => {
+  const parts = path.split('.');
+  let current = obj;
+  for (const part of parts) {
+    if (current[part] === undefined) {
+      return undefined;
+    }
+    current = current[part] as Record<string, unknown>;
+  }
+  return current;
+};
+
 type FormatterFunctionWithRow<TData> = (
   value: unknown,
   row: TData,
@@ -63,7 +75,7 @@ function KeyValueGrid<TData extends Record<string, unknown>>({
                   <KeyValue
                     key={`${currentKey}-${index}`}
                     label={currentKey}
-                    value={data[currentKey]}
+                    value={get(data, currentKey)}
                     row={data}
                   />
                 );
@@ -72,7 +84,7 @@ function KeyValueGrid<TData extends Record<string, unknown>>({
                   <KeyValue
                     key={`${currentKey.key}-${index}`}
                     label={currentKey.label ?? currentKey.key}
-                    value={data[currentKey.key]}
+                    value={get(data, currentKey.key)}
                     formatter={currentKey.formatter}
                     row={data}
                   />

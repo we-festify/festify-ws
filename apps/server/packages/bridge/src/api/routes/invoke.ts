@@ -1,6 +1,8 @@
 import BridgeApi from '@bridge/models/bridge-api';
 import BridgeApiEndpoint from '@bridge/models/bridge-api-endpoint';
 import { EndpointInvokeService } from '@bridge/services/endpoint-invoke';
+import MethodsHandler from '@methods/models/handler';
+import { InvokeHandlerService } from '@methods/services/invoke-handler';
 import { Router } from 'express';
 
 const router = Router();
@@ -8,6 +10,7 @@ const router = Router();
 const endpointInvokeService = new EndpointInvokeService(
   BridgeApi,
   BridgeApiEndpoint,
+  new InvokeHandlerService(MethodsHandler),
 );
 
 router.use('/:apiUId/*', async (req, res, next) => {
@@ -25,7 +28,7 @@ router.use('/:apiUId/*', async (req, res, next) => {
       res.setHeader(key, `${value}`);
     });
     if (verbose) {
-      res.setHeader('Content-Type', 'application/json').json({
+      res.set('Content-Type', 'application/json').json({
         statusCode,
         body,
         logs,

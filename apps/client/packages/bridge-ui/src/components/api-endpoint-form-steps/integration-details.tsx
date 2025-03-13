@@ -12,13 +12,18 @@ import { BridgeApiEndpointMethod } from '@sharedtypes/bridge';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@sharedui/primitives/select';
 import { useState } from 'react';
 import { Button } from '@sharedui/primitives/button';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, RotateCw, Trash2 } from 'lucide-react';
+import { useListHandlersQuery } from '@methods-ui/api/handlers';
+import { generateFRN } from '@sharedui/utils/frn';
+import { useAuth } from '@rootui/providers/auth-provider';
 
 export const IntegrationDetails = () => {
   const { form } = useMultiStepForm<SchemaValues>();
@@ -27,6 +32,12 @@ export const IntegrationDetails = () => {
     name: 'integration.type',
     defaultValue: form.getValues('integration.type') || 'http',
   });
+  const { user } = useAuth();
+  const {
+    data: { handlers } = {},
+    refetch: refetchMethods,
+    isLoading: areHandlersLoading,
+  } = useListHandlersQuery();
 
   return (
     <PageSection>
@@ -135,16 +146,59 @@ export const IntegrationDetails = () => {
                     name="integration.frn"
                     render={({ field }) => (
                       <FormFieldItem
-                        label="FWS Method FRN"
+                        label="FWS Method"
                         description="The FWS method FRN that you want to integrate with."
                         variant="aligned"
                       >
-                        <div className="md:w-2/3">
-                          <Input
-                            key="fws-method"
-                            placeholder="frn:methods::method:example"
-                            {...field}
-                          />
+                        <div className="md:w-2/3 flex gap-2">
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a method" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup title="My methods">
+                                <SelectLabel>My methods</SelectLabel>
+                                {handlers?.map(({ alias }) => {
+                                  const handlerFrn = generateFRN(
+                                    'methods',
+                                    user?.accountId || '',
+                                    'handler',
+                                    alias,
+                                  );
+                                  return (
+                                    <SelectItem
+                                      key={handlerFrn}
+                                      value={handlerFrn}
+                                    >
+                                      {alias}
+                                    </SelectItem>
+                                  );
+                                })}
+                                {areHandlersLoading && (
+                                  <SelectItem value="loading" disabled>
+                                    Loading...
+                                  </SelectItem>
+                                )}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            name="Refresh handlers"
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              refetchMethods();
+                            }}
+                          >
+                            <RotateCw
+                              size={16}
+                              className="text-muted-foreground"
+                            />
+                          </Button>
                         </div>
                       </FormFieldItem>
                     )}

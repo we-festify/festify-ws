@@ -13,6 +13,7 @@ import BESServiceIndex from '@bes-ui/index';
 import AIMServiceIndex from '@aim-ui/index';
 import AnalogServiceIndex from '@analog-ui/index';
 import BridgeServiceIndex from '@bridge-ui/index';
+import MethodsServiceIndex from '@methods-ui/index';
 
 const AppRoutes = () => {
   return (
@@ -35,6 +36,9 @@ const AppRoutes = () => {
       )}
       {features.festifyBridgeService && (
         <Route path="bridge/*" element={<BridgeServiceIndex />} />
+      )}
+      {features.festifyMethodsService && (
+        <Route path="methods/*" element={<MethodsServiceIndex />} />
       )}
 
       <Route path="*" element={<NotFound />} />

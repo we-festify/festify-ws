@@ -72,12 +72,28 @@ export const bridgePaths = {
     `/bridge/home/apis/details/${apiId}?endpoint=${endpoint}` as const,
 } as const;
 
+export const methodsPaths = {
+  SERVICE: '/methods',
+
+  HOME: '/methods/home',
+
+  DOCS: '/docs/methods',
+
+  HANDLERS: '/methods/home/handlers',
+  CREATE_NEW_HANDLER: '/methods/home/handlers/create',
+  UPDATE_HANDLER: (alias: string) =>
+    `/methods/home/handlers/update/${alias}` as const,
+  HANDLER_DETAILS: (alias: string) =>
+    `/methods/home/handlers/details/${alias}` as const,
+} as const;
+
 const paths = {
   root: rootPaths,
   bes: besPaths,
   aim: aimPaths,
   analog: analogPaths,
   bridge: bridgePaths,
+  methods: methodsPaths,
 } as const;
 
 export default paths;
