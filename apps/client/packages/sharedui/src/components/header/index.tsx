@@ -31,7 +31,7 @@ const Header = () => {
           </Popover>
           <HeaderSearchBar />
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
           <Settings />
           <div className="flex items-center gap-2 p-2 rounded-sm text-xs cursor-pointer text-white/90 hover:bg-slate-800">
             <CircleHelp size={16} />

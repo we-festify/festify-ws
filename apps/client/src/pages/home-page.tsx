@@ -51,8 +51,11 @@ const HomePage = () => {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
           {isFetching &&
-            Array.from({ length: 3 }).map(() => (
-              <Skeleton className="aspect-[4/3] w-full rounded-2xl" />
+            Array.from({ length: 3 }).map((_, index) => (
+              <Skeleton
+                key={index}
+                className="aspect-[4/3] w-full rounded-2xl"
+              />
             ))}
           {services?.map((service) => (
             <GradientShadow

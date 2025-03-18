@@ -6,7 +6,7 @@ import {
 import { ChevronDown } from 'lucide-react';
 import { Separator } from '../../primitives/separator';
 import { Button, buttonVariants } from '../../primitives/button';
-import { useGetMeQuery, useLogoutMutation } from '@rootui/api/auth';
+import { useLogoutMutation } from '@rootui/api/auth';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../utils/error';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,9 +14,10 @@ import { clearCredentials, selectIsLoggedIn } from '@rootui/store/auth';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../utils/tw';
 import { useGetServicesMetadataQuery } from '@rootui/api/meta';
+import { useAuth } from '@rootui/providers/auth-provider';
 
 const Profile = () => {
-  const { data: { user } = {} } = useGetMeQuery();
+  const { user, isLoading } = useAuth();
   const [signOut] = useLogoutMutation();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -42,6 +43,12 @@ const Profile = () => {
       toast.error(getErrorMessage(err));
     }
   };
+
+  if (isLoading) {
+    return (
+      <span className="text-muted-foreground text-xs mr-4">Loading...</span>
+    );
+  }
 
   if (!isLoggedIn) {
     return (
