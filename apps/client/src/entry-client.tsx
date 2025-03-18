@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from '@/entry';
+import App from '@/app';
 import './styles.css';
 import './animations.css';
 import './gradients.css';
@@ -12,7 +12,8 @@ import store from '@rootui/store';
 import { Toaster } from '@sharedui/primitives/sonner';
 import RecentServiceTrackerProvider from '../packages/rootui/src/providers/recent-service-tracker';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.hydrateRoot(
+  document.getElementById('root')!,
   <React.StrictMode>
     <ReduxProvider store={store}>
       <ThemeProvider defaultTheme="light" storageKey="festify-ws-ui-theme">

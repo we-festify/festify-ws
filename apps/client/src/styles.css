@@ -77,14 +77,12 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
 
-@layer base {
   * {
-    @apply border-border;
+    /* @apply border-border; */
   }
   body {
-    @apply bg-background text-foreground;
+    /* @apply bg-background text-foreground; */
 
     font-family:
       'Open Sans',
@@ -106,10 +104,5 @@
 
 code.hljs {
   padding: 32px !important;
-  @apply bg-card text-card-foreground;
-}
-
-code.hljs {
-  padding: 32px !important;
-  @apply bg-card text-card-foreground;
+  /* @apply bg-card text-card-foreground; */
 }
