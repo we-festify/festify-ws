@@ -1,4 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useDomDocument } from '@sharedui/hooks/useDomDocument';
+import { useLocalStorage } from '@sharedui/hooks/useLocalStorage';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const themes = ['dark', 'light', 'system'] as const;
@@ -28,37 +30,35 @@ export function ThemeProvider({
   storageKey = 'vite-ui-theme',
   ...props
 }: Readonly<ThemeProviderProps>) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
-  );
+  const document = useDomDocument();
+  const [theme, setTheme] = useLocalStorage<Theme>(storageKey, defaultTheme);
 
   useEffect(() => {
-    const root = window.document.documentElement;
+    if (document) {
+      const root = document.documentElement;
 
-    root.classList.remove('light', 'dark');
+      root.classList.remove('light', 'dark');
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light';
+      if (theme === 'system') {
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+          .matches
+          ? 'dark'
+          : 'light';
 
-      root.classList.add(systemTheme);
-      return;
+        root.classList.add(systemTheme);
+        return;
+      }
+
+      root.classList.add(theme);
     }
-
-    root.classList.add(theme);
-  }, [theme]);
+  }, [document, theme]);
 
   const value = useMemo(
     () => ({
       theme,
-      setTheme: (theme: Theme) => {
-        localStorage.setItem(storageKey, theme);
-        setTheme(theme);
-      },
+      setTheme,
     }),
-    [theme, setTheme, storageKey],
+    [theme, setTheme],
   );
 
   return (
