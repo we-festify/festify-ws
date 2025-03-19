@@ -3,7 +3,7 @@ dotenv.config();
 
 export default {
   nodeEnv: process.env.NODE_ENV ?? 'development',
-  port: process.env.PORT ?? 5000,
+  port: process.env.SERVER_PORT ?? 5000,
   url: process.env.URL ?? 'http://localhost:5000',
   db: {
     host: process.env.DB_HOST ?? 'localhost',
