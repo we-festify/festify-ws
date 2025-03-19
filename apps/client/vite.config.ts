@@ -6,7 +6,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig({
   plugins: [
     react(),
-    visualizer({ open: true, filename: 'bundle-visualization.html' }),
+    visualizer({ open: false, filename: 'bundle-visualization.html' }),
   ],
   server: {
     port: 3000,
