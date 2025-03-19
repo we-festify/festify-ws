@@ -1,7 +1,6 @@
 import fs from 'node:fs/promises';
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import path from 'node:path';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production';
@@ -61,9 +60,7 @@ app.use('*', async (req, res) => {
       render = (await vite.ssrLoadModule('./src/entry-server.tsx')).render;
     } else {
       template = templateHtml;
-      render = (
-        await import(path.resolve(__dirname, './dist/server/entry-server.js'))
-      ).render;
+      render = (await import('./dist/frontend-server/entry-server.js')).render;
     }
 
     const rendered = await render(url);
