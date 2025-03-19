@@ -56,7 +56,7 @@ const expressLoader = async ({ app }: { app: express.Application }) => {
   }
 
   // Load all routes
-  app.use('/api/v1', api);
+  app.use('/v1', api);
 
   // Catch 404 and forward to error handler
   app.all('*', (req, res, next) => {

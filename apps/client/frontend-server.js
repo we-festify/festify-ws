@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production';
@@ -13,6 +14,15 @@ const templateHtml = isProduction
 
 // Create http server
 const app = express();
+
+// backend proxy
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: 'http://localhost:5000',
+    changeOrigin: true,
+  }),
+);
 
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
@@ -34,10 +44,10 @@ if (!isProduction) {
 
 app.use(express.static('public'));
 
-// Serve HTML
 app.use('*', async (req, res) => {
   try {
     const url = req.originalUrl.replace(base, '');
+    const nonce = res.locals.nonce;
 
     /** @type {string} */
     let template;
@@ -55,9 +65,17 @@ app.use('*', async (req, res) => {
 
     const rendered = await render(url);
 
-    const html = template
+    let html = template
       .replace(`<!--app-head-->`, rendered.head ?? '')
       .replace(`<!--app-html-->`, rendered.html ?? '');
+
+    // add nonce to script tags
+    html = html.replace(
+      /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+      (match) => {
+        return match.replace('></script>', `nonce="${nonce}"></script>`);
+      },
+    );
 
     res.status(200).set({ 'Content-Type': 'text/html' }).send(html);
   } catch (e) {
@@ -67,7 +85,6 @@ app.use('*', async (req, res) => {
   }
 });
 
-// Start http server
 app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
+  console.log(`Frontend Server started at http://localhost:${port}`);
 });
