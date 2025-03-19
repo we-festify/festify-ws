@@ -3,6 +3,8 @@
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
     "build": "npm run build:client && npm run build:server",
+    "lint": "npm run lint:client && npm run lint:server",
+    "test": "npm run test:client && npm run test:server",
     "dev:client": "cd apps/client && npm run dev",
     "lint:client": "cd apps/client && npm run lint",
     "test:client": "cd apps/client && npm run test",
