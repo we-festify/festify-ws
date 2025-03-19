@@ -24,8 +24,7 @@ jobs:
       - run: cd apps/server && npm ci
 
       # Run lint check for all projects
-      - run: cd apps/client && npm run lint
-      - run: cd apps/server && npm run lint
+      - run: npm run lint
 
   test:
     name: Unit Tests
@@ -44,8 +43,7 @@ jobs:
       - run: cd apps/server && npm ci
 
       # Run test for all projects
-      - run: cd apps/client && npm run test
-      - run: cd apps/server && npm run test
+      - run: npm run test
 
   build:
     name: Build
@@ -64,5 +62,4 @@ jobs:
       - run: cd apps/server && npm ci
 
       # Run build for all projects
-      - run: cd apps/client && npm run build
-      - run: cd apps/server && npm run build
+      - run: npm run build

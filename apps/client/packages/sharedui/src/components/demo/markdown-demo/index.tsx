@@ -1,5 +1,6 @@
 import { PageContent, PageLayout, PageSecondaryNav } from '../../page-layout';
 import MarkdownContent from '../../markdown-content';
+import { useDomDocument } from '@sharedui/hooks/useDomDocument';
 
 const markdown = `# Markdown
 
@@ -57,12 +58,14 @@ const getSecondHeadings = (source: string) => {
 };
 
 const MarkdownDemo = () => {
+  const document = useDomDocument();
   const items = getSecondHeadings(markdown).map((heading) => ({
     title: heading,
     path: `#${heading.toLowerCase().replace(/\s/g, '-')}`,
   }));
 
   const handleClick = (path: string) => {
+    if (!document) return;
     const element = document.querySelector(path);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });

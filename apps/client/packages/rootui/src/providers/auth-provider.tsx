@@ -42,11 +42,7 @@ function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     [isLoading, data],
   );
 
-  return (
-    <AuthContext.Provider value={value}>
-      {isLoading ? 'Loading...' : children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export default AuthProvider;

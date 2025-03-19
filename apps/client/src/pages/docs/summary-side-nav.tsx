@@ -4,8 +4,10 @@ import { useLocation } from 'react-router-dom';
 import paths from '@sharedui/constants/paths';
 import { PageSecondaryNav } from '@sharedui/components/page-layout';
 import { getSecondHeadingsFromMD } from '@/utils/docs';
+import { useDomDocument } from '@sharedui/hooks/useDomDocument';
 
 const SummarySideNav = () => {
+  const document = useDomDocument();
   const location = useLocation();
   const filePath = location.pathname
     .split(paths.root.DOCS)[1]
@@ -27,6 +29,7 @@ const SummarySideNav = () => {
   );
 
   const scrollToElement = (path: string) => {
+    if (!document) return;
     const element = document.querySelector(path);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });

@@ -1,17 +1,27 @@
 {
   "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
+    "build": "npm run build:client && npm run build:server",
+    "lint": "npm run lint:client && npm run lint:server",
+    "test": "npm run test:client && npm run test:server",
     "dev:client": "cd apps/client && npm run dev",
     "lint:client": "cd apps/client && npm run lint",
     "test:client": "cd apps/client && npm run test",
     "build:client": "cd apps/client && npm run build",
+    "start:client": "cd apps/client && npm run preview",
     "dev:server": "cd apps/server && npm run dev",
     "lint:server": "cd apps/server && npm run lint",
     "test:server": "cd apps/server && npm run test",
     "prebuild:server": "cd apps/server && npm run prebuild",
     "build:server": "cd apps/server && npm run build",
+    "start:server": "cd apps/server && npm run start",
     "dev:femails": "cd libs/femails && npm run dev",
     "lint:femails": "cd libs/femails && npm run lint",
     "test:femails": "cd libs/femails && npm run test",
     "build:femails": "cd libs/femails && npm run build"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
   }
 }

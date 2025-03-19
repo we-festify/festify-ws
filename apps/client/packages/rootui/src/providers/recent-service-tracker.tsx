@@ -1,11 +1,6 @@
 import { useGetServicesMetadataQuery } from '@rootui/api/meta';
-import {
-  useContext,
-  createContext,
-  useState,
-  useEffect,
-  PropsWithChildren,
-} from 'react';
+import { useLocalStorage } from '@sharedui/hooks/useLocalStorage';
+import { useContext, createContext, useEffect, PropsWithChildren } from 'react';
 import { useLocation } from 'react-router-dom';
 
 type RecentServiceTracker = {
@@ -19,10 +14,10 @@ const RecentServiceTrackerContext = createContext<RecentServiceTracker | null>(
 );
 
 const RecentServiceTrackerProvider = ({ children }: PropsWithChildren) => {
-  const [history, setHistory] = useState<string[]>(() => {
-    const recentServices = localStorage.getItem(RecentServicesKey);
-    return recentServices ? JSON.parse(recentServices) : [];
-  });
+  const [history, setHistory] = useLocalStorage<string[]>(
+    RecentServicesKey,
+    [],
+  );
   const location = useLocation();
   const { data: { services } = {} } = useGetServicesMetadataQuery();
 
@@ -33,14 +28,14 @@ const RecentServiceTrackerProvider = ({ children }: PropsWithChildren) => {
       });
       if (service) {
         setHistory((prev) => {
-          const newHistory = prev.filter((item) => item !== service.alias);
-          newHistory.unshift(service.alias);
-          localStorage.setItem(RecentServicesKey, JSON.stringify(newHistory));
-          return newHistory;
+          return prev
+            .filter((item) => item !== service.alias)
+            .concat(service.alias)
+            .slice(-5);
         });
       }
     }
-  }, [location, services]);
+  }, [location, services, setHistory]);
 
   return (
     <RecentServiceTrackerContext.Provider value={{ history }}>
